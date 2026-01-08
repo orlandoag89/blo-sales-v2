@@ -1,8 +1,8 @@
-package com.blo.sales.v2.controller.beans;
+package com.blo.sales.v2.controller.pojos;
 
-import com.blo.sales.v2.controller.beans.enums.RolesIntEnum;
+import com.blo.sales.v2.controller.pojos.enums.RolesIntEnum;
 
-public class BeanIntLoggedInUser {
+public class PojoIntLoggedInUser {
     
     private String username;
     

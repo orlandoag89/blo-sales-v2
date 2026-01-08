@@ -55,6 +55,12 @@ public final class BloSalesV2Utils {
         return pass;
     }
     
+    /**
+     * Metodo que valida reglas de negocio y lanza una excepcion
+     * @param sentence
+     * @param msg
+     * @throws BloSalesV2Exception 
+     */
     public static void validateRule(boolean sentence, String msg) throws BloSalesV2Exception {
         if (sentence) {
             throw new BloSalesV2Exception(msg);

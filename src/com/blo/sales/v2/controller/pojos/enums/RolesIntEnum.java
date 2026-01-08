@@ -1,4 +1,4 @@
-package com.blo.sales.v2.controller.beans.enums;
+package com.blo.sales.v2.controller.pojos.enums;
 
 public enum RolesIntEnum {
     

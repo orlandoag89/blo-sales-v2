@@ -1,12 +1,12 @@
-package com.blo.sales.v2.view.windows.beans;
+package com.blo.sales.v2.view.windows.pojos;
 
-public class BeanUser {
+public class PojoUser {
     
     private String username;
     
     private String password;
 
-    public BeanUser(String username, String password) {
+    public PojoUser(String username, String password) {
         this.username = username;
         this.password = password;
     }

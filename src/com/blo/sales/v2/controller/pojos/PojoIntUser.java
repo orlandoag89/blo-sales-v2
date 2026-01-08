@@ -1,12 +1,12 @@
-package com.blo.sales.v2.controller.beans;
+package com.blo.sales.v2.controller.pojos;
 
-public class BeanIntUser {
+public class PojoIntUser {
  
     private String userName;
     
     private String password;
 
-    public BeanIntUser(String userName, String password) {
+    public PojoIntUser(String userName, String password) {
         this.userName = userName;
         this.password = password;
     }

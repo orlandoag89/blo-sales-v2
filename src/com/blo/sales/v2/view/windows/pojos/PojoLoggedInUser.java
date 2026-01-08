@@ -1,8 +1,8 @@
-package com.blo.sales.v2.view.windows.beans;
+package com.blo.sales.v2.view.windows.pojos;
 
-import com.blo.sales.v2.view.windows.beans.enums.RolesEnum;
+import com.blo.sales.v2.view.windows.pojos.enums.RolesEnum;
 
-public class BeanLoggedInUser {
+public class PojoLoggedInUser {
     
     private RolesEnum role;
     

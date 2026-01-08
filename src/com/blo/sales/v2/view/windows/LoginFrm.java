@@ -9,7 +9,7 @@ import com.blo.sales.v2.controller.impl.UserControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.windows.alerts.CommonAlerts;
-import com.blo.sales.v2.view.windows.beans.BeanUser;
+import com.blo.sales.v2.view.windows.pojos.PojoUser;
 import com.blo.sales.v2.view.windows.mappers.LoggedInUserMapper;
 import com.blo.sales.v2.view.windows.mappers.UserMapper;
 import java.util.logging.Level;
@@ -61,12 +61,6 @@ public class LoginFrm extends javax.swing.JFrame {
         btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLoginActionPerformed(evt);
-            }
-        });
-
-        pwdUserpassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pwdUserpasswordActionPerformed(evt);
             }
         });
 
@@ -130,7 +124,7 @@ public class LoginFrm extends javax.swing.JFrame {
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         try {
-            final var userData = new BeanUser(
+            final var userData = new PojoUser(
                 BloSalesV2Utils.getTextFromJText(txtUserName),
                 BloSalesV2Utils.getPasswordFromJText(pwdUserpassword)
             );
@@ -143,10 +137,6 @@ public class LoginFrm extends javax.swing.JFrame {
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnLoginActionPerformed
-
-    private void pwdUserpasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pwdUserpasswordActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_pwdUserpasswordActionPerformed
 
     /**
      * @param args the command line arguments
