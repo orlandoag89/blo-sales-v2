@@ -1,5 +1,6 @@
 package com.blo.sales.v2.utils;
 
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
@@ -66,4 +67,5 @@ public final class BloSalesV2Utils {
             throw new BloSalesV2Exception(msg);
         }
     }
+    
 }
