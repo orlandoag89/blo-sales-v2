@@ -1,9 +1,40 @@
 package com.blo.sales.v2.view.windows.dashboard.panels;
 
+import com.blo.sales.v2.controller.ICategoriesController;
+import com.blo.sales.v2.controller.IProductsController;
+import com.blo.sales.v2.controller.impl.CategoriesControllerImpl;
+import com.blo.sales.v2.controller.impl.ProductsControllerImpl;
+import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.view.windows.commons.GUICommons;
+import com.blo.sales.v2.view.windows.mappers.ProductMapper;
+import com.blo.sales.v2.view.windows.mappers.WrapperPojoCategoriesMapper;
+import com.blo.sales.v2.view.windows.pojos.PojoProduct;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+
 public class RegisterProduct extends javax.swing.JPanel {
+    
+    private ICategoriesController categories;
+    
+    private WrapperPojoCategoriesMapper categoriesMapper;
+    
+    private ProductMapper productMapper;
+    
+    private IProductsController productsController;
 
     public RegisterProduct() {
+        categories = new CategoriesControllerImpl();
+        productsController = new ProductsControllerImpl();
+        categoriesMapper = new WrapperPojoCategoriesMapper();
+        productMapper = new ProductMapper();
         initComponents();
+        try {
+            loadCategories();
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -43,8 +74,6 @@ public class RegisterProduct extends javax.swing.JPanel {
             }
         });
 
-        lstMarks.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -74,16 +103,12 @@ public class RegisterProduct extends javax.swing.JPanel {
                         .addComponent(nmbSaleCost, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(lstMarks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 173, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
+                        .addComponent(chkbxItsKg))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnSave)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnSave)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(chkbxItsKg)))
-                .addGap(42, 42, 42))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -107,19 +132,45 @@ public class RegisterProduct extends javax.swing.JPanel {
                     .addComponent(lblSaleCost)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(nmbSaleCost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lstMarks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 101, Short.MAX_VALUE)
-                .addComponent(chkbxItsKg)
+                        .addComponent(lstMarks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(chkbxItsKg))
                 .addGap(18, 18, 18)
                 .addComponent(btnSave)
-                .addGap(38, 38, 38))
+                .addContainerGap(159, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        
+        try {
+            final var productName = GUICommons.getTextFromJText(txtProductName);
+            final var barCode = GUICommons.getTextFromJText(txtBarCode);
+            final var quantity = GUICommons.getNumberFromJText(nmbQuantity);
+            final var price = GUICommons.getNumberFromJText(nmbPrice);
+            final var costOfSale = GUICommons.getNumberFromJText(nmbSaleCost);
+            final var data = new PojoProduct();
+            data.setBarCode(barCode);
+            data.setCostOfSale(costOfSale);
+            data.setPrice(price);
+            data.setProduct(productName);
+            data.setQuantity(quantity);
+            /** selecciona una categoria */
+            final var itemSelected = GUICommons.getValueFromComboBox(lstMarks).split("[ ]+");
+            BloSalesV2Utils.validateRule(itemSelected.length == 0 || itemSelected[0].trim().isBlank(), "No se ha seleccionado un item");
+            final var idMark = itemSelected[0].trim();
+            data.setFkCategory(Integer.parseInt(idMark));
+            data.setKg(GUICommons.isCheckedCkeckBox(chkbxItsKg));
+            productsController.registerProduct(productMapper.toInner(data));
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
+    private void loadCategories() throws BloSalesV2Exception {
+        final var categories = categoriesMapper.toOuter(this.categories.getAllCategories());
+        final var categoryModel = new DefaultComboBoxModel<String>();
+        categories.getCategories().forEach(c -> categoryModel.addElement(c.toString()));
+        lstMarks.setModel(categoryModel);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSave;

@@ -28,4 +28,28 @@ public class DBConnection {
         }
         return conexion;
     }
+    
+    /**
+     * privene un guardado de cambios en la base de datos
+     * @throws SQLException 
+     */
+    public static void disableAutocommit() throws SQLException {
+        conexion.setAutoCommit(false);
+    }
+    
+    /**
+     * realiza commit
+     * @throws SQLException 
+     */
+    public static void doCommit() throws SQLException {
+        conexion.commit();
+    }
+    
+    /**
+     * Activa autocommit
+     * @throws SQLException 
+     */
+    public static void enableAutocommit() throws SQLException {
+        conexion.setAutoCommit(true);
+    }
 }

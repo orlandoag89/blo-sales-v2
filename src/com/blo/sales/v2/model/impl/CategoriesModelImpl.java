@@ -16,6 +16,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CategoriesModelImpl implements ICategoriesModel {
 
@@ -85,7 +87,8 @@ public class CategoriesModelImpl implements ICategoriesModel {
     public PojoIntCategory updateCategory(int id, PojoIntCategory newData) throws BloSalesV2Exception {
         try {
             conn.setAutoCommit(false);
-            final var categoryFound = getCategoryById(id);
+            final var category = getCategoryById(id);
+            final var categoryFound = categoryMapper.toInner(category);
             categoryFound.setCategory(newData.getCategory());
             categoryFound.setDescription(newData.getDescription());
             final var ps = conn.prepareStatement(Queries.UPDATE_CATEGORY);
@@ -109,16 +112,22 @@ public class CategoriesModelImpl implements ICategoriesModel {
         }
     }
 
-    private CategoryEntity getCategoryById(int id) throws BloSalesV2Exception, SQLException {
-        final var ps = conn.prepareStatement(Queries.SELECT_CATEGORY);
-        ps.setInt(1, id);
-        final var rs = ps.executeQuery();
-        BloSalesV2Utils.validateRule(!rs.next(), QueriesErrors.CATEGORY_ERROR);
-        final var category = new CategoryEntity();
-        category.setId_category(rs.getInt(1));
-        category.setCategory(rs.getString(2));
-        category.setDescription(rs.getString(3));
-        return category;
+    @Override
+    public PojoIntCategory getCategoryById(int id) throws BloSalesV2Exception {
+        try {
+            final var ps = conn.prepareStatement(Queries.SELECT_CATEGORY);
+            ps.setInt(1, id);
+            final var rs = ps.executeQuery();
+            BloSalesV2Utils.validateRule(!rs.next(), QueriesErrors.CATEGORY_ERROR);
+            final var category = new CategoryEntity();
+            category.setId_category(rs.getInt(1));
+            category.setCategory(rs.getString(2));
+            category.setDescription(rs.getString(3));
+            return categoryMapper.toOuter(category);
+        } catch (SQLException ex) {
+            Logger.getLogger(CategoriesModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new BloSalesV2Exception(ex.getMessage());
+        }
     }
 
 }

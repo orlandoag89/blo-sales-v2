@@ -1,5 +1,7 @@
 package com.blo.sales.v2.utils;
 
+import java.time.LocalDateTime;
+
 public final class BloSalesV2Utils {
     
     public static final String EMPTY_STRING = "";
@@ -18,4 +20,8 @@ public final class BloSalesV2Utils {
         }
     }
     
+    public static String getTimestamp() {
+        return LocalDateTime.now() + "";
+    }
 }
+

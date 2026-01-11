@@ -13,4 +13,6 @@ public interface ICategoriesModel {
     
     PojoIntCategory updateCategory(int id, PojoIntCategory newData) throws BloSalesV2Exception;
     
+    PojoIntCategory getCategoryById(int id) throws BloSalesV2Exception;
+    
 }

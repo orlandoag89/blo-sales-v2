@@ -5,12 +5,17 @@ import static com.blo.sales.v2.utils.BloSalesV2Utils.validateRule;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
 import java.util.function.Consumer;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 
 /**
 * Minúsculas:
@@ -87,6 +92,12 @@ public final class GUICommons {
         return text;
     }
     
+    public static BigDecimal getNumberFromJText(JTextField field) throws BloSalesV2Exception {
+        final var txt = field.getText().trim();
+        validateRule(txt.isBlank(), INVALID_TEXT);
+        return new BigDecimal(txt);
+    }
+    
     /**
      * Recupera el valor de una password
      * @param field
@@ -113,4 +124,31 @@ public final class GUICommons {
         return lbl.getText();
     }
     
+    /**
+     * recupera el valor seleccionado de un combobox
+     * @param comboBox
+     * @return 
+     */
+    public static String getValueFromComboBox(JComboBox comboBox) {
+        return comboBox.getSelectedItem().toString();
+    }
+    
+    /**
+     * recupera el status de un checkbox
+     * @param checkbox
+     * @return 
+     */
+    public static boolean isCheckedCkeckBox(JCheckBox checkbox) {
+        return checkbox.isSelected();
+    }
+    
+    /**
+     * carga los titulos a las columnas de una tabla
+     * @param table
+     * @param titles 
+     */
+    public static void loadTitleOnTable(JTable table, String[] titles) {
+        final var titleModel = new DefaultTableModel(titles, 0);
+        table.setModel(titleModel);
+    }
 }

@@ -1,11 +1,11 @@
 package com.blo.sales.v2.view.windows.dashboard;
 
 import com.blo.sales.v2.view.windows.commons.GUICommons;
+import com.blo.sales.v2.view.windows.dashboard.panels.AllProducts;
 import com.blo.sales.v2.view.windows.dashboard.panels.Categories;
 import com.blo.sales.v2.view.windows.dashboard.panels.RegisterProduct;
 import com.blo.sales.v2.view.windows.pojos.PojoLoggedInUser;
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
+
 public class DashboardRootFrm extends javax.swing.JFrame {
     
     private PojoLoggedInUser userData;
@@ -13,6 +13,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     public DashboardRootFrm(PojoLoggedInUser userData) {
         this.userData = userData;
         initComponents();
+        openAllProducts();
     }
 
     @SuppressWarnings("unchecked")
@@ -22,8 +23,9 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         content = new javax.swing.JPanel();
         mnuBar = new javax.swing.JMenuBar();
         itmStock = new javax.swing.JMenu();
-        optCategory = new javax.swing.JMenuItem();
+        optStock = new javax.swing.JMenuItem();
         optRegister = new javax.swing.JMenuItem();
+        optCategory = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -40,6 +42,22 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         itmStock.setText("Inventario");
 
+        optStock.setText("Ver");
+        optStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optStockActionPerformed(evt);
+            }
+        });
+        itmStock.add(optStock);
+
+        optRegister.setText("Registrar producto");
+        optRegister.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optRegisterActionPerformed(evt);
+            }
+        });
+        itmStock.add(optRegister);
+
         optCategory.setText("Categorias");
         optCategory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -47,14 +65,6 @@ public class DashboardRootFrm extends javax.swing.JFrame {
             }
         });
         itmStock.add(optCategory);
-
-        optRegister.setText("Registrar");
-        optRegister.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optRegisterActionPerformed(evt);
-            }
-        });
-        itmStock.add(optRegister);
 
         mnuBar.add(itmStock);
 
@@ -81,15 +91,20 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void optRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optRegisterActionPerformed
-        final var addProduct = new RegisterProduct();
-        GUICommons.showPanel(content, addProduct);
+        GUICommons.showPanel(content, new RegisterProduct());
     }//GEN-LAST:event_optRegisterActionPerformed
 
     private void optCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optCategoryActionPerformed
-        final var categories = new Categories();
-        GUICommons.showPanel(content, categories);
+        GUICommons.showPanel(content, new Categories());
     }//GEN-LAST:event_optCategoryActionPerformed
 
+    private void optStockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optStockActionPerformed
+        openAllProducts();
+    }//GEN-LAST:event_optStockActionPerformed
+    
+    private void openAllProducts() {
+        GUICommons.showPanel(content, new AllProducts(userData.getRole()));
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel content;
@@ -97,5 +112,6 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private javax.swing.JMenuBar mnuBar;
     private javax.swing.JMenuItem optCategory;
     private javax.swing.JMenuItem optRegister;
+    private javax.swing.JMenuItem optStock;
     // End of variables declaration//GEN-END:variables
 }
