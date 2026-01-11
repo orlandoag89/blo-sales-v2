@@ -1,5 +1,6 @@
 package com.blo.sales.v2.view.windows.dashboard;
 
+import com.blo.sales.v2.view.windows.commons.GUICommons;
 import com.blo.sales.v2.view.windows.dashboard.panels.Categories;
 import com.blo.sales.v2.view.windows.dashboard.panels.RegisterProduct;
 import com.blo.sales.v2.view.windows.pojos.PojoLoggedInUser;
@@ -81,22 +82,14 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
     private void optRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optRegisterActionPerformed
         final var addProduct = new RegisterProduct();
-        showPanel(addProduct);
+        GUICommons.showPanel(content, addProduct);
     }//GEN-LAST:event_optRegisterActionPerformed
 
     private void optCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optCategoryActionPerformed
         final var categories = new Categories();
-        showPanel(categories);
+        GUICommons.showPanel(content, categories);
     }//GEN-LAST:event_optCategoryActionPerformed
 
-    private void showPanel(JPanel p) {
-        p.setSize(1000, 600); // Ajusta al tamaño de tu contenedor
-        p.setLocation(0, 0);
-        content.removeAll(); // Limpia el panel principal
-        content.add(p, BorderLayout.CENTER); // Agrega el nuevo formulario
-        content.revalidate(); // Refresca el diseño
-        content.repaint();    // Redibuja la interfaz
-    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel content;

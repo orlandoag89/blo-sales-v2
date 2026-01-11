@@ -39,5 +39,10 @@ public class PojoCategory {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    @Override
+    public String toString() {
+        return idCategory + " " + category + " " + description;
+    }
     
 }

@@ -4,8 +4,8 @@ import com.blo.sales.v2.view.windows.dashboard.DashboardRootFrm;
 import com.blo.sales.v2.controller.IUserController;
 import com.blo.sales.v2.controller.impl.UserControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
-import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.windows.alerts.CommonAlerts;
+import com.blo.sales.v2.view.windows.commons.GUICommons;
 import com.blo.sales.v2.view.windows.pojos.PojoUser;
 import com.blo.sales.v2.view.windows.mappers.LoggedInUserMapper;
 import com.blo.sales.v2.view.windows.mappers.UserMapper;
@@ -111,8 +111,8 @@ public class LoginFrm extends javax.swing.JFrame {
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         try {
             final var userData = new PojoUser(
-                BloSalesV2Utils.getTextFromJText(txtUserName),
-                BloSalesV2Utils.getPasswordFromJText(pwdUserpassword)
+                GUICommons.getTextFromJText(txtUserName),
+                GUICommons.getPasswordFromJText(pwdUserpassword)
             );
             final var userDataIn = userMapper.toInner(userData);
             final var userResponse = loggedInUserMapper.toOuter(

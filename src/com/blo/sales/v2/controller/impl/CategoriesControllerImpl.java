@@ -4,6 +4,7 @@ import com.blo.sales.v2.controller.pojos.PojoIntCategory;
 import com.blo.sales.v2.model.ICategoriesModel;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.controller.ICategoriesController;
+import com.blo.sales.v2.controller.pojos.WrapperIntPojoCategories;
 import com.blo.sales.v2.model.impl.CategoriesModelImpl;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -25,6 +26,16 @@ public class CategoriesControllerImpl implements ICategoriesController {
             Logger.getLogger(CategoriesControllerImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @Override
+    public WrapperIntPojoCategories getAllCategories() throws BloSalesV2Exception {
+        return categoriesModel.getAllCategories();
+    }
+
+    @Override
+    public PojoIntCategory updateCategory(int id, PojoIntCategory newData) throws BloSalesV2Exception {
+        return categoriesModel.updateCategory(id, newData);
     }
     
 }
