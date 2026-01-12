@@ -10,9 +10,11 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.windows.commons.GUICommons;
 import com.blo.sales.v2.view.windows.mappers.ProductMapper;
+import com.blo.sales.v2.view.windows.mappers.WrapperPojoCategoriesMapper;
 import com.blo.sales.v2.view.windows.mappers.WrapperPojoProductsMapper;
 import com.blo.sales.v2.view.windows.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.windows.pojos.PojoProduct;
+import com.blo.sales.v2.view.windows.pojos.WrapperPojoCategories;
 import com.blo.sales.v2.view.windows.pojos.enums.ReasonsEnum;
 import com.blo.sales.v2.view.windows.pojos.enums.RolesEnum;
 import com.blo.sales.v2.view.windows.pojos.enums.TypesEnum;
@@ -29,7 +31,7 @@ public class AllProducts extends javax.swing.JPanel {
 
     private PojoLoggedInUser userData;
     
-    private IProductsController products;
+    private IProductsController productsController;
     
     private ICategoriesController categories;
     
@@ -41,38 +43,21 @@ public class AllProducts extends javax.swing.JPanel {
     
     private ProductMapper productMapper;
     
-    public AllProducts(PojoLoggedInUser userData) {        
-        try {
+    private WrapperPojoCategoriesMapper categoriesMapper;
+    
+    public AllProducts(PojoLoggedInUser userData) {
             this.userData = userData;
-            products = ProductsControllerImpl.getInstance();
+            productsController = ProductsControllerImpl.getInstance();
             categories = CategoriesControllerImpl.getInstance();
             productsMapper = WrapperPojoProductsMapper.getInstance();
             productMapper = ProductMapper.getInstance();
+            categoriesMapper = WrapperPojoCategoriesMapper.getInstance();
             initComponents();
             lblIdProduct.setVisible(false);
             
-            final var productsData = productsMapper.toOuter(this.products.getAllProducts());
-            loadTitlesAndData(productsData.getProducts());
+            loadTitlesAndData();
             initFilter();
             initPanelManagement();
-            /** selecciona una fila */
-            GUICommons.addDoubleClickOnTable(tblProducts, (Integer id) -> {
-                pnlManageProduct.setVisible(true);
-                final var productSelected = 
-                        productsData.getProducts().stream().filter(p -> p.getIdProduct() == id).findFirst().orElse(null);
-                if (productSelected != null) {
-                    currentQuantity = productSelected.getQuantity();
-                    GUICommons.setTextToField(txtName, productSelected.getProduct());
-                    GUICommons.setTextToField(txtBarCode, productSelected.getBarCode());
-                    GUICommons.setTextToField(nmbCostOfSale, productSelected.getCostOfSale() + "");
-                    GUICommons.setTextToField(nmbPrice, productSelected.getPrice() + "");
-                    GUICommons.setTextToField(nmbQuantity, productSelected.getQuantity() + "");
-                    GUICommons.setTextToLabel(lblIdProduct, productSelected.getIdProduct() + "");
-                }
-            });
-        } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
     
     @SuppressWarnings("unchecked")
@@ -255,11 +240,13 @@ public class AllProducts extends javax.swing.JPanel {
                 }
             }
             newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity));
-            products.updateProductInfo(
+            productsController.updateProductInfo(
                 productMapper.toInner(newData),
                 ReasonsIntEnum.valueOf(reasonEnum.name()),
                 userData.getIdUser(),
                 TypesIntEnum.valueOf(type.name()));
+            loadTitlesAndData();
+            initPanelManagement();
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -279,15 +266,16 @@ public class AllProducts extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_nmbQuantityKeyReleased
 
-    private void loadTitlesAndData(List<PojoProduct> products) {
+    private void loadTitlesAndData() {
         try {
-            final var categories = this.categories.getAllCategories();
+            final var productsData = productsMapper.toOuter(this.productsController.getAllProducts());
+            final var categories = categoriesMapper.toOuter(this.categories.getAllCategories());
             if (userData.getRole().equals(RolesEnum.ROOT)) {
                 final String[] titles = {"ID", "Codigo de barras", "Producto", "Cantidad en existencia", "Costo de venta", "¿Por kg?", "Categoria"};
                 GUICommons.loadTitleOnTable(tblProducts, titles, false);
                 final var model = (DefaultTableModel) tblProducts.getModel();
                 model.setRowCount(0);
-                products.forEach(p -> {
+                productsData.getProducts().forEach(p -> {
                     /** filtro para buscar nombre de categorias */
                     final var category = categories.getCategories().stream().filter(c -> c.getIdCategory() == p.getFkCategory()).findFirst().get();
                     final Object[] row = {
@@ -302,6 +290,21 @@ public class AllProducts extends javax.swing.JPanel {
                     model.addRow(row);
                 });
             }
+            /** se actualiza cuando hay un cambio en algun producto */
+            GUICommons.addDoubleClickOnTable(tblProducts, (Integer id) -> {
+                pnlManageProduct.setVisible(true);
+                final var productSelected = 
+                        productsData.getProducts().stream().filter(p -> p.getIdProduct() == id).findFirst().orElse(null);
+                if (productSelected != null) {
+                    currentQuantity = productSelected.getQuantity();
+                    GUICommons.setTextToField(txtName, productSelected.getProduct());
+                    GUICommons.setTextToField(txtBarCode, productSelected.getBarCode());
+                    GUICommons.setTextToField(nmbCostOfSale, productSelected.getCostOfSale() + "");
+                    GUICommons.setTextToField(nmbPrice, productSelected.getPrice() + "");
+                    GUICommons.setTextToField(nmbQuantity, productSelected.getQuantity() + "");
+                    GUICommons.setTextToLabel(lblIdProduct, productSelected.getIdProduct() + "");
+                }
+            });
         } catch (final BloSalesV2Exception e) { }
     }
     
