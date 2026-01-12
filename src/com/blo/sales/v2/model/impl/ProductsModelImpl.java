@@ -1,6 +1,7 @@
 package com.blo.sales.v2.model.impl;
 
 import com.blo.sales.v2.controller.pojos.PojoIntProduct;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntProducts;
 import com.blo.sales.v2.model.config.DBConnection;
 import com.blo.sales.v2.model.constants.Queries;
 import com.blo.sales.v2.model.mapper.ProductEntityMapper;
@@ -11,6 +12,10 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.blo.sales.v2.model.IProductsModel;
+import com.blo.sales.v2.model.entities.ProductEntity;
+import com.blo.sales.v2.model.entities.WrapperProductsEntity;
+import com.blo.sales.v2.model.mapper.WrapperProductsEntityMapper;
+import java.util.ArrayList;
 
 public class ProductsModelImpl implements IProductsModel {
     
@@ -18,8 +23,11 @@ public class ProductsModelImpl implements IProductsModel {
     
     private ProductEntityMapper mapper;
     
+    private WrapperProductsEntityMapper wrapperMapper;
+    
     public ProductsModelImpl() {
         mapper = new ProductEntityMapper();
+        wrapperMapper = new WrapperProductsEntityMapper();
     }
 
     @Override
@@ -56,6 +64,34 @@ public class ProductsModelImpl implements IProductsModel {
                 Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
                 throw new BloSalesV2Exception(ex.getMessage());
             }
+        }
+    }
+
+    @Override
+    public WrapperPojoIntProducts getAllProducts() throws BloSalesV2Exception {
+        try {
+            final var ps = conn.prepareStatement(Queries.SELECT_ALL_PRODUCTS);
+            final var rs = ps.executeQuery();
+            final var productsInn = new WrapperProductsEntity();
+            final var innerProducts = new ArrayList<ProductEntity>();
+            while(rs.next()) {
+                final var p = new ProductEntity();
+                p.setBar_code(rs.getString("bar_code"));
+                p.setCost_of_sale(rs.getBigDecimal("cost_of_sale"));
+                p.setFk_category(rs.getInt("fk_category"));
+                p.setId_product(rs.getInt("id_product"));
+                p.setKg(rs.getBoolean("is_kg"));
+                p.setPrice(rs.getBigDecimal("price"));
+                p.setQuantity(rs.getBigDecimal("quantity"));
+                p.setTimestamp(rs.getString("timestamp"));
+                p.setProduct(rs.getString("product"));
+                innerProducts.add(p);
+            }
+            productsInn.setProducts(innerProducts);
+            return wrapperMapper.toOuter(productsInn);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new BloSalesV2Exception(ex.getMessage());
         }
     }
     

@@ -16,6 +16,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
 * Minúsculas:
@@ -150,5 +151,16 @@ public final class GUICommons {
     public static void loadTitleOnTable(JTable table, String[] titles) {
         final var titleModel = new DefaultTableModel(titles, 0);
         table.setModel(titleModel);
+    }
+    
+    /**
+     * Inicializa el filtro de una tabla
+     * @param table
+     * @param sorter 
+     */
+    public static void filterTable(JTable table, TableRowSorter<DefaultTableModel> sorter) {
+        final var model = (DefaultTableModel) table.getModel();
+        sorter = new TableRowSorter<>(model);
+        table.setRowSorter(sorter);
     }
 }
