@@ -8,7 +8,6 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.windows.commons.GUICommons;
 import com.blo.sales.v2.view.windows.mappers.ProductMapper;
-import com.blo.sales.v2.view.windows.mappers.WrapperPojoCategoriesMapper;
 import com.blo.sales.v2.view.windows.pojos.PojoProduct;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,8 +17,6 @@ public class RegisterProduct extends javax.swing.JPanel {
     
     private ICategoriesController categories;
     
-    private WrapperPojoCategoriesMapper categoriesMapper;
-    
     private ProductMapper productMapper;
     
     private IProductsController productsController;
@@ -27,7 +24,6 @@ public class RegisterProduct extends javax.swing.JPanel {
     public RegisterProduct() {
         categories = new CategoriesControllerImpl();
         productsController = new ProductsControllerImpl();
-        categoriesMapper = new WrapperPojoCategoriesMapper();
         productMapper = new ProductMapper();
         initComponents();
         try {
@@ -166,9 +162,8 @@ public class RegisterProduct extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void loadCategories() throws BloSalesV2Exception {
-        final var categories = categoriesMapper.toOuter(this.categories.getAllCategories());
         final var categoryModel = new DefaultComboBoxModel<String>();
-        categories.getCategories().forEach(c -> categoryModel.addElement(c.toString()));
+        this.categories.getAllCategories().getCategories().forEach(c -> categoryModel.addElement(c.toString()));
         lstMarks.setModel(categoryModel);
     }
 
