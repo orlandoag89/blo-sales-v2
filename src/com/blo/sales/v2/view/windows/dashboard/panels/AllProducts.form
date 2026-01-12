@@ -84,14 +84,18 @@
                               <Group type="102" attributes="0">
                                   <Component id="nmbQuantity" min="-2" pref="100" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                  <Component id="nmbPrice" min="-2" pref="100" max="-2" attributes="0"/>
+                                  <Component id="lstReason" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="txtName" max="32767" attributes="0"/>
+                              <Component id="txtName" min="-2" pref="218" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="nmbCostOfSale" min="-2" pref="100" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="txtBarCode" min="-2" pref="209" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Component id="nmbPrice" min="-2" pref="100" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="nmbCostOfSale" min="-2" pref="100" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                       <Group type="102" attributes="0">
@@ -100,7 +104,7 @@
                           <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="510" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -117,6 +121,7 @@
                       <Component id="nmbQuantity" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="nmbPrice" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="nmbCostOfSale" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="lstReason" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -132,6 +137,9 @@
         <Component class="javax.swing.JTextField" name="txtName">
         </Component>
         <Component class="javax.swing.JTextField" name="nmbQuantity">
+          <Events>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="nmbQuantityKeyReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="nmbCostOfSale">
         </Component>
@@ -143,6 +151,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Guardar cambios"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnCancel">
           <Properties>
@@ -151,6 +162,20 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="lstReason">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="3">
+                <StringItem index="0" value="Vendidos"/>
+                <StringItem index="1" value="Perdido"/>
+                <StringItem index="2" value="Reabastecimiento"/>
+              </StringArray>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>
