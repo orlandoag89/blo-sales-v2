@@ -10,8 +10,17 @@ public class WrapperPojoProductsMapper implements IToOuter<WrapperPojoIntProduct
     
     private ProductMapper mapper;
     
-    public WrapperPojoProductsMapper() {
-        mapper = new ProductMapper();
+    private static WrapperPojoProductsMapper instance;
+    
+    private WrapperPojoProductsMapper() {
+        mapper = ProductMapper.getInstance();
+    }
+    
+    public static WrapperPojoProductsMapper getInstance() {
+        if (instance == null) {
+            instance = new WrapperPojoProductsMapper();
+        }
+        return instance;
     }
 
     @Override

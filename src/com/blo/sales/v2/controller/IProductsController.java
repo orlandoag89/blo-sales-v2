@@ -9,7 +9,7 @@ public interface IProductsController {
     
     PojoIntProduct registerProduct(PojoIntProduct product) throws BloSalesV2Exception;
     
-    PojoIntProduct updateProductInfo(PojoIntProduct product, ReasonsIntEnum reasons, int idUser) throws BloSalesV2Exception;
+    //PojoIntProduct updateProductInfo(PojoIntProduct product, ReasonsIntEnum reasons, int idUser) throws BloSalesV2Exception;
     
     WrapperPojoIntProducts getAllProducts() throws BloSalesV2Exception;
     

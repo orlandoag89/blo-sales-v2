@@ -20,9 +20,9 @@ public class LoginFrm extends javax.swing.JFrame {
     private IUserController userController;
 
     public LoginFrm() {
-        userMapper = new UserMapper();
-        loggedInUserMapper = new LoggedInUserMapper();
-        userController = new UserControllerImpl();
+        userMapper = UserMapper.getInstance();
+        loggedInUserMapper = LoggedInUserMapper.getInstance();
+        userController = UserControllerImpl.getInstance();
         initComponents();
     }
 

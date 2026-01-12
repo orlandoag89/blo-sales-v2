@@ -24,11 +24,21 @@ public class CategoriesModelImpl implements ICategoriesModel {
     private static final Connection conn = DBConnection.getConnection();
 
     private CategoryEntityMapper categoryMapper;
+    
     private WrapperCategoriesEntityMapper wrapperCategoriesEntityMapper;
 
-    public CategoriesModelImpl() {
-        categoryMapper = new CategoryEntityMapper();
-        wrapperCategoriesEntityMapper = new WrapperCategoriesEntityMapper();
+    public static CategoriesModelImpl instance;
+    
+    private CategoriesModelImpl() {
+        categoryMapper = CategoryEntityMapper.getInstance();
+        wrapperCategoriesEntityMapper = WrapperCategoriesEntityMapper.getInstance();
+    }
+    
+    public static CategoriesModelImpl getInstance() {
+        if (instance == null) {
+            instance = new CategoriesModelImpl();
+        }
+        return instance;
     }
 
     @Override

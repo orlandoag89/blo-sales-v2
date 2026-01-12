@@ -25,9 +25,18 @@ public class ProductsModelImpl implements IProductsModel {
     
     private WrapperProductsEntityMapper wrapperMapper;
     
-    public ProductsModelImpl() {
-        mapper = new ProductEntityMapper();
-        wrapperMapper = new WrapperProductsEntityMapper();
+    private static ProductsModelImpl instance;
+    
+    private ProductsModelImpl() {
+        mapper = ProductEntityMapper.getInstance();
+        wrapperMapper = WrapperProductsEntityMapper.getInstance();
+    }
+    
+    public static ProductsModelImpl getInstance() {
+        if (instance == null) {
+            instance = new ProductsModelImpl();
+        }
+        return instance;
     }
 
     @Override

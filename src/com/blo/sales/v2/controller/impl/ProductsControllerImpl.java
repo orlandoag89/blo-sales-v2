@@ -19,10 +19,19 @@ public class ProductsControllerImpl implements IProductsController {
     
     private IUserController user;
     
-    public ProductsControllerImpl() {
-        categoriesController = new CategoriesControllerImpl();
-        model = new ProductsModelImpl();
-        user = new UserControllerImpl();
+    public static ProductsControllerImpl instance;
+    
+    private ProductsControllerImpl() {
+        categoriesController = CategoriesControllerImpl.getInstance();
+        model = ProductsModelImpl.getInstance();
+        user = UserControllerImpl.getInstance();
+    }
+    
+    public static ProductsControllerImpl getInstance() {
+        if (instance == null) {
+            instance = new ProductsControllerImpl();
+        }
+        return instance;
     }
 
     @Override
@@ -37,13 +46,6 @@ public class ProductsControllerImpl implements IProductsController {
     @Override
     public WrapperPojoIntProducts getAllProducts() throws BloSalesV2Exception {
         return model.getAllProducts();
-    }
-
-    @Override
-    public PojoIntProduct updateProductInfo(PojoIntProduct product, ReasonsIntEnum reasons, int idUser) throws BloSalesV2Exception {
-        // validar usuario
-        
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

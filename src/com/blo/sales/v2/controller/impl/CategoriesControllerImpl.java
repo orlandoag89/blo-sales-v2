@@ -14,8 +14,17 @@ public class CategoriesControllerImpl implements ICategoriesController {
     
     private ICategoriesModel categoriesModel;
     
-    public CategoriesControllerImpl() {
-        categoriesModel = new CategoriesModelImpl();
+    private static CategoriesControllerImpl instance;
+    
+    private CategoriesControllerImpl() {
+        categoriesModel = CategoriesModelImpl.getInstance();
+    }
+    
+    public static CategoriesControllerImpl getInstance() {
+        if (instance == null) {
+            instance = new CategoriesControllerImpl();
+        }
+        return instance;
     }
     
     @Override

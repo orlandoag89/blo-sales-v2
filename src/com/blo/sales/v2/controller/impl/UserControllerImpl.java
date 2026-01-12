@@ -11,10 +11,19 @@ public class UserControllerImpl implements IUserController {
     
     private IUserModel userModel;
     
-    public UserControllerImpl() {
-        userModel = new UserModelImpl();
+    private static UserControllerImpl instance;
+    
+    private UserControllerImpl() {
+        userModel = UserModelImpl.getInstance();
     }
 
+    public static UserControllerImpl getInstance() {
+        if (instance == null) {
+            instance = new UserControllerImpl();
+        }
+        return instance;
+    }
+    
     @Override
     public PojoIntLoggedInUser doLogin(PojoIntUser userData) throws BloSalesV2Exception {
         return userModel.doLogin(userData);

@@ -10,10 +10,20 @@ public class WrapperCategoriesEntityMapper implements IToOuter<WrapperCategories
     
     private CategoryEntityMapper categoryEntityMapper;
     
-    public WrapperCategoriesEntityMapper() {
-        categoryEntityMapper = new CategoryEntityMapper();
+    public static WrapperCategoriesEntityMapper instance;
+    
+    private WrapperCategoriesEntityMapper() {
+        categoryEntityMapper = CategoryEntityMapper.getInstance();
     }
 
+    public static WrapperCategoriesEntityMapper getInstance() {
+        if (instance == null) {
+            instance = new WrapperCategoriesEntityMapper();
+        }
+        return instance;
+    }
+    
+    
     @Override
     public WrapperIntPojoCategories toOuter(WrapperCategoriesEntity inner) {
         if (inner == null) {

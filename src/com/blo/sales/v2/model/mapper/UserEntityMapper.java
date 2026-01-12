@@ -6,6 +6,17 @@ import com.blo.sales.v2.model.entities.UserEntity;
 import com.blo.sales.v2.utils.IToOuter;
 
 public class UserEntityMapper implements IToOuter<UserEntity, PojoIntLoggedInUser> {
+    
+    public static UserEntityMapper instance;
+    
+    private UserEntityMapper() { }
+    
+    public static UserEntityMapper getInstance() {
+        if (instance == null) {
+            return new UserEntityMapper();
+        }
+        return instance;
+    }
 
     @Override
     public PojoIntLoggedInUser toOuter(UserEntity inner) {

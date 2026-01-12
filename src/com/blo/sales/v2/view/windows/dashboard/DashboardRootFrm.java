@@ -1,13 +1,10 @@
 package com.blo.sales.v2.view.windows.dashboard;
 
-import com.blo.sales.v2.controller.ICategoriesController;
-import com.blo.sales.v2.controller.impl.CategoriesControllerImpl;
 import com.blo.sales.v2.view.windows.commons.GUICommons;
 import com.blo.sales.v2.view.windows.dashboard.panels.AllProducts;
 import com.blo.sales.v2.view.windows.dashboard.panels.Categories;
 import com.blo.sales.v2.view.windows.dashboard.panels.RegisterProduct;
 import com.blo.sales.v2.view.windows.pojos.PojoLoggedInUser;
-import com.blo.sales.v2.view.windows.pojos.WrapperPojoCategories;
 
 public class DashboardRootFrm extends javax.swing.JFrame {
     

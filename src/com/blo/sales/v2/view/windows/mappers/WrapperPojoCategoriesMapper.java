@@ -10,8 +10,17 @@ public class WrapperPojoCategoriesMapper implements IToOuter<WrapperIntPojoCateg
     
     private CategoryMapper categoryMapper;
     
-    public WrapperPojoCategoriesMapper() {
-        categoryMapper = new CategoryMapper();
+    private static WrapperPojoCategoriesMapper instance;
+    
+    private WrapperPojoCategoriesMapper() {
+        categoryMapper = CategoryMapper.getInstance();
+    }
+    
+    public static WrapperPojoCategoriesMapper getInstance() {
+        if (instance == null) {
+            instance = new WrapperPojoCategoriesMapper();
+        }
+        return instance;
     }
 
     @Override

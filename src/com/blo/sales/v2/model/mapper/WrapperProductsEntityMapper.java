@@ -10,8 +10,17 @@ public class WrapperProductsEntityMapper implements IToOuter<WrapperProductsEnti
     
     private ProductEntityMapper mapper;
     
-    public WrapperProductsEntityMapper() {
-        mapper = new ProductEntityMapper();
+    private static WrapperProductsEntityMapper instance;
+    
+    private WrapperProductsEntityMapper() {
+        mapper = ProductEntityMapper.getInstance();
+    }
+    
+    public static WrapperProductsEntityMapper getInstance() {
+        if (instance == null) {
+            instance = new WrapperProductsEntityMapper();
+        }
+        return instance;
     }
 
     @Override

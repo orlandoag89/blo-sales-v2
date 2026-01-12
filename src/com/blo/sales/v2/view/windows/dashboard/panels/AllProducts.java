@@ -8,10 +8,13 @@ import com.blo.sales.v2.controller.pojos.PojoIntProduct;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.windows.commons.GUICommons;
+import com.blo.sales.v2.view.windows.mappers.WrapperPojoProductsMapper;
 import com.blo.sales.v2.view.windows.pojos.PojoProduct;
+import com.blo.sales.v2.view.windows.pojos.WrapperPojoProducts;
 import com.blo.sales.v2.view.windows.pojos.enums.ReasonsEnum;
 import com.blo.sales.v2.view.windows.pojos.enums.RolesEnum;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,21 +34,25 @@ public class AllProducts extends javax.swing.JPanel {
     
     private BigDecimal currentQuantity;
     
+    private WrapperPojoProductsMapper productsMapper;
+    
     public AllProducts(RolesEnum rol) {        
         try {
             this.rol = rol;
-            products = new ProductsControllerImpl();
-            categories = new CategoriesControllerImpl();
+            products = ProductsControllerImpl.getInstance();
+            categories = CategoriesControllerImpl.getInstance();
+            productsMapper = WrapperPojoProductsMapper.getInstance();
             initComponents();
-            final var products = this.products.getAllProducts();
-            loadTitlesAndData(products.getProducts());
+            
+            final var productsData = productsMapper.toOuter(this.products.getAllProducts());
+            loadTitlesAndData(productsData.getProducts());
             initFilter();
             initPanelManagement();
             /** selecciona una fila */
             GUICommons.addDoubleClickOnTable(tblProducts, (Integer id) -> {
                 pnlManageProduct.setVisible(true);
                 final var productSelected = 
-                        products.getProducts().stream().filter(p -> p.getIdProduct() == id).findFirst().orElse(null);
+                        productsData.getProducts().stream().filter(p -> p.getIdProduct() == id).findFirst().orElse(null);
                 if (productSelected != null) {
                     currentQuantity = productSelected.getQuantity();
                     GUICommons.setTextToField(txtName, productSelected.getProduct());
@@ -250,7 +257,7 @@ public class AllProducts extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_nmbQuantityKeyReleased
 
-    private void loadTitlesAndData(List<PojoIntProduct> products) {
+    private void loadTitlesAndData(List<PojoProduct> products) {
         try {
             final var categories = this.categories.getAllCategories();
             if (rol.equals(RolesEnum.ROOT)) {
@@ -286,7 +293,7 @@ public class AllProducts extends javax.swing.JPanel {
     /** reinicia los campos */
     private void initPanelManagement() {
         pnlManageProduct.setVisible(false);
-        currentQuantity = new BigDecimal("0");
+        currentQuantity = new BigDecimal(BigInteger.ZERO);
         /** este check estara oculto hasta que se de cambie la propiedad de cantidad */
         lstReason.setVisible(false);
         GUICommons.setTextToField(txtName, BloSalesV2Utils.EMPTY_STRING);

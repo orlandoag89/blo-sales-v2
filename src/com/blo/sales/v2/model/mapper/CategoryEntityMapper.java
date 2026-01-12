@@ -6,6 +6,17 @@ import com.blo.sales.v2.utils.IToInner;
 import com.blo.sales.v2.utils.IToOuter;
 
 public class CategoryEntityMapper implements IToInner<CategoryEntity, PojoIntCategory>, IToOuter<CategoryEntity, PojoIntCategory> {
+    
+    private static CategoryEntityMapper instance;
+    
+    private CategoryEntityMapper() { }
+    
+    public static CategoryEntityMapper getInstance() {
+        if (instance == null) {
+            instance = new CategoryEntityMapper();
+        }
+        return instance;
+    }
 
     @Override
     public CategoryEntity toInner(PojoIntCategory outer) {

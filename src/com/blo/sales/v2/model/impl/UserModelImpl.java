@@ -22,8 +22,17 @@ public class UserModelImpl implements IUserModel {
     
     private UserEntityMapper userEntityMapper;
     
-    public UserModelImpl() {
-        userEntityMapper = new UserEntityMapper();
+    private static UserModelImpl instance;
+    
+    private UserModelImpl() {
+        userEntityMapper = UserEntityMapper.getInstance();
+    }
+    
+    public static UserModelImpl getInstance() {
+        if (instance == null) {
+            instance = new UserModelImpl();
+        }
+        return instance;
     }
     
     @Override

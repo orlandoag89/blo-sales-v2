@@ -6,6 +6,17 @@ import com.blo.sales.v2.view.windows.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.windows.pojos.enums.RolesEnum;
 
 public class LoggedInUserMapper implements IToOuter<PojoIntLoggedInUser, PojoLoggedInUser> {
+    
+    private static LoggedInUserMapper instance;
+    
+    private LoggedInUserMapper() { }
+    
+    public static LoggedInUserMapper getInstance() {
+        if (instance == null) {
+            instance = new LoggedInUserMapper();
+        }
+        return instance;
+    }
 
     @Override
     public PojoLoggedInUser toOuter(PojoIntLoggedInUser inner) {

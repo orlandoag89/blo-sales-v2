@@ -25,9 +25,9 @@ public class Categories extends javax.swing.JPanel {
     private WrapperPojoCategories categoriesGlobal;
 
     public Categories() {
-        categoryMapper = new CategoryMapper();
-        wrapperPojoCategoriesMapper = new WrapperPojoCategoriesMapper();
-        categoriesController = new CategoriesControllerImpl();
+        categoryMapper = CategoryMapper.getInstance();
+        wrapperPojoCategoriesMapper = WrapperPojoCategoriesMapper.getInstance();
+        categoriesController = CategoriesControllerImpl.getInstance();
         initComponents();
         loadCategories();
         content.setVisible(false);
