@@ -103,7 +103,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     }//GEN-LAST:event_optStockActionPerformed
     
     private void openAllProducts() {
-        GUICommons.showPanel(content, new AllProducts(userData.getRole()));
+        GUICommons.showPanel(content, new AllProducts(userData));
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

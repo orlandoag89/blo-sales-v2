@@ -10,4 +10,8 @@ public interface IProductsModel {
     
     WrapperPojoIntProducts getAllProducts() throws BloSalesV2Exception;
     
+    PojoIntProduct updateProductInfo(PojoIntProduct product) throws BloSalesV2Exception;
+    
+    PojoIntProduct getProductById(int idProduct) throws BloSalesV2Exception;
+    
 }

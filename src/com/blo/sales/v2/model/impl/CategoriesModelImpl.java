@@ -46,7 +46,7 @@ public class CategoriesModelImpl implements ICategoriesModel {
         try {
             final var data = categoryMapper.toInner(category);
             // 1. Desactivar el AutoCommit para iniciar la transacción
-            conn.setAutoCommit(false);
+            DBConnection.disableAutocommit();
             // 2. Usar prepareStatement con RETURN_GENERATED_KEYS (Más estándar que prepareCall para INSERT)
             final var ps = conn.prepareStatement(Queries.INSERT_CATEGORY, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, data.getCategory());
@@ -59,13 +59,13 @@ public class CategoriesModelImpl implements ICategoriesModel {
                 }
             }
             // 3. Si todo salió bien, confirmamos los cambios en la DB
-            conn.commit();
+            DBConnection.doCommit();
             return categoryMapper.toOuter(data);
         } catch (SQLException e) {
             throw new BloSalesV2Exception(e.getMessage());
         } finally {
             try {
-                conn.setAutoCommit(true);
+                DBConnection.enableAutocommit();
             } catch (SQLException e) {
                 throw new BloSalesV2Exception(e.getMessage());
             }
@@ -96,7 +96,7 @@ public class CategoriesModelImpl implements ICategoriesModel {
     @Override
     public PojoIntCategory updateCategory(int id, PojoIntCategory newData) throws BloSalesV2Exception {
         try {
-            conn.setAutoCommit(false);
+            DBConnection.disableAutocommit();
             final var category = getCategoryById(id);
             final var categoryFound = categoryMapper.toInner(category);
             categoryFound.setCategory(newData.getCategory());
@@ -109,13 +109,13 @@ public class CategoriesModelImpl implements ICategoriesModel {
             if (rowsAffected == 0) {
                 throw new BloSalesV2Exception("No se ejecuto correctamente la actualizacion");
             }
-            conn.commit();
+            DBConnection.doCommit();
             return categoryMapper.toOuter(categoryFound);
         } catch (SQLException e) {
             throw new BloSalesV2Exception(e.getMessage());
         } finally {
             try {
-                conn.setAutoCommit(true);
+                DBConnection.enableAutocommit();
             } catch (SQLException e) {
                 throw new BloSalesV2Exception(e.getMessage());
             }

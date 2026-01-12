@@ -24,6 +24,7 @@ public class LoggedInUserMapper implements IToOuter<PojoIntLoggedInUser, PojoLog
             return null;
         }
         final var out = new PojoLoggedInUser();
+        out.setIdUser(inner.getIdUser());
         out.setRole(RolesEnum.valueOf(inner.getRole().name()));
         out.setUsername(inner.getUsername());
         return out;

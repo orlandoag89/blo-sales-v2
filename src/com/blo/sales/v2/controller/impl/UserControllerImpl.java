@@ -28,5 +28,10 @@ public class UserControllerImpl implements IUserController {
     public PojoIntLoggedInUser doLogin(PojoIntUser userData) throws BloSalesV2Exception {
         return userModel.doLogin(userData);
     }
+
+    @Override
+    public PojoIntUser getUserById(int id) throws BloSalesV2Exception {
+        return userModel.getUserById(id);
+    }
     
 }

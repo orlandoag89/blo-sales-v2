@@ -12,9 +12,11 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.blo.sales.v2.model.IProductsModel;
+import com.blo.sales.v2.model.constants.QueriesErrors;
 import com.blo.sales.v2.model.entities.ProductEntity;
 import com.blo.sales.v2.model.entities.WrapperProductsEntity;
 import com.blo.sales.v2.model.mapper.WrapperProductsEntityMapper;
+import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.util.ArrayList;
 
 public class ProductsModelImpl implements IProductsModel {
@@ -98,6 +100,59 @@ public class ProductsModelImpl implements IProductsModel {
             }
             productsInn.setProducts(innerProducts);
             return wrapperMapper.toOuter(productsInn);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new BloSalesV2Exception(ex.getMessage());
+        }
+    }
+
+    @Override
+    public PojoIntProduct updateProductInfo(PojoIntProduct product) throws BloSalesV2Exception {
+        try {
+            final var innerProduct = mapper.toInner(product);
+            DBConnection.disableAutocommit();
+            final var ps = conn.prepareStatement(Queries.UPDATE_PRODUCT);
+            ps.setString(1, innerProduct.getProduct());
+            ps.setBigDecimal(2, innerProduct.getQuantity());
+            ps.setBigDecimal(3, innerProduct.getCost_of_sale());
+            ps.setString(4, innerProduct.getTimestamp());
+            ps.setString(5, innerProduct.getBar_code());
+            ps.setInt(6, innerProduct.getId_product());
+            final var rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new BloSalesV2Exception("No se ejecuto correctamente la actualizacion");
+            }
+            DBConnection.doCommit();
+            return mapper.toOuter(innerProduct);
+        } catch (SQLException e) {
+            throw new BloSalesV2Exception(e.getMessage());
+        } finally {
+            try {
+                DBConnection.enableAutocommit();
+            } catch (SQLException e) {
+                throw new BloSalesV2Exception(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public PojoIntProduct getProductById(int idProduct) throws BloSalesV2Exception {
+        try {
+            final var ps = conn.prepareStatement(Queries.SELECT_ONE_PRODUCT);
+            ps.setInt(1, idProduct);
+            final var rs = ps.executeQuery();
+            BloSalesV2Utils.validateRule(!rs.next(), QueriesErrors.PRODUCT_NOT_FOUND);
+            final var p = new ProductEntity();
+            p.setBar_code(rs.getString("bar_code"));
+            p.setCost_of_sale(rs.getBigDecimal("cost_of_sale"));
+            p.setFk_category(rs.getInt("fk_category"));
+            p.setId_product(rs.getInt("id_product"));
+            p.setKg(rs.getBoolean("is_kg"));
+            p.setPrice(rs.getBigDecimal("price"));
+            p.setQuantity(rs.getBigDecimal("quantity"));
+            p.setTimestamp(rs.getString("timestamp"));
+            p.setProduct(rs.getString("product"));
+            return mapper.toOuter(p);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());

@@ -4,9 +4,19 @@ import com.blo.sales.v2.controller.pojos.enums.RolesIntEnum;
 
 public class PojoIntLoggedInUser {
     
+    private int idUser;
+    
     private String username;
     
     private RolesIntEnum role;
+
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
 
     public String getUsername() {
         return username;

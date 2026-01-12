@@ -4,15 +4,18 @@ import com.blo.sales.v2.controller.ICategoriesController;
 import com.blo.sales.v2.controller.IProductsController;
 import com.blo.sales.v2.controller.impl.CategoriesControllerImpl;
 import com.blo.sales.v2.controller.impl.ProductsControllerImpl;
-import com.blo.sales.v2.controller.pojos.PojoIntProduct;
+import com.blo.sales.v2.controller.pojos.enums.ReasonsIntEnum;
+import com.blo.sales.v2.controller.pojos.enums.TypesIntEnum;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.windows.commons.GUICommons;
+import com.blo.sales.v2.view.windows.mappers.ProductMapper;
 import com.blo.sales.v2.view.windows.mappers.WrapperPojoProductsMapper;
+import com.blo.sales.v2.view.windows.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.windows.pojos.PojoProduct;
-import com.blo.sales.v2.view.windows.pojos.WrapperPojoProducts;
 import com.blo.sales.v2.view.windows.pojos.enums.ReasonsEnum;
 import com.blo.sales.v2.view.windows.pojos.enums.RolesEnum;
+import com.blo.sales.v2.view.windows.pojos.enums.TypesEnum;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
@@ -24,7 +27,7 @@ import javax.swing.table.TableRowSorter;
 
 public class AllProducts extends javax.swing.JPanel {
 
-    private RolesEnum rol;
+    private PojoLoggedInUser userData;
     
     private IProductsController products;
     
@@ -36,13 +39,17 @@ public class AllProducts extends javax.swing.JPanel {
     
     private WrapperPojoProductsMapper productsMapper;
     
-    public AllProducts(RolesEnum rol) {        
+    private ProductMapper productMapper;
+    
+    public AllProducts(PojoLoggedInUser userData) {        
         try {
-            this.rol = rol;
+            this.userData = userData;
             products = ProductsControllerImpl.getInstance();
             categories = CategoriesControllerImpl.getInstance();
             productsMapper = WrapperPojoProductsMapper.getInstance();
+            productMapper = ProductMapper.getInstance();
             initComponents();
+            lblIdProduct.setVisible(false);
             
             final var productsData = productsMapper.toOuter(this.products.getAllProducts());
             loadTitlesAndData(productsData.getProducts());
@@ -60,6 +67,7 @@ public class AllProducts extends javax.swing.JPanel {
                     GUICommons.setTextToField(nmbCostOfSale, productSelected.getCostOfSale() + "");
                     GUICommons.setTextToField(nmbPrice, productSelected.getPrice() + "");
                     GUICommons.setTextToField(nmbQuantity, productSelected.getQuantity() + "");
+                    GUICommons.setTextToLabel(lblIdProduct, productSelected.getIdProduct() + "");
                 }
             });
         } catch (BloSalesV2Exception ex) {
@@ -83,6 +91,7 @@ public class AllProducts extends javax.swing.JPanel {
         btnSave = new javax.swing.JButton();
         btnCancel = new javax.swing.JButton();
         lstReason = new javax.swing.JComboBox<>();
+        lblIdProduct = new javax.swing.JLabel();
 
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -131,26 +140,28 @@ public class AllProducts extends javax.swing.JPanel {
             pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlManageProductLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(pnlManageProductLayout.createSequentialGroup()
-                        .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(pnlManageProductLayout.createSequentialGroup()
-                                .addComponent(nmbQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(lstReason, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(txtBarCode, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlManageProductLayout.createSequentialGroup()
-                                .addComponent(nmbPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(nmbCostOfSale, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(pnlManageProductLayout.createSequentialGroup()
-                        .addComponent(btnSave)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancel)))
-                .addContainerGap(510, Short.MAX_VALUE))
+                .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(pnlManageProductLayout.createSequentialGroup()
+                            .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(pnlManageProductLayout.createSequentialGroup()
+                                    .addComponent(nmbQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(lstReason, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(18, 18, 18)
+                            .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtBarCode, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(pnlManageProductLayout.createSequentialGroup()
+                                    .addComponent(nmbPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(nmbCostOfSale, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(pnlManageProductLayout.createSequentialGroup()
+                            .addComponent(btnSave)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnCancel)))
+                    .addComponent(lblIdProduct))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlManageProductLayout.setVerticalGroup(
             pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,7 +180,9 @@ public class AllProducts extends javax.swing.JPanel {
                 .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSave)
                     .addComponent(btnCancel))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(lblIdProduct)
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -195,7 +208,7 @@ public class AllProducts extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(pnlManageProduct, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -218,13 +231,16 @@ public class AllProducts extends javax.swing.JPanel {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
             final var newData = new PojoProduct();
+            newData.setIdProduct(Integer.parseInt(GUICommons.getTextFromLabel(lblIdProduct)));
             newData.setProduct(GUICommons.getTextFromJText(txtName));
             newData.setBarCode(GUICommons.getTextFromJText(txtBarCode));
             newData.setCostOfSale(GUICommons.getNumberFromJText(nmbCostOfSale));
             newData.setPrice(GUICommons.getNumberFromJText(nmbPrice));
+            var reasonEnum = ReasonsEnum.PRODUCT_NOT_MODIFIED;
+            var type = TypesEnum.UPDATE_PRODUCT;
             if (lstReason.isVisible()) {
+                type = TypesEnum.ADJUST;
                 newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity));
-                ReasonsEnum reasonEnum;
                 final var reason = GUICommons.getValueFromComboBox(lstReason);
                 switch (reason) {
                     case "Vendido":
@@ -238,6 +254,12 @@ public class AllProducts extends javax.swing.JPanel {
                         break;
                 }
             }
+            newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity));
+            products.updateProductInfo(
+                productMapper.toInner(newData),
+                ReasonsIntEnum.valueOf(reasonEnum.name()),
+                userData.getIdUser(),
+                TypesIntEnum.valueOf(type.name()));
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -260,7 +282,7 @@ public class AllProducts extends javax.swing.JPanel {
     private void loadTitlesAndData(List<PojoProduct> products) {
         try {
             final var categories = this.categories.getAllCategories();
-            if (rol.equals(RolesEnum.ROOT)) {
+            if (userData.getRole().equals(RolesEnum.ROOT)) {
                 final String[] titles = {"ID", "Codigo de barras", "Producto", "Cantidad en existencia", "Costo de venta", "¿Por kg?", "Categoria"};
                 GUICommons.loadTitleOnTable(tblProducts, titles, false);
                 final var model = (DefaultTableModel) tblProducts.getModel();
@@ -296,17 +318,20 @@ public class AllProducts extends javax.swing.JPanel {
         currentQuantity = new BigDecimal(BigInteger.ZERO);
         /** este check estara oculto hasta que se de cambie la propiedad de cantidad */
         lstReason.setVisible(false);
+        GUICommons.setTextToLabel(lblIdProduct, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(txtName, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(txtBarCode, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(nmbCostOfSale, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(nmbPrice, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(nmbQuantity, BloSalesV2Utils.EMPTY_STRING);
+        GUICommons.setTextToLabel(lblIdProduct, BloSalesV2Utils.EMPTY_STRING);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnSave;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblIdProduct;
     private javax.swing.JComboBox<String> lstReason;
     private javax.swing.JTextField nmbCostOfSale;
     private javax.swing.JTextField nmbPrice;

@@ -24,6 +24,7 @@ public class ProductMapper implements IToInner<PojoIntProduct, PojoProduct>, ITo
             return null;
         }
         final var inner = new PojoIntProduct();
+        inner.setIdProduct(outer.getIdProduct());
         inner.setBarCode(outer.getBarCode());
         inner.setCostOfSale(outer.getCostOfSale());
         inner.setFkCategory(outer.getFkCategory());

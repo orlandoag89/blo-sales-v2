@@ -24,6 +24,7 @@ public class ProductEntityMapper implements IToInner<ProductEntity, PojoIntProdu
             return null;
         }
         final var in = new ProductEntity();
+        in.setId_product(outer.getIdProduct());
         in.setBar_code(outer.getBarCode());
         in.setCost_of_sale(outer.getCostOfSale());
         in.setFk_category(outer.getFkCategory());
