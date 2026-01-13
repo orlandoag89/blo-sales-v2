@@ -117,7 +117,8 @@ public class ProductsModelImpl implements IProductsModel {
             ps.setBigDecimal(3, innerProduct.getCost_of_sale());
             ps.setString(4, innerProduct.getTimestamp());
             ps.setString(5, innerProduct.getBar_code());
-            ps.setInt(6, innerProduct.getId_product());
+            ps.setBigDecimal(6, innerProduct.getPrice());
+            ps.setInt(7, innerProduct.getId_product());
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
                 throw new BloSalesV2Exception("No se ejecuto correctamente la actualizacion");

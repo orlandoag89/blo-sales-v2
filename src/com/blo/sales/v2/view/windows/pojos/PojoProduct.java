@@ -83,5 +83,10 @@ public class PojoProduct {
     public void setFkCategory(int fkCategory) {
         this.fkCategory = fkCategory;
     }
+
+    @Override
+    public String toString() {
+        return "[" + this.idProduct + "] " + this.product + " $" + this.price;
+    }
     
 }

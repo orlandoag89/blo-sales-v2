@@ -26,7 +26,7 @@ public class ProductsControllerImpl implements IProductsController {
     
     private IHistoryController historyController;
     
-    public static ProductsControllerImpl instance;
+    private static ProductsControllerImpl instance;
     
     private ProductsControllerImpl() {
         categoriesController = CategoriesControllerImpl.getInstance();
