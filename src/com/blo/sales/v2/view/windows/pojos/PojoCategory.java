@@ -2,17 +2,17 @@ package com.blo.sales.v2.view.windows.pojos;
 
 public class PojoCategory {
     
-    private int idCategory;
+    private long idCategory;
     
     private String description;
     
     private String category;
 
-    public int getIdCategory() {
+    public long getIdCategory() {
         return idCategory;
     }
 
-    public void setIdCategory(int idCategory) {
+    public void setIdCategory(long idCategory) {
         this.idCategory = idCategory;
     }
 

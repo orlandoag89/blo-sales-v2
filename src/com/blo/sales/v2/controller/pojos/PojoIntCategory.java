@@ -2,17 +2,17 @@ package com.blo.sales.v2.controller.pojos;
 
 public class PojoIntCategory {
     
-    private int idCategory;
+    private long idCategory;
     
     private String category;
     
     private String description;
 
-    public int getIdCategory() {
+    public long getIdCategory() {
         return idCategory;
     }
 
-    public void setIdCategory(int idCategory) {
+    public void setIdCategory(long idCategory) {
         this.idCategory = idCategory;
     }
 

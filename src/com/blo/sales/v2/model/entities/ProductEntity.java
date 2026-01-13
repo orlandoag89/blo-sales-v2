@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class ProductEntity {
     
-    private int id_product;
+    private long id_product;
     
     private String product;
     
@@ -20,13 +20,13 @@ public class ProductEntity {
     
     private String bar_code;
     
-    private int fk_category;
+    private long fk_category;
 
-    public int getId_product() {
+    public long getId_product() {
         return id_product;
     }
 
-    public void setId_product(int id_product) {
+    public void setId_product(long id_product) {
         this.id_product = id_product;
     }
 
@@ -86,11 +86,11 @@ public class ProductEntity {
         this.bar_code = bar_code;
     }
 
-    public int getFk_category() {
+    public long getFk_category() {
         return fk_category;
     }
 
-    public void setFk_category(int fk_category) {
+    public void setFk_category(long fk_category) {
         this.fk_category = fk_category;
     }
     

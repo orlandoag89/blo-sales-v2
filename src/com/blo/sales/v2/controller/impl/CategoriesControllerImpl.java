@@ -43,12 +43,12 @@ public class CategoriesControllerImpl implements ICategoriesController {
     }
 
     @Override
-    public PojoIntCategory updateCategory(int id, PojoIntCategory newData) throws BloSalesV2Exception {
+    public PojoIntCategory updateCategory(long id, PojoIntCategory newData) throws BloSalesV2Exception {
         return categoriesModel.updateCategory(id, newData);
     }
 
     @Override
-    public PojoIntCategory getCategoryById(int id) throws BloSalesV2Exception {
+    public PojoIntCategory getCategoryById(long id) throws BloSalesV2Exception {
         return categoriesModel.getCategoryById(id);
     }
     

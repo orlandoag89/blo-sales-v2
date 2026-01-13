@@ -74,10 +74,10 @@ public class UserModelImpl implements IUserModel {
     }
 
     @Override
-    public PojoIntUser getUserById(int id) throws BloSalesV2Exception {
+    public PojoIntUser getUserById(long id) throws BloSalesV2Exception {
         try {
             final var ps = conn.prepareStatement(Queries.SELECT_ID_FROM_USER);
-            ps.setInt(1, id);
+            ps.setLong(1, id);
             final var rs = ps.executeQuery();
             BloSalesV2Utils.validateRule(!rs.next(), QueriesErrors.USER_ERROR);
             final var userFound = new UserEntity();

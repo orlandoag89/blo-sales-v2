@@ -57,7 +57,7 @@ public class ProductsControllerImpl implements IProductsController {
     }
 
     @Override
-    public PojoIntProduct updateProductInfo(PojoIntProduct product, ReasonsIntEnum reasons, int idUser, TypesIntEnum type) throws BloSalesV2Exception {
+    public PojoIntProduct updateProductInfo(PojoIntProduct product, ReasonsIntEnum reasons, long idUser, TypesIntEnum type) throws BloSalesV2Exception {
         /** validaciones */
         final var productFound = getProductById(product.getIdProduct());
         user.getUserById(idUser);
@@ -84,7 +84,7 @@ public class ProductsControllerImpl implements IProductsController {
     }
 
     @Override
-    public PojoIntProduct getProductById(int idProduct) throws BloSalesV2Exception {
+    public PojoIntProduct getProductById(long idProduct) throws BloSalesV2Exception {
         return model.getProductById(idProduct);
     }
     

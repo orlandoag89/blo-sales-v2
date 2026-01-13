@@ -8,9 +8,9 @@ public class PojoIntMovement {
     
     private long id_movement;
     
-    private int fk_product;
+    private long fk_product;
     
-    private int fk_user;
+    private long fk_user;
     
     private TypesEntityEnum type;
     
@@ -28,19 +28,19 @@ public class PojoIntMovement {
         this.id_movement = id_movement;
     }
 
-    public int getFk_product() {
+    public long getFk_product() {
         return fk_product;
     }
 
-    public void setFk_product(int fk_product) {
+    public void setFk_product(long fk_product) {
         this.fk_product = fk_product;
     }
 
-    public int getFk_user() {
+    public long getFk_user() {
         return fk_user;
     }
 
-    public void setFk_user(int fk_user) {
+    public void setFk_user(long fk_user) {
         this.fk_user = fk_user;
     }
 

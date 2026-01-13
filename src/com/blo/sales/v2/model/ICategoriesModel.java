@@ -11,8 +11,8 @@ public interface ICategoriesModel {
     
     WrapperIntPojoCategories getAllCategories() throws BloSalesV2Exception;
     
-    PojoIntCategory updateCategory(int id, PojoIntCategory newData) throws BloSalesV2Exception;
+    PojoIntCategory updateCategory(long id, PojoIntCategory newData) throws BloSalesV2Exception;
     
-    PojoIntCategory getCategoryById(int id) throws BloSalesV2Exception;
+    PojoIntCategory getCategoryById(long id) throws BloSalesV2Exception;
     
 }

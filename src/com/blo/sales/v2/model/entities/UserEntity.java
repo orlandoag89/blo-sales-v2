@@ -4,7 +4,7 @@ import com.blo.sales.v2.model.entities.enums.RolesEntityEnum;
 
 public class UserEntity {
     
-    private int id_user;
+    private long id_user;
     
     private String username;
     
@@ -12,11 +12,11 @@ public class UserEntity {
     
     private RolesEntityEnum role;
 
-    public int getId_user() {
+    public long getId_user() {
         return id_user;
     }
 
-    public void setId_user(int id_user) {
+    public void setId_user(long id_user) {
         this.id_user = id_user;
     }
 

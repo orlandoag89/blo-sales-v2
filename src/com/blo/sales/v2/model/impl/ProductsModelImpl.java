@@ -55,7 +55,7 @@ public class ProductsModelImpl implements IProductsModel {
             ps.setString(5, product.getTimestamp());
             ps.setBoolean(6, product.isKg());
             ps.setString(7, product.getBarCode());
-            ps.setInt(8, product.getFkCategory());
+            ps.setLong(8, product.getFkCategory());
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {
                 final var rs = ps.getGeneratedKeys();
@@ -118,7 +118,7 @@ public class ProductsModelImpl implements IProductsModel {
             ps.setString(4, innerProduct.getTimestamp());
             ps.setString(5, innerProduct.getBar_code());
             ps.setBigDecimal(6, innerProduct.getPrice());
-            ps.setInt(7, innerProduct.getId_product());
+            ps.setLong(7, innerProduct.getId_product());
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
                 throw new BloSalesV2Exception("No se ejecuto correctamente la actualizacion");
@@ -137,10 +137,10 @@ public class ProductsModelImpl implements IProductsModel {
     }
 
     @Override
-    public PojoIntProduct getProductById(int idProduct) throws BloSalesV2Exception {
+    public PojoIntProduct getProductById(long idProduct) throws BloSalesV2Exception {
         try {
             final var ps = conn.prepareStatement(Queries.SELECT_ONE_PRODUCT);
-            ps.setInt(1, idProduct);
+            ps.setLong(1, idProduct);
             final var rs = ps.executeQuery();
             BloSalesV2Utils.validateRule(!rs.next(), QueriesErrors.PRODUCT_NOT_FOUND);
             final var p = new ProductEntity();

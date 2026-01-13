@@ -12,6 +12,6 @@ public interface IProductsModel {
     
     PojoIntProduct updateProductInfo(PojoIntProduct product) throws BloSalesV2Exception;
     
-    PojoIntProduct getProductById(int idProduct) throws BloSalesV2Exception;
+    PojoIntProduct getProductById(long idProduct) throws BloSalesV2Exception;
     
 }

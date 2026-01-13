@@ -29,6 +29,9 @@ public final class Queries {
     
     public static final String SELECT_ONE_PRODUCT = "SELECT id_product, product, quantity, cost_of_sale, price, timestamp, is_kg, bar_code, fk_category FROM stock WHERE id_product = ?";
     
-    /** historia */
+    /** historial */
     public static final String INSERT_MOVEMENT = "INSERT INTO history(fk_product, fk_user, type, quantity, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
+    
+    /** ventas */
+    public static final String INSERT_SALE = "INSERT INTO sales(fk_movement, total, sale_status) VALUES (?, ?, ?)";
 }

@@ -94,7 +94,7 @@ public class CategoriesModelImpl implements ICategoriesModel {
     }
 
     @Override
-    public PojoIntCategory updateCategory(int id, PojoIntCategory newData) throws BloSalesV2Exception {
+    public PojoIntCategory updateCategory(long id, PojoIntCategory newData) throws BloSalesV2Exception {
         try {
             DBConnection.disableAutocommit();
             final var category = getCategoryById(id);
@@ -104,7 +104,7 @@ public class CategoriesModelImpl implements ICategoriesModel {
             final var ps = conn.prepareStatement(Queries.UPDATE_CATEGORY);
             ps.setString(1, categoryFound.getCategory());
             ps.setString(2, categoryFound.getDescription());
-            ps.setInt(3, id);
+            ps.setLong(3, id);
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
                 throw new BloSalesV2Exception("No se ejecuto correctamente la actualizacion");
@@ -123,10 +123,10 @@ public class CategoriesModelImpl implements ICategoriesModel {
     }
 
     @Override
-    public PojoIntCategory getCategoryById(int id) throws BloSalesV2Exception {
+    public PojoIntCategory getCategoryById(long id) throws BloSalesV2Exception {
         try {
             final var ps = conn.prepareStatement(Queries.SELECT_CATEGORY);
-            ps.setInt(1, id);
+            ps.setLong(1, id);
             final var rs = ps.executeQuery();
             BloSalesV2Utils.validateRule(!rs.next(), QueriesErrors.CATEGORY_ERROR);
             final var category = new CategoryEntity();

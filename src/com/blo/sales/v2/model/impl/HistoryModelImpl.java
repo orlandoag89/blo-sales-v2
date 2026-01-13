@@ -35,8 +35,8 @@ public class HistoryModelImpl implements IHistoryModel {
             final var inMovement = mapper.toInner(movement);
             DBConnection.disableAutocommit();
             final var ps = conn.prepareStatement(Queries.INSERT_MOVEMENT, Statement.RETURN_GENERATED_KEYS);
-            ps.setInt(1, inMovement.getFk_product());
-            ps.setInt(2, inMovement.getFk_user());
+            ps.setLong(1, inMovement.getFk_product());
+            ps.setLong(2, inMovement.getFk_user());
             ps.setString(3, inMovement.getType().name());
             ps.setBigDecimal(4, inMovement.getQuantity());
             ps.setString(5, inMovement.getReason().name());

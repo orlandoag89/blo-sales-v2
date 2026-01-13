@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class PojoIntProduct {
     
-    private int idProduct;
+    private long idProduct;
     
     private String product;
     
@@ -20,13 +20,13 @@ public class PojoIntProduct {
     
     private String barCode;
     
-    private int fkCategory;
+    private long fkCategory;
 
-    public int getIdProduct() {
+    public long getIdProduct() {
         return idProduct;
     }
 
-    public void setIdProduct(int idProduct) {
+    public void setIdProduct(long idProduct) {
         this.idProduct = idProduct;
     }
 
@@ -86,11 +86,11 @@ public class PojoIntProduct {
         this.barCode = barCode;
     }
 
-    public int getFkCategory() {
+    public long getFkCategory() {
         return fkCategory;
     }
 
-    public void setFkCategory(int fkCategory) {
+    public void setFkCategory(long fkCategory) {
         this.fkCategory = fkCategory;
     }
 }

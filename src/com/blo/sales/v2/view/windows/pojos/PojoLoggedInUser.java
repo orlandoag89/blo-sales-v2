@@ -4,17 +4,17 @@ import com.blo.sales.v2.view.windows.pojos.enums.RolesEnum;
 
 public class PojoLoggedInUser {
     
-    private int idUser;
+    private long idUser;
     
     private RolesEnum role;
     
     private String username;
 
-    public int getIdUser() {
+    public long getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(long idUser) {
         this.idUser = idUser;
     }
 

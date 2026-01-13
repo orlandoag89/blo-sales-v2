@@ -10,7 +10,7 @@ public class PojoIntUser {
     
     private RolesIntEnum rol;
     
-    private int idUser;
+    private long idUser;
     
     public PojoIntUser() { }
 
@@ -39,11 +39,11 @@ public class PojoIntUser {
         this.rol = rol;
     }
 
-    public int getIdUser() {
+    public long getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(long idUser) {
         this.idUser = idUser;
     }
     

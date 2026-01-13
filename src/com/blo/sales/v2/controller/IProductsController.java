@@ -10,10 +10,10 @@ public interface IProductsController {
     
     PojoIntProduct registerProduct(PojoIntProduct product) throws BloSalesV2Exception;
     
-    PojoIntProduct updateProductInfo(PojoIntProduct product, ReasonsIntEnum reasons, int idUser, TypesIntEnum type) throws BloSalesV2Exception;
+    PojoIntProduct updateProductInfo(PojoIntProduct product, ReasonsIntEnum reasons, long idUser, TypesIntEnum type) throws BloSalesV2Exception;
     
     WrapperPojoIntProducts getAllProducts() throws BloSalesV2Exception;
     
-    PojoIntProduct getProductById(int idProduct) throws BloSalesV2Exception;
+    PojoIntProduct getProductById(long idProduct) throws BloSalesV2Exception;
     
 }

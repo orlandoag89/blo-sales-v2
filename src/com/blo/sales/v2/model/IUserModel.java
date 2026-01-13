@@ -8,6 +8,6 @@ public interface IUserModel {
     
     PojoIntLoggedInUser doLogin(PojoIntUser userData) throws BloSalesV2Exception;
     
-    PojoIntUser getUserById(int id) throws BloSalesV2Exception;
+    PojoIntUser getUserById(long id) throws BloSalesV2Exception;
     
 }

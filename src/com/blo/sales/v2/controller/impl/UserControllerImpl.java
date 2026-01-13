@@ -30,7 +30,7 @@ public class UserControllerImpl implements IUserController {
     }
 
     @Override
-    public PojoIntUser getUserById(int id) throws BloSalesV2Exception {
+    public PojoIntUser getUserById(long id) throws BloSalesV2Exception {
         return userModel.getUserById(id);
     }
     
