@@ -3,12 +3,14 @@ package com.blo.sales.v2.controller.impl;
 import com.blo.sales.v2.controller.IHistoryController;
 import com.blo.sales.v2.controller.IProductsController;
 import com.blo.sales.v2.controller.ISalesController;
+import com.blo.sales.v2.controller.ISalesProductController;
 import com.blo.sales.v2.controller.IUserController;
 import com.blo.sales.v2.controller.pojos.PojoIntMovement;
 import com.blo.sales.v2.controller.pojos.PojoIntSale;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProduct;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.controller.pojos.enums.SalesStatusIntEnum;
+import com.blo.sales.v2.model.ISaleProductModel;
 import com.blo.sales.v2.model.ISalesModel;
 import com.blo.sales.v2.model.entities.enums.ReasonsEntityEnum;
 import com.blo.sales.v2.model.entities.enums.TypesEntityEnum;
@@ -32,11 +34,14 @@ public class SalesControllerImpl implements ISalesController {
     
     private IProductsController productsController;
     
+    private ISalesProductController salesProductsController;
+    
     private SalesControllerImpl() {
         saleModel = SalesModelImpl.getInstance();
         historyController = HistoryControllerImpl.getInstance();
         userController = UserControllerImpl.getInstance();
         productsController = ProductsControllerImpl.getInstance();
+        salesProductsController = SalesProductControllerImpl.getInstance();
     }
     
     public static SalesControllerImpl getInstance() {
@@ -53,7 +58,10 @@ public class SalesControllerImpl implements ISalesController {
         /** valida productos */
         products.forEach(p -> {
             try {
-                productsController.getProductById(p.getIdProduct());
+                final var productFound = productsController.getProductById(p.getIdProduct());
+                if (productFound.getQuantity().compareTo(p.getQuantityOnSale()) < 0) {
+                    throw new BloSalesV2Exception("Sin suficiente en almacen, verifica");
+                }
             } catch (BloSalesV2Exception ex) {
                 Logger.getLogger(SalesControllerImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -65,7 +73,6 @@ public class SalesControllerImpl implements ISalesController {
         sale.setTotal(totalSale);
         sale.setTimestamp(timestamp);
         final var saleSaved = saleModel.registerSale(sale);
-        PojoIntSaleProduct saleProduct;
         products.forEach(p -> {
             try {
                 // registro de movimiento
@@ -76,9 +83,16 @@ public class SalesControllerImpl implements ISalesController {
                 movement.setReason(ReasonsEntityEnum.SALE);
                 movement.setTimestamp(timestamp);
                 movement.setType(TypesEntityEnum.OUTPUT);
-                final var movementSaved = historyController.registerMovement(movement);
+                historyController.registerMovement(movement);
                 // registro de movimiento en venta
-                
+                final var saleProduct = new PojoIntSaleProduct();
+                saleProduct.setFkProduct(p.getIdProduct());
+                saleProduct.setFkSale(saleSaved.getIdSale());
+                saleProduct.setQuantityOnSale(p.getQuantityOnSale());
+                saleProduct.setTimestap(timestamp);
+                saleProduct.setTotalOnSale(totalSale);
+                // guardar relacion venta-product
+                salesProductsController.addSalesProduct(saleProduct);
             } catch (BloSalesV2Exception ex) {
                 Logger.getLogger(SalesControllerImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
