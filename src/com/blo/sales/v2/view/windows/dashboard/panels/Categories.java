@@ -49,7 +49,7 @@ public class Categories extends javax.swing.JPanel {
         final var id = idSep[0].trim();
         // filtro de categorias
         final var itemFound = 
-                categoriesGlobal.getCategories().stream().filter(c -> c.getIdCategory() == Integer.parseInt(id)).
+                categoriesGlobal.getCategories().stream().filter(c -> c.getIdCategory() == Long.parseLong(id)).
                 findFirst().orElse(null);
         if (itemFound != null) {
             GUICommons.setTextToField(txtEditName, itemFound.getCategory());
@@ -223,7 +223,7 @@ public class Categories extends javax.swing.JPanel {
             final var data = new PojoCategory();
             data.setCategory(newName);
             data.setDescription(newDescription);
-            categoriesController.updateCategory(Integer.parseInt(GUICommons.getTextFromLabel(lblIdCategory)), categoryMapper.toInner(data));
+            categoriesController.updateCategory(Long.parseLong(GUICommons.getTextFromLabel(lblIdCategory)), categoryMapper.toInner(data));
             /** actualizar la lista de categorias */
             loadCategories();
             btnCancelActionPerformed(evt);

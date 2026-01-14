@@ -118,7 +118,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     }//GEN-LAST:event_optStockActionPerformed
 
     private void optAddSaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optAddSaleActionPerformed
-        GUICommons.showPanel(content, new Sales());
+        GUICommons.showPanel(content, new Sales(userData));
     }//GEN-LAST:event_optAddSaleActionPerformed
     
     private void openAllProducts() {

@@ -14,13 +14,11 @@ import com.blo.sales.v2.view.windows.mappers.WrapperPojoCategoriesMapper;
 import com.blo.sales.v2.view.windows.mappers.WrapperPojoProductsMapper;
 import com.blo.sales.v2.view.windows.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.windows.pojos.PojoProduct;
-import com.blo.sales.v2.view.windows.pojos.WrapperPojoCategories;
 import com.blo.sales.v2.view.windows.pojos.enums.ReasonsEnum;
 import com.blo.sales.v2.view.windows.pojos.enums.RolesEnum;
 import com.blo.sales.v2.view.windows.pojos.enums.TypesEnum;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.RowFilter;
@@ -253,7 +251,7 @@ public class AllProducts extends javax.swing.JPanel {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
             final var newData = new PojoProduct();
-            newData.setIdProduct(Integer.parseInt(GUICommons.getTextFromLabel(lblIdProduct)));
+            newData.setIdProduct(Long.parseLong(GUICommons.getTextFromLabel(lblIdProduct)));
             newData.setProduct(GUICommons.getTextFromJText(txtName));
             newData.setBarCode(GUICommons.getTextFromJText(txtBarCode));
             newData.setCostOfSale(GUICommons.getNumberFromJText(nmbCostOfSale));
@@ -328,7 +326,7 @@ public class AllProducts extends javax.swing.JPanel {
                 });
             }
             /** se actualiza cuando hay un cambio en algun producto */
-            GUICommons.addDoubleClickOnTable(tblProducts, (Integer id) -> {
+            GUICommons.addDoubleClickOnTable(tblProducts, (Long id) -> {
                 pnlManageProduct.setVisible(true);
                 final var productSelected = 
                         productsData.getProducts().stream().filter(p -> p.getIdProduct() == id).findFirst().orElse(null);

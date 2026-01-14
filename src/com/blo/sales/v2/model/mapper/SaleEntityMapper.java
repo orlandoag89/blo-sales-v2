@@ -26,10 +26,10 @@ public class SaleEntityMapper implements IToInner<SaleEntity, PojoIntSale>, IToO
             return null;
         }
         final var inner = new SaleEntity();
-        inner.setFk_movement(outer.getFkMovement());
         inner.setId_sale(outer.getIdSale());
         inner.setSales_status(SaleStatusEntityEnum.valueOf(outer.getSaleStatus().name()));
         inner.setTotal(outer.getTotal());
+        inner.setTimestamp(outer.getTimestamp());
         return inner;
     }
 
@@ -39,10 +39,10 @@ public class SaleEntityMapper implements IToInner<SaleEntity, PojoIntSale>, IToO
             return null;
         }
         final var outer = new PojoIntSale();
-        outer.setFkMovement(inner.getFk_movement());
         outer.setIdSale(inner.getId_sale());
         outer.setSaleStatus(SalesStatusIntEnum.valueOf(inner.getSale_status().name()));
         outer.setTotal(inner.getTotal());
+        outer.setTimestamp(inner.getTimestamp());
         return outer;
     }
     

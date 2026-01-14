@@ -7,11 +7,11 @@ public class PojoIntSale {
 
     private long idSale;
 
-    private long fkMovement;
-
     private BigDecimal total;
 
     private SalesStatusIntEnum saleStatus;
+    
+    private String timestamp;
 
     public long getIdSale() {
         return idSale;
@@ -19,14 +19,6 @@ public class PojoIntSale {
 
     public void setIdSale(long idSale) {
         this.idSale = idSale;
-    }
-
-    public long getFkMovement() {
-        return fkMovement;
-    }
-
-    public void setFkMovement(long fkMovement) {
-        this.fkMovement = fkMovement;
     }
 
     public BigDecimal getTotal() {
@@ -43,6 +35,14 @@ public class PojoIntSale {
 
     public void setSaleStatus(SalesStatusIntEnum saleStatus) {
         this.saleStatus = saleStatus;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
 }

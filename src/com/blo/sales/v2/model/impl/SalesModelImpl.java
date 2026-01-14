@@ -37,9 +37,9 @@ public class SalesModelImpl implements ISalesModel {
             final var innerSale = saleMapper.toInner(sale);
             DBConnection.disableAutocommit();
             final var ps = conn.prepareStatement(Queries.INSERT_SALE, Statement.RETURN_GENERATED_KEYS);
-            ps.setLong(1, innerSale.getFk_movement());
-            ps.setBigDecimal(2, innerSale.getTotal());
-            ps.setString(3, sale.getSaleStatus().name());
+            ps.setBigDecimal(1, innerSale.getTotal());
+            ps.setString(2, innerSale.getSale_status().name());
+            ps.setString(3, innerSale.getTimestamp());
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
                 throw new BloSalesV2Exception("ERROR EN BASE DE DATOS");

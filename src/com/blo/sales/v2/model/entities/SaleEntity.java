@@ -7,11 +7,11 @@ public class SaleEntity {
     
     private long id_sale;
     
-    private long fk_movement;
-    
     private BigDecimal total;
     
     private SaleStatusEntityEnum sale_status;
+    
+    private String timestamp;
 
     public long getId_sale() {
         return id_sale;
@@ -19,14 +19,6 @@ public class SaleEntity {
 
     public void setId_sale(long id_sale) {
         this.id_sale = id_sale;
-    }
-
-    public long getFk_movement() {
-        return fk_movement;
-    }
-
-    public void setFk_movement(long fk_movement) {
-        this.fk_movement = fk_movement;
     }
 
     public BigDecimal getTotal() {
@@ -43,6 +35,14 @@ public class SaleEntity {
 
     public void setSales_status(SaleStatusEntityEnum sale_status) {
         this.sale_status = sale_status;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
     
 }

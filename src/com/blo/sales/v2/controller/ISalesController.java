@@ -1,10 +1,13 @@
 package com.blo.sales.v2.controller;
 
 import com.blo.sales.v2.controller.pojos.PojoIntSale;
+import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface ISalesController {
     
-    PojoIntSale registerSale(PojoIntSale sale, int idUser) throws BloSalesV2Exception;
+    PojoIntSale registerSale(BigDecimal totalSale, List<PojoIntSaleProductData> productsInfo,long idUser) throws BloSalesV2Exception;
     
 }

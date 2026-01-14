@@ -33,5 +33,8 @@ public final class Queries {
     public static final String INSERT_MOVEMENT = "INSERT INTO history(fk_product, fk_user, type, quantity, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
     
     /** ventas */
-    public static final String INSERT_SALE = "INSERT INTO sales(fk_movement, total, sale_status) VALUES (?, ?, ?)";
+    public static final String INSERT_SALE = "INSERT INTO sales(total, sale_status, timestamp) VALUES (?, ?, ?)";
+    
+    /** ventas product */
+    public static final String INSERT_SALE_PRODUCT = "INSERT INTO sale_product(fk_sale, fk_product, quantity_on_sale, total_on_sale, timestamp) VALUES (?, ?, ?, ?, ?)";
 }

@@ -159,7 +159,7 @@ public class RegisterProduct extends javax.swing.JPanel {
             final var itemSelected = GUICommons.getValueFromComboBox(lstMarks).split("[ ]+");
             BloSalesV2Utils.validateRule(itemSelected.length == 0 || itemSelected[0].trim().isBlank(), "No se ha seleccionado un item");
             final var idMark = itemSelected[0].trim();
-            data.setFkCategory(Integer.parseInt(idMark));
+            data.setFkCategory(Long.parseLong(idMark));
             data.setKg(GUICommons.isCheckedCkeckBox(chkbxItsKg));
             productsController.registerProduct(productMapper.toInner(data));
         } catch (BloSalesV2Exception ex) {
