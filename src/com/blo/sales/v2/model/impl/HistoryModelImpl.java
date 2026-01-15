@@ -3,7 +3,7 @@ package com.blo.sales.v2.model.impl;
 import com.blo.sales.v2.controller.pojos.PojoIntMovement;
 import com.blo.sales.v2.model.IHistoryModel;
 import com.blo.sales.v2.model.config.DBConnection;
-import com.blo.sales.v2.model.constants.Queries;
+import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.mapper.MovementEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import java.sql.Connection;
@@ -34,7 +34,7 @@ public class HistoryModelImpl implements IHistoryModel {
         try {
             final var inMovement = mapper.toInner(movement);
             DBConnection.disableAutocommit();
-            final var ps = conn.prepareStatement(Queries.INSERT_MOVEMENT, Statement.RETURN_GENERATED_KEYS);
+            final var ps = conn.prepareStatement(BloSalesV2Queries.INSERT_MOVEMENT, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, inMovement.getFk_product());
             ps.setLong(2, inMovement.getFk_user());
             ps.setString(3, inMovement.getType().name());

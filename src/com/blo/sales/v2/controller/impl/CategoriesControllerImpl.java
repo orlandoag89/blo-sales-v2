@@ -7,8 +7,6 @@ import com.blo.sales.v2.controller.ICategoriesController;
 import com.blo.sales.v2.controller.pojos.WrapperIntPojoCategories;
 import com.blo.sales.v2.model.impl.CategoriesModelImpl;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CategoriesControllerImpl implements ICategoriesController {
     
@@ -32,9 +30,8 @@ public class CategoriesControllerImpl implements ICategoriesController {
         try {
             return categoriesModel.registerCategory(category);
         } catch (SQLException ex) {
-            Logger.getLogger(CategoriesControllerImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new BloSalesV2Exception(ex.getMessage());
         }
-        return null;
     }
 
     @Override

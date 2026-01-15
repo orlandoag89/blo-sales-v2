@@ -3,16 +3,14 @@ package com.blo.sales.v2.model.impl;
 import com.blo.sales.v2.controller.pojos.PojoIntProduct;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntProducts;
 import com.blo.sales.v2.model.config.DBConnection;
-import com.blo.sales.v2.model.constants.Queries;
+import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.mapper.ProductEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.blo.sales.v2.model.IProductsModel;
-import com.blo.sales.v2.model.constants.QueriesErrors;
+import com.blo.sales.v2.model.constants.BloSalesV2Columns;
 import com.blo.sales.v2.model.entities.ProductEntity;
 import com.blo.sales.v2.model.entities.WrapperProductsEntity;
 import com.blo.sales.v2.model.mapper.WrapperProductsEntityMapper;
@@ -47,7 +45,7 @@ public class ProductsModelImpl implements IProductsModel {
             DBConnection.disableAutocommit();
             final var innerProduct = mapper.toInner(product);
             // 2. Usar prepareStatement con RETURN_GENERATED_KEYS (Más estándar que prepareCall para INSERT)
-            final var ps = conn.prepareStatement(Queries.INSERT_PRODUCT, Statement.RETURN_GENERATED_KEYS);
+            final var ps = conn.prepareStatement(BloSalesV2Queries.INSERT_PRODUCT, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, innerProduct.getProduct());
             ps.setBigDecimal(2, innerProduct.getQuantity());
             ps.setBigDecimal(3, product.getCostOfSale());
@@ -66,13 +64,11 @@ public class ProductsModelImpl implements IProductsModel {
             DBConnection.doCommit();
             return mapper.toOuter(innerProduct);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
                 throw new BloSalesV2Exception(ex.getMessage());
             }
         }
@@ -81,27 +77,26 @@ public class ProductsModelImpl implements IProductsModel {
     @Override
     public WrapperPojoIntProducts getAllProducts() throws BloSalesV2Exception {
         try {
-            final var ps = conn.prepareStatement(Queries.SELECT_ALL_PRODUCTS);
+            final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_ALL_PRODUCTS);
             final var rs = ps.executeQuery();
             final var productsInn = new WrapperProductsEntity();
             final var innerProducts = new ArrayList<ProductEntity>();
             while(rs.next()) {
                 final var p = new ProductEntity();
-                p.setBar_code(rs.getString("bar_code"));
-                p.setCost_of_sale(rs.getBigDecimal("cost_of_sale"));
-                p.setFk_category(rs.getInt("fk_category"));
-                p.setId_product(rs.getInt("id_product"));
-                p.setKg(rs.getBoolean("is_kg"));
-                p.setPrice(rs.getBigDecimal("price"));
-                p.setQuantity(rs.getBigDecimal("quantity"));
-                p.setTimestamp(rs.getString("timestamp"));
-                p.setProduct(rs.getString("product"));
+                p.setBar_code(rs.getString(BloSalesV2Columns.BAR_CODE));
+                p.setCost_of_sale(rs.getBigDecimal(BloSalesV2Columns.COST_OF_SALE));
+                p.setFk_category(rs.getInt(BloSalesV2Columns.FK_CATEGORY));
+                p.setId_product(rs.getInt(BloSalesV2Columns.ID_PRODUCT));
+                p.setKg(rs.getBoolean(BloSalesV2Columns.IS_KG));
+                p.setPrice(rs.getBigDecimal(BloSalesV2Columns.PRICE));
+                p.setQuantity(rs.getBigDecimal(BloSalesV2Columns.QUANTITY));
+                p.setTimestamp(rs.getString(BloSalesV2Columns.TIMESTAMP));
+                p.setProduct(rs.getString(BloSalesV2Columns.PRODUCT));
                 innerProducts.add(p);
             }
             productsInn.setProducts(innerProducts);
             return wrapperMapper.toOuter(productsInn);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }
@@ -111,7 +106,7 @@ public class ProductsModelImpl implements IProductsModel {
         try {
             final var innerProduct = mapper.toInner(product);
             DBConnection.disableAutocommit();
-            final var ps = conn.prepareStatement(Queries.UPDATE_PRODUCT);
+            final var ps = conn.prepareStatement(BloSalesV2Queries.UPDATE_PRODUCT);
             ps.setString(1, innerProduct.getProduct());
             ps.setBigDecimal(2, innerProduct.getQuantity());
             ps.setBigDecimal(3, innerProduct.getCost_of_sale());
@@ -121,7 +116,7 @@ public class ProductsModelImpl implements IProductsModel {
             ps.setLong(7, innerProduct.getId_product());
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new BloSalesV2Exception("No se ejecuto correctamente la actualizacion");
+                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
             }
             DBConnection.doCommit();
             return mapper.toOuter(innerProduct);
@@ -139,23 +134,22 @@ public class ProductsModelImpl implements IProductsModel {
     @Override
     public PojoIntProduct getProductById(long idProduct) throws BloSalesV2Exception {
         try {
-            final var ps = conn.prepareStatement(Queries.SELECT_ONE_PRODUCT);
+            final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_ONE_PRODUCT);
             ps.setLong(1, idProduct);
             final var rs = ps.executeQuery();
-            BloSalesV2Utils.validateRule(!rs.next(), QueriesErrors.PRODUCT_NOT_FOUND);
+            BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.ERROR_PRODUCT_NOT_FOUND);
             final var p = new ProductEntity();
-            p.setBar_code(rs.getString("bar_code"));
-            p.setCost_of_sale(rs.getBigDecimal("cost_of_sale"));
-            p.setFk_category(rs.getInt("fk_category"));
-            p.setId_product(rs.getInt("id_product"));
-            p.setKg(rs.getBoolean("is_kg"));
-            p.setPrice(rs.getBigDecimal("price"));
-            p.setQuantity(rs.getBigDecimal("quantity"));
-            p.setTimestamp(rs.getString("timestamp"));
-            p.setProduct(rs.getString("product"));
+            p.setBar_code(rs.getString(BloSalesV2Columns.BAR_CODE));
+            p.setCost_of_sale(rs.getBigDecimal(BloSalesV2Columns.COST_OF_SALE));
+            p.setFk_category(rs.getInt(BloSalesV2Columns.FK_CATEGORY));
+            p.setId_product(rs.getInt(BloSalesV2Columns.ID_PRODUCT));
+            p.setKg(rs.getBoolean(BloSalesV2Columns.IS_KG));
+            p.setPrice(rs.getBigDecimal(BloSalesV2Columns.PRICE));
+            p.setQuantity(rs.getBigDecimal(BloSalesV2Columns.QUANTITY));
+            p.setTimestamp(rs.getString(BloSalesV2Columns.TIMESTAMP));
+            p.setProduct(rs.getString(BloSalesV2Columns.PRODUCT));
             return mapper.toOuter(p);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }

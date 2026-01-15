@@ -1,8 +1,8 @@
 package com.blo.sales.v2.model.constants;
 
-public final class Queries {
+public final class BloSalesV2Queries {
     
-    private Queries() { }
+    private BloSalesV2Queries() { }
     
     /** users */
     public static final String SELECT_ONLY_ID_USERS = "SELECT id_user FROM users WHERE username = ? LIMIT 1";

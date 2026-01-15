@@ -1,6 +1,7 @@
 package com.blo.sales.v2.view.windows.commons;
 
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.utils.BloSalesV2Utils;
 import static com.blo.sales.v2.utils.BloSalesV2Utils.validateRule;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -18,18 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-/**
- * Minúsculas: á -> \u00e1 é -> \u00e9 í -> \u00ed ó -> \u00f3 ú -> \u00fa ñ ->
- * \u00f1 ü -> \u00fc
- *
- * Mayúsculas: Á -> \u00c1 É -> \u00c9 Í -> \u00cd Ó -> \u00d3 Ú -> \u00da Ñ ->
- * \u00d1
- *
- * Símbolos: ¿ -> \u00bf ¡ -> \u00a1
- */
 public final class GUICommons {
-
-    private static final String INVALID_TEXT = "Texto no v\u00e1lido";
 
     private GUICommons() {
     }
@@ -102,13 +92,13 @@ public final class GUICommons {
      */
     public static String getTextFromJText(JTextField field) throws BloSalesV2Exception {
         final var text = field.getText().trim();
-        validateRule(text.isBlank(), INVALID_TEXT);
+        validateRule(text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return text;
     }
 
     public static BigDecimal getNumberFromJText(JTextField field) throws BloSalesV2Exception {
         final var txt = field.getText().trim();
-        validateRule(txt.isBlank(), INVALID_TEXT);
+        validateRule(txt.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return new BigDecimal(txt);
     }
 
@@ -122,7 +112,7 @@ public final class GUICommons {
     public static String getPasswordFromJText(JPasswordField field) throws BloSalesV2Exception {
         final var passGet = field.getPassword();
         final var pass = new String(passGet);
-        validateRule(pass.isBlank(), INVALID_TEXT);
+        validateRule(pass.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return pass;
     }
 

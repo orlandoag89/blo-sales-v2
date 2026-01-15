@@ -3,11 +3,13 @@ package com.blo.sales.v2.model.impl;
 import com.blo.sales.v2.controller.pojos.PojoIntCashbox;
 import com.blo.sales.v2.model.ICashboxModel;
 import com.blo.sales.v2.model.config.DBConnection;
-import com.blo.sales.v2.model.constants.Queries;
+import com.blo.sales.v2.model.constants.BloSalesV2Columns;
+import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.entities.CashboxEntity;
 import com.blo.sales.v2.model.entities.enums.CashboxEntityEnum;
 import com.blo.sales.v2.model.mapper.CashboxEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,14 +41,14 @@ public class CashboxModelImpl implements ICashboxModel {
             DBConnection.disableAutocommit();
             final var cashboxInner = mapper.toInner(cashbox);
             // 2. Usar prepareStatement con RETURN_GENERATED_KEYS (Más estándar que prepareCall para INSERT)
-            final var ps = conn.prepareStatement(Queries.INSERT_CASHBOX, Statement.RETURN_GENERATED_KEYS);
+            final var ps = conn.prepareStatement(BloSalesV2Queries.INSERT_CASHBOX, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, cashboxInner.getFk_user());
             ps.setString(2, cashboxInner.getTimestamp());
             ps.setString(3, cashboxInner.getStatus().name());
             ps.setBigDecimal(4, cashboxInner.getAmount());
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new BloSalesV2Exception("Error en guardado en la base de datos");
+                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
             }
             final var rs = ps.getGeneratedKeys();
             if (rs.next()){
@@ -70,17 +72,17 @@ public class CashboxModelImpl implements ICashboxModel {
     @Override
     public PojoIntCashbox getOpenCashbox() throws BloSalesV2Exception {
         try {
-            final var ps = conn.prepareStatement(Queries.SELECT_OPEN_CASHBOX);
+            final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_OPEN_CASHBOX);
             ps.setString(1, CashboxEntityEnum.OPEN.name());
             final var data = ps.executeQuery();
             CashboxEntity cashbox = null;
             while(data.next()) {
                 cashbox = new CashboxEntity();
-                cashbox.setId_cashbox(data.getLong("id_cashbox"));
-                cashbox.setFk_user(data.getLong("fk_user"));
-                cashbox.setAmount(data.getBigDecimal("amount"));
-                cashbox.setStatus(CashboxEntityEnum.valueOf(data.getString("status")));
-                cashbox.setTimestamp(data.getString("timestamp"));
+                cashbox.setId_cashbox(data.getLong(BloSalesV2Columns.ID_CASHBOX));
+                cashbox.setFk_user(data.getLong(BloSalesV2Columns.FK_USER));
+                cashbox.setAmount(data.getBigDecimal(BloSalesV2Columns.AMOUNT));
+                cashbox.setStatus(CashboxEntityEnum.valueOf(data.getString(BloSalesV2Columns.STATUS)));
+                cashbox.setTimestamp(data.getString(BloSalesV2Columns.TIMESTAMP));
             }
             return mapper.toOuter(cashbox);
         } catch (SQLException ex) {
@@ -93,14 +95,14 @@ public class CashboxModelImpl implements ICashboxModel {
         try {
             DBConnection.disableAutocommit();
             final var cashboxInner = mapper.toInner(cashbox);
-            final var ps = conn.prepareStatement(Queries.UPDATE_CASHBOX);
+            final var ps = conn.prepareStatement(BloSalesV2Queries.UPDATE_CASHBOX);
             ps.setString(1, cashboxInner.getTimestamp());
             ps.setString(2, cashboxInner.getStatus().name());
             ps.setBigDecimal(3, cashboxInner.getAmount());
             ps.setLong(4, idCashbox);
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new BloSalesV2Exception("No se ejecuto correctamente la actualizacion");
+                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
             }
             DBConnection.doCommit();
             return mapper.toOuter(cashboxInner);

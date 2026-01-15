@@ -3,9 +3,10 @@ package com.blo.sales.v2.model.impl;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProduct;
 import com.blo.sales.v2.model.ISaleProductModel;
 import com.blo.sales.v2.model.config.DBConnection;
-import com.blo.sales.v2.model.constants.Queries;
+import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.mapper.SaleProductEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -37,7 +38,7 @@ public class SaleProductModelImpl implements ISaleProductModel {
             DBConnection.disableAutocommit();
             final var saleProduct = mapper.toInner(sale);
             // 2. Usar prepareStatement con RETURN_GENERATED_KEYS (Más estándar que prepareCall para INSERT)
-            final var ps = conn.prepareStatement(Queries.INSERT_SALE_PRODUCT, Statement.RETURN_GENERATED_KEYS);
+            final var ps = conn.prepareStatement(BloSalesV2Queries.INSERT_SALE_PRODUCT, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, saleProduct.getFk_sale());
             ps.setLong(2, saleProduct.getFk_product());
             ps.setBigDecimal(3, saleProduct.getQunatity_sale());
@@ -45,7 +46,7 @@ public class SaleProductModelImpl implements ISaleProductModel {
             ps.setString(5, saleProduct.getTimestamp());
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new BloSalesV2Exception("Error en guardado en la base de datos");
+                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
             }
             final var rs = ps.getGeneratedKeys();
             if (rs.next()){
@@ -54,13 +55,11 @@ public class SaleProductModelImpl implements ISaleProductModel {
             }
             return mapper.toOuter(saleProduct);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
                 throw new BloSalesV2Exception(ex.getMessage());
             }
         }
