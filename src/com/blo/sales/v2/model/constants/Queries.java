@@ -36,5 +36,12 @@ public final class Queries {
     public static final String INSERT_SALE = "INSERT INTO sales(total, sale_status, timestamp) VALUES (?, ?, ?)";
     
     /** ventas product */
-    public static final String INSERT_SALE_PRODUCT = "INSERT INTO sale_product(fk_sale, fk_product, quantity_on_sale, total_on_sale, timestamp) VALUES (?, ?, ?, ?, ?)";
+    public static final String INSERT_SALE_PRODUCT = "INSERT INTO sale_product(fk_sale, fk_product, quantity_sale, total_on_sale, timestamp) VALUES (?, ?, ?, ?, ?)";
+    
+    /** cajas de dinero */
+    public static final String INSERT_CASHBOX = "INSERT INTO cashboxes(fk_user, timestamp, status, amount) VALUES (?, ?, ?, ?)";
+    
+    public static final String UPDATE_CASHBOX = "UPDATE cashboxes SET timestamp = ?, status = ?, amount = ? WHERE id_cashbox = ?";
+    
+    public static final String SELECT_OPEN_CASHBOX = "SELECT id_cashbox, fk_user, timestamp, status, amount FROM cashboxes WHERE status = ? LIMIT 1";
 }

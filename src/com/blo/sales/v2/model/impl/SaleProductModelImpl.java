@@ -39,7 +39,7 @@ public class SaleProductModelImpl implements ISaleProductModel {
             // 2. Usar prepareStatement con RETURN_GENERATED_KEYS (Más estándar que prepareCall para INSERT)
             final var ps = conn.prepareStatement(Queries.INSERT_SALE_PRODUCT, Statement.RETURN_GENERATED_KEYS);
             ps.setLong(1, saleProduct.getFk_sale());
-            ps.setLong(2, saleProduct.getFk_sale());
+            ps.setLong(2, saleProduct.getFk_product());
             ps.setBigDecimal(3, saleProduct.getQunatity_sale());
             ps.setBigDecimal(4, saleProduct.getTotal_on_sale());
             ps.setString(5, saleProduct.getTimestamp());
@@ -48,8 +48,10 @@ public class SaleProductModelImpl implements ISaleProductModel {
                 throw new BloSalesV2Exception("Error en guardado en la base de datos");
             }
             final var rs = ps.getGeneratedKeys();
-            saleProduct.setId_sale_product(rs.getLong(1));
-            DBConnection.doCommit();
+            if (rs.next()){
+                saleProduct.setId_sale_product(rs.getLong(1));
+                DBConnection.doCommit();
+            }
             return mapper.toOuter(saleProduct);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
