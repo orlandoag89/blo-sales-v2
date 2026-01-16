@@ -8,6 +8,7 @@ import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.dialogs.SelectorDialog;
 import com.blo.sales.v2.view.mappers.PojoSaleMapper;
 import com.blo.sales.v2.view.mappers.PojoSaleProductDataMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoProductsMapper;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 
 public class Sales extends javax.swing.JPanel {
@@ -41,8 +43,6 @@ public class Sales extends javax.swing.JPanel {
     
     private PojoLoggedInUser userData;
     
-    private PojoSaleMapper saleMapper;
-    
     /**
      * Creates new form Sales
      */
@@ -52,7 +52,6 @@ public class Sales extends javax.swing.JPanel {
         modelLst = new DefaultListModel<String>();
         salesController = SalesControllerImpl.getInstance();
         saleProductMapper = PojoSaleProductDataMapper.getInstance();
-        saleMapper = PojoSaleMapper.getInstance();
         this.userData = userData;
         totalSale = BigDecimal.ZERO;
         initComponents();
@@ -60,11 +59,11 @@ public class Sales extends javax.swing.JPanel {
         try {
             retrieveProducts();
             GUICommons.addDoubleClickOnListEvt(lstProductsSales, item -> {
+                /** elimina un item de una lista */
                 final var indexSelected = lstProductsSales.getSelectedIndex();
                 if (indexSelected != -1) {
                     modelLst.remove(indexSelected);
                     final var price = item.substring(item.lastIndexOf("$") + 1, item.lastIndexOf("[")).trim();
-                    System.out.println(price);
                     totalSale = totalSale.subtract(new BigDecimal(price));
                     GUICommons.setTextToLabel(lblTotal, "Total: $" + totalSale);
                     if (totalSale.compareTo(BigDecimal.ZERO) == 0) {
@@ -228,21 +227,8 @@ public class Sales extends javax.swing.JPanel {
                 final var termToSearch = GUICommons.getTextFromJText(txtSearch);
                 /** busqueda por codigo de barras */
                 if (BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.ONLY_NUMBERS, termToSearch)) {
-                    productFound = 
-                            products.stream().filter(c -> c.getBarCode().equals(termToSearch)).findFirst().orElse(null);
-                    GUICommons.setTextToLabel(lblProductName, productFound.getProduct());
-                    //modelLst.addElement(productFound.toString());
-                    //lstProductsSales.setModel(modelLst);
-                } else {
-                    productFound =
-                            products.stream().filter(c -> c.getProduct().contains(termToSearch)).findFirst().orElse(null);
-                    GUICommons.setTextToLabel(lblProductName, productFound.getProduct());
+                    filterProduct(termToSearch, true);
                 }
-                /*if (productFound != null) {
-                    totalSale = totalSale.add(productFound.getPrice());
-                }
-                GUICommons.setTextToField(txtSearch, BloSalesV2Utils.EMPTY_STRING);
-                GUICommons.setTextToLabel(lblTotal, "Total: $" + totalSale);*/
             } catch (BloSalesV2Exception ex) {
                 Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -254,6 +240,7 @@ public class Sales extends javax.swing.JPanel {
         final var model = (DefaultListModel<String>) lstProductsSales.getModel();
         final var products = new ArrayList<PojoSaleProductData>();
         PojoSaleProductData productInfo;
+        /** parsea los datos de una fila y crea un nuevo pojo para guardar */
         for (var i = 0; i < model.size(); i++) {
             final var item = model.get(i);
             productInfo = new PojoSaleProductData();
@@ -286,6 +273,7 @@ public class Sales extends javax.swing.JPanel {
     private void btnContinueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinueActionPerformed
         try {
             final var quantity = GUICommons.getTextFromJText(nmbQuantity);
+            /** agrega un elemento a la lista de productos */
             modelLst.addElement(productFound.toString() + " [" + quantity + "]");
             lstProductsSales.setModel(modelLst);
             if (productFound != null) {
@@ -293,6 +281,7 @@ public class Sales extends javax.swing.JPanel {
             }
             GUICommons.setTextToField(txtSearch, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToLabel(lblTotal, "Total: $" + totalSale);
+            GUICommons.setTextToField(nmbQuantity, "1");
             productFound = null;
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
@@ -300,9 +289,39 @@ public class Sales extends javax.swing.JPanel {
     }//GEN-LAST:event_btnContinueActionPerformed
 
     private void btnByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnByNameActionPerformed
-        
+       final var productsString = products.stream()
+        .map(item -> item.toString())
+        .collect(Collectors.toList());
+       /** abre un cuadro de dialogo */
+       final var dialog = new SelectorDialog<>(
+            this,
+            "Selecciona un busqueda manual de producto",
+            productsString,
+            item -> {
+                filterProduct(item, false);
+                GUICommons.setTextToField(txtSearch, productFound.getProduct());
+            });
+       dialog.setVisible(true);
     }//GEN-LAST:event_btnByNameActionPerformed
 
+    /**
+     * filtra los productos por codigo de barras o nombre
+     * @param term
+     * @param isBarCode 
+     */
+    private void filterProduct(String term, boolean isBarCode) {
+        productFound = products.stream().filter(v -> {
+            if (isBarCode) {
+                return v.getBarCode().equals(term);
+            }
+            return v.toString().contains(term);
+        }).findAny().orElse(null);
+    }
+    
+    /**
+     * recupera los datos de los productos de una base de datos
+     * @throws BloSalesV2Exception 
+     */
     private void retrieveProducts() throws BloSalesV2Exception {
         products = mapperProducts.toOuter(productsController.getAllProducts()).getProducts();
     }
