@@ -41,4 +41,18 @@ public final class BloSalesV2Columns {
     public static final String ROL = "rol";
     
     public static final String USER_NAME = "username";
+    
+    public static final String ID_DEBTOR = "id_debtor";
+    
+    public static final String TOTAL = "total";
+    
+    public static final String PAYMENTS = "payments";
+    
+    public static final String ID_DEBTOR_SALE = "id_debtor_sale";
+    
+    public static final String NAME = "name";
+    
+    public static final String FK_SALE = "fk_sale";
+    
+    public static final String FK_DEBTOR = "fk_debtor";
 }

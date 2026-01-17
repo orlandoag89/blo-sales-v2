@@ -1,12 +1,16 @@
 package com.blo.sales.v2.controller.impl;
 
 import com.blo.sales.v2.controller.ICashboxController;
+import com.blo.sales.v2.controller.IDebtorsController;
+import com.blo.sales.v2.controller.IDebtorsSalesController;
 import com.blo.sales.v2.controller.IHistoryController;
 import com.blo.sales.v2.controller.IProductsController;
 import com.blo.sales.v2.controller.ISalesController;
 import com.blo.sales.v2.controller.ISalesProductController;
 import com.blo.sales.v2.controller.IUserController;
 import com.blo.sales.v2.controller.pojos.PojoIntCashbox;
+import com.blo.sales.v2.controller.pojos.PojoIntDebtor;
+import com.blo.sales.v2.controller.pojos.PojoIntDebtorSale;
 import com.blo.sales.v2.controller.pojos.PojoIntMovement;
 import com.blo.sales.v2.controller.pojos.PojoIntProduct;
 import com.blo.sales.v2.controller.pojos.PojoIntSale;
@@ -25,6 +29,9 @@ import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * validar flujo para caja de dinero 
+ */
 public class SalesControllerImpl implements ISalesController {
     
     private static SalesControllerImpl instance;
@@ -41,6 +48,10 @@ public class SalesControllerImpl implements ISalesController {
     
     private ICashboxController cashboxController;
     
+    private IDebtorsController debtorsController;
+    
+    private IDebtorsSalesController debtorsSalesController;
+    
     private SalesControllerImpl() {
         saleModel = SalesModelImpl.getInstance();
         historyController = HistoryControllerImpl.getInstance();
@@ -48,6 +59,8 @@ public class SalesControllerImpl implements ISalesController {
         productsController = ProductsControllerImpl.getInstance();
         salesProductsController = SalesProductControllerImpl.getInstance();
         cashboxController = CashboxControllerImpl.getInstance();
+        debtorsController = DebtorsControllerImpl.getInstance();
+        debtorsSalesController = DebtorsSalesControllerImpl.getInstance();
     }
     
     public static SalesControllerImpl getInstance() {
@@ -120,6 +133,65 @@ public class SalesControllerImpl implements ISalesController {
         // actualizar cantidad en la caja
         cashboxController.updateCAshbox(openCashbox, openCashbox.getIdCashbox());
         return saleSaved;
+    }
+    
+    @Override
+    public PojoIntDebtor registerSaleWithNewDebtor(
+            BigDecimal totalSale,
+            List<PojoIntSaleProductData> productsInfo,
+            long idUser,
+            PojoIntDebtor debtorData
+    ) throws BloSalesV2Exception {
+        /** se realiza la venta */
+        final var sale = registerSale(totalSale, productsInfo, idUser);
+        /** se registra el deudor */
+        final var debtor = debtorsController.saveDebtor(debtorData);
+        /** guardar relacion deudor-venta */
+        final var debtorSale = new PojoIntDebtorSale();
+        debtorSale.setFkDebtor(debtor.getIdDebtor());
+        debtorSale.setFkSale(sale.getIdSale());
+        debtorSale.setTimestamp(sale.getTimestamp());
+        debtorsSalesController.addRelationship(debtorSale);
+        return debtor;
+    }
+    
+    @Override
+    public PojoIntDebtor registerSaleWithDebtor(
+            BigDecimal totalSale,
+            List<PojoIntSaleProductData> productsInfo,
+            String partialPay,
+            long idUser,
+            long idDebtor
+    ) throws BloSalesV2Exception {
+        /** validaciones */
+        final var debtorFound = debtorsController.getDebtorById(idDebtor);
+        BloSalesV2Utils.validateRule(debtorFound == null, "Deudor no encontrado");
+        /** se actualiza deudor */
+        if (partialPay.isBlank()) {
+            // el deudor no ha abonado
+            registerSale(BigDecimal.ZERO, productsInfo, idUser);
+            final var amount = debtorFound.getTotal().add(totalSale);
+            debtorFound.setTotal(amount);
+            return debtorsController.updateDebtor(debtorFound, idDebtor);
+        }
+        // el deudor ha abonado algo
+        final var payment = new BigDecimal(partialPay);
+        // se regitra venta
+        final var sale = registerSale(payment, productsInfo, idUser);
+        final var amount = debtorFound.getTotal().subtract(payment);
+        // se cubrio toda la deuda
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            // se eliminan pagos abonos
+            debtorFound.setPayments(BloSalesV2Utils.EMPTY_STRING);
+            // monto igual a 0
+            debtorFound.setTotal(BigDecimal.ZERO);
+            return debtorsController.updateDebtor(debtorFound, idDebtor);
+        }
+        // se actualiza el total y se agrega un pago parcial
+        final var partiaPayment = BloSalesV2Utils.SEPARATOR_PAYMENTS + partialPay + "-" + sale.getTimestamp();
+        debtorFound.setTotal(amount);
+        debtorFound.setPayments(debtorFound.getPayments() + partiaPayment);
+        return debtorsController.updateDebtor(debtorFound, idDebtor);
     }
     
     /**

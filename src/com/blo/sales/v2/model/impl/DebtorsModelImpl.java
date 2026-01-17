@@ -1,0 +1,145 @@
+package com.blo.sales.v2.model.impl;
+
+import com.blo.sales.v2.controller.pojos.PojoIntDebtor;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntDebtors;
+import com.blo.sales.v2.model.IDebtorsModel;
+import com.blo.sales.v2.model.config.DBConnection;
+import com.blo.sales.v2.model.constants.BloSalesV2Columns;
+import com.blo.sales.v2.model.constants.BloSalesV2Queries;
+import com.blo.sales.v2.model.entities.DebtorEntity;
+import com.blo.sales.v2.model.entities.WrapperDebtorsEntity;
+import com.blo.sales.v2.model.mapper.DebtorEntityMapper;
+import com.blo.sales.v2.model.mapper.WrapperDebtorsEntityMapper;
+import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.utils.BloSalesV2Utils;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+public class DebtorsModelImpl implements IDebtorsModel {
+    
+    private static final Connection conn = DBConnection.getConnection();
+    
+    private static DebtorsModelImpl instance;
+    
+    private DebtorEntityMapper mapper;
+    
+    private WrapperDebtorsEntityMapper wrapperMapper;
+    
+    private DebtorsModelImpl() {
+        mapper = DebtorEntityMapper.getInstance();
+        wrapperMapper = WrapperDebtorsEntityMapper.getInstance();
+    }
+    
+    public static DebtorsModelImpl getInstance() {
+        if (instance == null) {
+            instance = new DebtorsModelImpl();
+        }
+        return instance;
+    }
+
+    @Override
+    public PojoIntDebtor saveDebtor(PojoIntDebtor debtor) throws BloSalesV2Exception {
+        try {
+            final var data = mapper.toInner(debtor);
+            // 1. Desactivar el AutoCommit para iniciar la transacción
+            DBConnection.disableAutocommit();
+            // 2. Usar prepareStatement con RETURN_GENERATED_KEYS (Más estándar que prepareCall para INSERT)
+            final var ps = conn.prepareStatement(BloSalesV2Queries.INSERT_DEBTOR, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, data.getName());
+            ps.setBigDecimal(2, data.getTotal());
+            ps.setString(3, data.getPayments());
+            final var rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                final var rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    data.setId_debtor(rs.getLong(1));
+                }
+            }
+            // 3. Si todo salió bien, confirmamos los cambios en la DB
+            DBConnection.doCommit();
+            return mapper.toOuter(data);
+        } catch (SQLException e) {
+            throw new BloSalesV2Exception(e.getMessage());
+        } finally {
+            try {
+                DBConnection.enableAutocommit();
+            } catch (SQLException e) {
+                throw new BloSalesV2Exception(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public PojoIntDebtor getDebtorById(long idDebtor) throws BloSalesV2Exception {
+        try {
+            final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_DEBTOR_BY_ID);
+            ps.setLong(1, idDebtor);
+            final var rs = ps.executeQuery();
+            BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.ERROR_PRODUCT_NOT_FOUND);
+            final var d = new DebtorEntity();
+            d.setId_debtor(rs.getLong(BloSalesV2Columns.ID_DEBTOR));
+            d.setName(rs.getString(rs.getString(BloSalesV2Columns.NAME)));
+            d.setPayments(rs.getString(BloSalesV2Columns.PAYMENTS));
+            d.setTotal(rs.getBigDecimal(BloSalesV2Columns.TOTAL));
+            return mapper.toOuter(d);
+        } catch (SQLException ex) {
+            throw new BloSalesV2Exception(ex.getMessage());
+        }
+    }
+
+    @Override
+    public PojoIntDebtor updateDebtor(PojoIntDebtor debtor, long idDebtor) throws BloSalesV2Exception {
+        try {
+            DBConnection.disableAutocommit();
+            final var debtorMapped = mapper.toInner(debtor);
+            debtorMapped.setName(debtor.getName());
+            debtorMapped.setPayments(debtor.getPayments());
+            debtorMapped.setTotal(debtor.getTotal());
+            final var ps = conn.prepareStatement(BloSalesV2Queries.UPDATE_DEBTOR);
+            ps.setString(1, debtorMapped.getName());
+            ps.setBigDecimal(2, debtorMapped.getTotal());
+            ps.setString(3, debtorMapped.getPayments());
+            ps.setLong(4, idDebtor);
+            final var rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
+            }
+            DBConnection.doCommit();
+            return mapper.toOuter(debtorMapped);
+        } catch (SQLException e) {
+            throw new BloSalesV2Exception(e.getMessage());
+        } finally {
+            try {
+                DBConnection.enableAutocommit();
+            } catch (SQLException e) {
+                throw new BloSalesV2Exception(e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public WrapperPojoIntDebtors getAllDebtors() throws BloSalesV2Exception {
+         try {
+            final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_DEBTORS);
+            final var rs = ps.executeQuery();
+            final var debtorsWrapper = new WrapperDebtorsEntity();
+            final var debtors = new ArrayList<DebtorEntity>();
+            DebtorEntity entity;
+            while (rs.next()) {
+                entity = new DebtorEntity();
+                entity.setId_debtor(rs.getLong(BloSalesV2Columns.ID_DEBTOR));
+                entity.setName(rs.getString(BloSalesV2Columns.NAME));
+                entity.setTotal(rs.getBigDecimal(BloSalesV2Columns.TOTAL));
+                entity.setPayments(rs.getString(BloSalesV2Columns.PAYMENTS));
+                debtors.add(entity);
+            }
+            debtorsWrapper.setDebtors(debtors);
+            return wrapperMapper.toOuter(debtorsWrapper);
+        } catch (SQLException ex) {
+            throw new BloSalesV2Exception(ex.getMessage());
+        }
+    }
+    
+}

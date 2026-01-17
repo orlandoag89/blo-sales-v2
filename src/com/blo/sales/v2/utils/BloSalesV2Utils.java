@@ -20,6 +20,8 @@ public final class BloSalesV2Utils {
     /** expresion regular para solo numeros */
     public static final String ONLY_NUMBERS = "[0-9]+";
     
+    public static final String SEPARATOR_PAYMENTS = "\\|";
+    
     public static final String INVALID_TEXT = "Texto no v\u00e1lido";
     
     /** constante para error en guardado */

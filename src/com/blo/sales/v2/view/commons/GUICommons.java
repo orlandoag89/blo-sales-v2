@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.util.function.Consumer;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -177,5 +178,13 @@ public final class GUICommons {
         final var model = (DefaultTableModel) table.getModel();
         sorter = new TableRowSorter<>(model);
         table.setRowSorter(sorter);
+    }
+    
+    public static void disabledButton(JButton btn) {
+        btn.setEnabled(false);
+    }
+    
+    public static void enabledButton(JButton btn) {
+        btn.setEnabled(true);
     }
 }

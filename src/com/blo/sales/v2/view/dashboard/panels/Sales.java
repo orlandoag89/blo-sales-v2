@@ -1,16 +1,19 @@
 package com.blo.sales.v2.view.dashboard.panels;
 
+import com.blo.sales.v2.controller.IDebtorsController;
 import com.blo.sales.v2.controller.IProductsController;
 import com.blo.sales.v2.controller.ISalesController;
+import com.blo.sales.v2.controller.impl.DebtorsControllerImpl;
 import com.blo.sales.v2.controller.impl.ProductsControllerImpl;
 import com.blo.sales.v2.controller.impl.SalesControllerImpl;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.dialogs.DebtorsDialog;
 import com.blo.sales.v2.view.dialogs.SelectorDialog;
-import com.blo.sales.v2.view.mappers.PojoSaleMapper;
 import com.blo.sales.v2.view.mappers.PojoSaleProductDataMapper;
+import com.blo.sales.v2.view.mappers.WrapperDebtorsMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoProductsMapper;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.PojoProduct;
@@ -39,9 +42,13 @@ public class Sales extends javax.swing.JPanel {
     
     private ISalesController salesController;
     
+    private IDebtorsController debtorsController;
+    
     private PojoSaleProductDataMapper saleProductMapper;
     
     private PojoLoggedInUser userData;
+    
+    private WrapperDebtorsMapper wrapperDebtorsMapper;
     
     /**
      * Creates new form Sales
@@ -52,10 +59,13 @@ public class Sales extends javax.swing.JPanel {
         modelLst = new DefaultListModel<String>();
         salesController = SalesControllerImpl.getInstance();
         saleProductMapper = PojoSaleProductDataMapper.getInstance();
+        debtorsController = DebtorsControllerImpl.getInstance();
+        wrapperDebtorsMapper = WrapperDebtorsMapper.getInstance();
         this.userData = userData;
         totalSale = BigDecimal.ZERO;
         initComponents();
         resetFields();
+        disableButtons();
         try {
             retrieveProducts();
             GUICommons.addDoubleClickOnListEvt(lstProductsSales, item -> {
@@ -67,7 +77,7 @@ public class Sales extends javax.swing.JPanel {
                     totalSale = totalSale.subtract(new BigDecimal(price));
                     GUICommons.setTextToLabel(lblTotal, "Total: $" + totalSale);
                     if (totalSale.compareTo(BigDecimal.ZERO) == 0) {
-                        pnlPay.setVisible(false);
+                        disableButtons();
                     }
                 }
             });
@@ -86,14 +96,13 @@ public class Sales extends javax.swing.JPanel {
         lblTotal = new javax.swing.JLabel();
         pnlPay = new javax.swing.JPanel();
         btnComplete = new javax.swing.JButton();
+        btnDebtors = new javax.swing.JButton();
         pnlSearch = new javax.swing.JPanel();
         lblQuantity = new javax.swing.JLabel();
         nmbQuantity = new javax.swing.JTextField();
         txtSearch = new javax.swing.JTextField();
-        btnContinue = new javax.swing.JButton();
         lblBarCode = new javax.swing.JLabel();
         btnByName = new javax.swing.JButton();
-        lblProductName = new javax.swing.JLabel();
 
         jScrollPane1.setViewportView(lstProductsSales);
 
@@ -104,21 +113,32 @@ public class Sales extends javax.swing.JPanel {
             }
         });
 
+        btnDebtors.setText("Incompleto");
+        btnDebtors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDebtorsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlPayLayout = new javax.swing.GroupLayout(pnlPay);
         pnlPay.setLayout(pnlPayLayout);
         pnlPayLayout.setHorizontalGroup(
             pnlPayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlPayLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPayLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnComplete)
-                .addContainerGap(275, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnDebtors)
+                .addContainerGap())
         );
         pnlPayLayout.setVerticalGroup(
             pnlPayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlPayLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnComplete)
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addGroup(pnlPayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnComplete)
+                    .addComponent(btnDebtors))
+                .addContainerGap(206, Short.MAX_VALUE))
         );
 
         lblQuantity.setText("Cantidad");
@@ -126,13 +146,6 @@ public class Sales extends javax.swing.JPanel {
         txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtSearchKeyReleased(evt);
-            }
-        });
-
-        btnContinue.setText("Continuar");
-        btnContinue.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnContinueActionPerformed(evt);
             }
         });
 
@@ -152,21 +165,15 @@ public class Sales extends javax.swing.JPanel {
             .addGroup(pnlSearchLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlSearchLayout.createSequentialGroup()
-                        .addComponent(lblProductName, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(40, 40, 40)
-                        .addComponent(btnContinue))
+                    .addComponent(nmbQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblQuantity))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlSearchLayout.createSequentialGroup()
-                        .addGroup(pnlSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nmbQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblQuantity))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnlSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnlSearchLayout.createSequentialGroup()
-                                .addComponent(lblBarCode)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnByName))
-                            .addComponent(txtSearch))))
+                        .addComponent(lblBarCode)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 276, Short.MAX_VALUE)
+                        .addComponent(btnByName))
+                    .addComponent(txtSearch))
                 .addGap(6, 6, 6))
         );
         pnlSearchLayout.setVerticalGroup(
@@ -181,11 +188,7 @@ public class Sales extends javax.swing.JPanel {
                 .addGroup(pnlSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(nmbQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(pnlSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lblProductName, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnContinue))
-                .addContainerGap(7, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -195,39 +198,42 @@ public class Sales extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlPay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(pnlPay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pnlSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(4, 4, 4)
                 .addComponent(pnlSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(48, 48, 48)
+                        .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(154, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(pnlPay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(pnlPay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
         if (evt.getKeyCode() == 10) {
-            pnlPay.setVisible(true);
             try {
                 final var termToSearch = GUICommons.getTextFromJText(txtSearch);
                 /** busqueda por codigo de barras */
                 if (BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.ONLY_NUMBERS, termToSearch)) {
                     filterProduct(termToSearch, true);
+                    addItemToList();
                 }
             } catch (BloSalesV2Exception ex) {
                 Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
@@ -264,29 +270,11 @@ public class Sales extends javax.swing.JPanel {
         
         try {
             salesController.registerSale(totalSale, productsInner, this.userData.getIdUser());
-            resetFields();
+            disableButtons();
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnCompleteActionPerformed
-
-    private void btnContinueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinueActionPerformed
-        try {
-            final var quantity = GUICommons.getTextFromJText(nmbQuantity);
-            /** agrega un elemento a la lista de productos */
-            modelLst.addElement(productFound.toString() + " [" + quantity + "]");
-            lstProductsSales.setModel(modelLst);
-            if (productFound != null) {
-                totalSale = totalSale.add(productFound.getPrice().multiply(new BigDecimal(quantity)));
-            }
-            GUICommons.setTextToField(txtSearch, BloSalesV2Utils.EMPTY_STRING);
-            GUICommons.setTextToLabel(lblTotal, "Total: $" + totalSale);
-            GUICommons.setTextToField(nmbQuantity, "1");
-            productFound = null;
-        } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnContinueActionPerformed
 
     private void btnByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnByNameActionPerformed
        final var productsString = products.stream()
@@ -300,10 +288,40 @@ public class Sales extends javax.swing.JPanel {
             item -> {
                 filterProduct(item, false);
                 GUICommons.setTextToField(txtSearch, productFound.getProduct());
+                addItemToList();
             });
        dialog.setVisible(true);
     }//GEN-LAST:event_btnByNameActionPerformed
 
+    private void btnDebtorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDebtorsActionPerformed
+        try {
+            final var debtors = wrapperDebtorsMapper.toOuter(debtorsController.getAllDebtors());
+            final var debtorsDialog = new DebtorsDialog<>(this, "Deudores", debtors.getDebtors(), item -> System.out.println(""));
+            debtorsDialog.setVisible(true);
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDebtorsActionPerformed
+
+    private void addItemToList() {
+        try {
+            final var quantity = GUICommons.getTextFromJText(nmbQuantity);
+            /** agrega un elemento a la lista de productos */
+            modelLst.addElement(productFound.toString() + " [" + quantity + "]");
+            lstProductsSales.setModel(modelLst);
+            if (productFound != null) {
+                totalSale = totalSale.add(productFound.getPrice().multiply(new BigDecimal(quantity)));
+            }
+            GUICommons.setTextToField(txtSearch, BloSalesV2Utils.EMPTY_STRING);
+            GUICommons.setTextToLabel(lblTotal, "Total: $" + totalSale);
+            GUICommons.setTextToField(nmbQuantity, "1");
+            productFound = null;
+            GUICommons.enabledButton(btnComplete);
+            GUICommons.enabledButton(btnDebtors);
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * filtra los productos por codigo de barras o nombre
      * @param term
@@ -328,18 +346,21 @@ public class Sales extends javax.swing.JPanel {
     
     private void resetFields() {
         GUICommons.setTextToField(nmbQuantity, "1");
-        GUICommons.setTextToLabel(lblProductName, BloSalesV2Utils.EMPTY_STRING);
         lstProductsSales.clearSelection();
         GUICommons.setTextToLabel(lblTotal, "0");
+    }
+    
+    private void disableButtons() {
+        GUICommons.disabledButton(btnComplete);
+        GUICommons.disabledButton(btnDebtors);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnByName;
     private javax.swing.JButton btnComplete;
-    private javax.swing.JButton btnContinue;
+    private javax.swing.JButton btnDebtors;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblBarCode;
-    private javax.swing.JLabel lblProductName;
     private javax.swing.JLabel lblQuantity;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JList<String> lstProductsSales;
