@@ -170,26 +170,26 @@ public class SalesControllerImpl implements ISalesController {
         if (partialPay.isBlank()) {
             // el deudor no ha abonado
             registerSale(BigDecimal.ZERO, productsInfo, idUser);
-            final var amount = debtorFound.getTotal().add(totalSale);
-            debtorFound.setTotal(amount);
+            final var amount = debtorFound.getDebt().add(totalSale);
+            debtorFound.setDebt(amount);
             return debtorsController.updateDebtor(debtorFound, idDebtor);
         }
         // el deudor ha abonado algo
         final var payment = new BigDecimal(partialPay);
         // se regitra venta
         final var sale = registerSale(payment, productsInfo, idUser);
-        final var amount = debtorFound.getTotal().subtract(payment);
+        final var amount = debtorFound.getDebt().subtract(payment);
         // se cubrio toda la deuda
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             // se eliminan pagos abonos
             debtorFound.setPayments(BloSalesV2Utils.EMPTY_STRING);
             // monto igual a 0
-            debtorFound.setTotal(BigDecimal.ZERO);
+            debtorFound.setDebt(BigDecimal.ZERO);
             return debtorsController.updateDebtor(debtorFound, idDebtor);
         }
         // se actualiza el total y se agrega un pago parcial
         final var partiaPayment = BloSalesV2Utils.SEPARATOR_PAYMENTS + partialPay + "-" + sale.getTimestamp();
-        debtorFound.setTotal(amount);
+        debtorFound.setDebt(amount);
         debtorFound.setPayments(debtorFound.getPayments() + partiaPayment);
         return debtorsController.updateDebtor(debtorFound, idDebtor);
     }

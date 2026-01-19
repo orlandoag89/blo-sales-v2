@@ -8,7 +8,7 @@ public class PojoIntDebtor {
     
     private String name;
     
-    private BigDecimal total;
+    private BigDecimal debt;
     
     private String payments;
 
@@ -28,12 +28,12 @@ public class PojoIntDebtor {
         this.name = name;
     }
 
-    public BigDecimal getTotal() {
-        return total;
+    public BigDecimal getDebt() {
+        return debt;
     }
 
-    public void setTotal(BigDecimal total) {
-        this.total = total;
+    public void setDebt(BigDecimal debt) {
+        this.debt = debt;
     }
 
     public String getPayments() {

@@ -44,7 +44,7 @@ public final class BloSalesV2Columns {
     
     public static final String ID_DEBTOR = "id_debtor";
     
-    public static final String TOTAL = "total";
+    public static final String DEBT = "debt";
     
     public static final String PAYMENTS = "payments";
     

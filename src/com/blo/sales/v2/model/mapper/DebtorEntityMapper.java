@@ -26,7 +26,7 @@ public class DebtorEntityMapper implements IToInner<DebtorEntity, PojoIntDebtor>
         final var inner = new DebtorEntity();
         inner.setId_debtor(outer.getIdDebtor());
         inner.setPayments(outer.getPayments());
-        inner.setTotal(outer.getTotal());
+        inner.setDebt(outer.getDebt());
         inner.setName(outer.getName());
         return inner;
     }
@@ -40,7 +40,7 @@ public class DebtorEntityMapper implements IToInner<DebtorEntity, PojoIntDebtor>
         outer.setIdDebtor(inner.getId_debtor());
         outer.setName(inner.getName());
         outer.setPayments(inner.getPayments());
-        outer.setTotal(inner.getTotal());
+        outer.setDebt(inner.getDebt());
         return outer;
     }
     

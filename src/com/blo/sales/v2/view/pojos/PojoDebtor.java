@@ -8,7 +8,7 @@ public class PojoDebtor {
     
     private String name;
     
-    private BigDecimal total;
+    private BigDecimal debt;
     
     private String payments;
 
@@ -28,19 +28,24 @@ public class PojoDebtor {
         this.name = name;
     }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
-
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
-
     public String getPayments() {
         return payments;
     }
 
     public void setPayments(String payments) {
         this.payments = payments;
+    }
+
+    public BigDecimal getDebt() {
+        return debt;
+    }
+
+    public void setDebt(BigDecimal debt) {
+        this.debt = debt;
+    }
+
+    @Override
+    public String toString() {
+        return "PojoDebtor{" + "idDebtor=" + idDebtor + ", name=" + name + ", debt=" + debt + ", payments=" + payments + '}';
     }
 }

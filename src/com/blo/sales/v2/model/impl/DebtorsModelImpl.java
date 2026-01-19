@@ -48,7 +48,7 @@ public class DebtorsModelImpl implements IDebtorsModel {
             // 2. Usar prepareStatement con RETURN_GENERATED_KEYS (Más estándar que prepareCall para INSERT)
             final var ps = conn.prepareStatement(BloSalesV2Queries.INSERT_DEBTOR, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, data.getName());
-            ps.setBigDecimal(2, data.getTotal());
+            ps.setBigDecimal(2, data.getDebt());
             ps.setString(3, data.getPayments());
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {
@@ -82,7 +82,7 @@ public class DebtorsModelImpl implements IDebtorsModel {
             d.setId_debtor(rs.getLong(BloSalesV2Columns.ID_DEBTOR));
             d.setName(rs.getString(rs.getString(BloSalesV2Columns.NAME)));
             d.setPayments(rs.getString(BloSalesV2Columns.PAYMENTS));
-            d.setTotal(rs.getBigDecimal(BloSalesV2Columns.TOTAL));
+            d.setDebt(rs.getBigDecimal(BloSalesV2Columns.DEBT));
             return mapper.toOuter(d);
         } catch (SQLException ex) {
             throw new BloSalesV2Exception(ex.getMessage());
@@ -96,10 +96,10 @@ public class DebtorsModelImpl implements IDebtorsModel {
             final var debtorMapped = mapper.toInner(debtor);
             debtorMapped.setName(debtor.getName());
             debtorMapped.setPayments(debtor.getPayments());
-            debtorMapped.setTotal(debtor.getTotal());
+            debtorMapped.setDebt(debtor.getDebt());
             final var ps = conn.prepareStatement(BloSalesV2Queries.UPDATE_DEBTOR);
             ps.setString(1, debtorMapped.getName());
-            ps.setBigDecimal(2, debtorMapped.getTotal());
+            ps.setBigDecimal(2, debtorMapped.getDebt());
             ps.setString(3, debtorMapped.getPayments());
             ps.setLong(4, idDebtor);
             final var rowsAffected = ps.executeUpdate();
@@ -131,7 +131,7 @@ public class DebtorsModelImpl implements IDebtorsModel {
                 entity = new DebtorEntity();
                 entity.setId_debtor(rs.getLong(BloSalesV2Columns.ID_DEBTOR));
                 entity.setName(rs.getString(BloSalesV2Columns.NAME));
-                entity.setTotal(rs.getBigDecimal(BloSalesV2Columns.TOTAL));
+                entity.setDebt(rs.getBigDecimal(BloSalesV2Columns.DEBT));
                 entity.setPayments(rs.getString(BloSalesV2Columns.PAYMENTS));
                 debtors.add(entity);
             }
