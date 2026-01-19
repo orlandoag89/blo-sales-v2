@@ -52,8 +52,12 @@
                       <Component id="lblAmount" alignment="0" min="-2" pref="94" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtName" alignment="0" min="-2" pref="194" max="-2" attributes="0"/>
-                              <Component id="tblDebtors" alignment="0" min="-2" pref="444" max="-2" attributes="0"/>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Component id="txtName" min="-2" pref="194" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="btnRegister" min="-2" pref="129" max="-2" attributes="0"/>
+                              </Group>
+                              <Component id="tblContainer" alignment="0" min="-2" pref="444" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="pnlPayData" max="32767" attributes="0"/>
@@ -69,11 +73,14 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="lblAmount" min="-2" pref="24" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="txtName" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="txtName" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnRegister" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="pnlPayData" min="-2" max="-2" attributes="0"/>
-                      <Component id="tblDebtors" min="-2" pref="275" max="-2" attributes="0"/>
+                      <Component id="tblContainer" min="-2" pref="275" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="170" max="32767" attributes="0"/>
               </Group>
@@ -81,14 +88,14 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JScrollPane" name="tblDebtors">
+        <Container class="javax.swing.JScrollPane" name="tblContainer">
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTable" name="jTable1">
+            <Component class="javax.swing.JTable" name="tblDebtors">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="4" rowCount="4">
@@ -103,6 +110,9 @@
           </SubComponents>
         </Container>
         <Component class="javax.swing.JTextField" name="txtName">
+          <Events>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtNameKeyReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lblAmount">
         </Component>
@@ -113,10 +123,10 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="lblPartialPay" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="txtPartialPay" alignment="0" min="-2" pref="106" max="-2" attributes="0"/>
-                          <Component id="btnSaveRegister" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtPartialPay" alignment="0" pref="106" max="32767" attributes="0"/>
+                          <Component id="btnSaveRegister" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace pref="9" max="32767" attributes="0"/>
                   </Group>
@@ -143,14 +153,28 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="txtPartialPay">
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtPartialPayKeyReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnSaveRegister">
               <Properties>
-                <Property name="text" type="java.lang.String" value=" "/>
+                <Property name="text" type="java.lang.String" value="Guardar"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSaveRegisterActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="btnRegister">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Registrar"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRegisterActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>

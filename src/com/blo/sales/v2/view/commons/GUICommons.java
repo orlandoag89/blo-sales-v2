@@ -21,6 +21,15 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public final class GUICommons {
+    
+    /** tecla eliminar */
+    public static final int REMVOE_KEY_CODE = 8;
+    
+    /** tecla suprimir */
+    public static final int SUPR_KEY = 127;
+    
+    /** tecla enter */
+    public static final int ENTER_KEY_CODE = 10;
 
     private GUICommons() {
     }

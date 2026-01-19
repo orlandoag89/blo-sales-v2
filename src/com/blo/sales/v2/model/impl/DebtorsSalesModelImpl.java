@@ -2,13 +2,25 @@ package com.blo.sales.v2.model.impl;
 
 import com.blo.sales.v2.controller.pojos.PojoIntDebtorSale;
 import com.blo.sales.v2.model.IDebtorsSalesModel;
+import com.blo.sales.v2.model.config.DBConnection;
+import com.blo.sales.v2.model.constants.BloSalesV2Queries;
+import com.blo.sales.v2.model.mapper.DebtorSaleEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class DebtorsSalesModelImpl implements IDebtorsSalesModel {
     
+    private static final Connection conn = DBConnection.getConnection();
+    
     private static DebtorsSalesModelImpl instance;
     
-    private DebtorsSalesModelImpl() {}
+    private DebtorSaleEntityMapper mapper;
+    
+    private DebtorsSalesModelImpl() {
+        mapper = DebtorSaleEntityMapper.getInstance();
+    }
     
     public static DebtorsSalesModelImpl getInstance() {
         if (instance == null) {
@@ -19,7 +31,31 @@ public class DebtorsSalesModelImpl implements IDebtorsSalesModel {
 
     @Override
     public PojoIntDebtorSale addRelationship(PojoIntDebtorSale debtor) throws BloSalesV2Exception {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            final var relationInner = mapper.toInner(debtor);
+            DBConnection.disableAutocommit();
+            final var ps = conn.prepareStatement(BloSalesV2Queries.INSERT_DEBTOR_SALE, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, relationInner.getFk_debtor());
+            ps.setLong(2, relationInner.getFk_sale());
+            ps.setString(3, relationInner.getTimestamp());
+            final var rowsAffected = ps.executeUpdate();
+            if (rowsAffected > 0) {
+                final var rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    relationInner.setId_debtor_sale(rs.getLong(1));
+                }
+            }
+            DBConnection.doCommit();
+            return mapper.toOuter(relationInner);
+        } catch (SQLException ex) {
+            throw new BloSalesV2Exception(ex.getMessage());
+        } finally {
+            try {
+                DBConnection.enableAutocommit();
+            } catch (SQLException ex) {
+                throw new BloSalesV2Exception(ex.getMessage());
+            }
+        }
     }
     
 }

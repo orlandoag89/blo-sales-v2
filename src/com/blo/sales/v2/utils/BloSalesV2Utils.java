@@ -1,5 +1,6 @@
 package com.blo.sales.v2.utils;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
@@ -20,7 +21,9 @@ public final class BloSalesV2Utils {
     /** expresion regular para solo numeros */
     public static final String ONLY_NUMBERS = "[0-9]+";
     
-    public static final String SEPARATOR_PAYMENTS = "\\|";
+    public static final String CURRENCY_REGEX = "^\\d+(\\.\\d{1,2})?$";
+    
+    public static final String SEPARATOR_PAYMENTS = "|";
     
     public static final String INVALID_TEXT = "Texto no v\u00e1lido";
     
@@ -57,6 +60,34 @@ public final class BloSalesV2Utils {
         final var patternCompile = Pattern.compile(pattern);
         final var matcher = patternCompile.matcher(txt);
         return matcher.find();
+    }
+    
+    /** genera un item para los pagos parciales */
+    public static String getPartialPayment(BigDecimal partialPayment) {
+        final var str = new StringBuilder("");
+        str.append(partialPayment);
+        str.append("TIMESTAMP");
+        str.append(getTimestamp());
+        str.append(SEPARATOR_PAYMENTS);
+        return str.toString();
+    }
+    
+    /**
+     * 
+     * @param payments
+     * @return 
+     */
+    public static BigDecimal getAmountFromPartialPayments(String payments, int index) throws BloSalesV2Exception {
+        if (payments.trim().isBlank()) {
+            return BigDecimal.ZERO;
+        }
+        final var partialPayments = payments.split(SEPARATOR_PAYMENTS);
+        BloSalesV2Utils.validateRule(index > partialPayments.length, "El indice buscado no existe, la busqueda comienza a partir de 0");
+        if (partialPayments.length != 0) {
+            final var amount = partialPayments[index].split("TIMESTAMP")[0];
+            return new BigDecimal(amount);
+        }
+        return BigDecimal.ZERO;
     }
 }
 

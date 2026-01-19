@@ -46,12 +46,15 @@ public final class BloSalesV2Queries {
     public static final String SELECT_OPEN_CASHBOX = "SELECT id_cashbox, fk_user, timestamp, status, amount FROM cashboxes WHERE status = ? LIMIT 1";
     
     /** deudores */
-    public static final String INSERT_DEBTOR = "INSERT INTO debtors(name, total, payments) VALUES (?, ?, ?)";
+    public static final String INSERT_DEBTOR = "INSERT INTO debtors(name, debt, payments) VALUES (?, ?, ?)";
     
-    public static final String SELECT_DEBTOR_BY_ID = "SELECT id_debtor, name, total, payments FROM debtors WHERE id_debtor = ?";
+    public static final String SELECT_DEBTOR_BY_ID = "SELECT id_debtor, name, debt, payments FROM debtors WHERE id_debtor = ?";
     
-    public static final String SELECT_DEBTORS = "SELECT id_debtor, name, total, payments FROM debtors";
+    public static final String SELECT_DEBTORS = "SELECT id_debtor, name, debt, payments FROM debtors";
     
     public static final String UPDATE_DEBTOR = "UPDATE debtors SET (name = ?, total = ?, payments = ?) FROM debtors WHERE id_debtor = ?";
+    
+    /** deudores ventas */
+    public static final String INSERT_DEBTOR_SALE = "INSERT INTO debtor_sale(fk_debtor, fk_sale, timestamp) VALUES (?, ?, ?)";
 
 }

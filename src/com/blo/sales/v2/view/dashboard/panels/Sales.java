@@ -12,6 +12,7 @@ import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.dialogs.DebtorsDialog;
 import com.blo.sales.v2.view.dialogs.SelectorDialog;
+import com.blo.sales.v2.view.mappers.DebtorMapper;
 import com.blo.sales.v2.view.mappers.PojoSaleProductDataMapper;
 import com.blo.sales.v2.view.mappers.WrapperDebtorsMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoProductsMapper;
@@ -50,6 +51,8 @@ public class Sales extends javax.swing.JPanel {
     
     private WrapperDebtorsMapper wrapperDebtorsMapper;
     
+    private DebtorMapper debtorMapper;
+    
     /**
      * Creates new form Sales
      */
@@ -61,6 +64,7 @@ public class Sales extends javax.swing.JPanel {
         saleProductMapper = PojoSaleProductDataMapper.getInstance();
         debtorsController = DebtorsControllerImpl.getInstance();
         wrapperDebtorsMapper = WrapperDebtorsMapper.getInstance();
+        debtorMapper = DebtorMapper.getInstance();
         this.userData = userData;
         totalSale = BigDecimal.ZERO;
         initComponents();
@@ -243,33 +247,8 @@ public class Sales extends javax.swing.JPanel {
     }//GEN-LAST:event_txtSearchKeyReleased
 
     private void btnCompleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompleteActionPerformed
-        final var model = (DefaultListModel<String>) lstProductsSales.getModel();
-        final var products = new ArrayList<PojoSaleProductData>();
-        PojoSaleProductData productInfo;
-        /** parsea los datos de una fila y crea un nuevo pojo para guardar */
-        for (var i = 0; i < model.size(); i++) {
-            final var item = model.get(i);
-            productInfo = new PojoSaleProductData();
-            //idProduct product $price [quantity]
-            // 1. Obtener el ID (desde el inicio hasta el primer espacio)
-            final var primerEspacio = item.indexOf(" ");
-            final var id = item.substring(0, primerEspacio);
-            // 2. Obtener la cantidad (lo que está entre [ y ])
-            final var quantity = item.substring(item.indexOf("[") + 1, item.indexOf("]"));
-            // 3. Obtener el precio (lo que está entre $ y el espacio antes del [)
-            final var price = item.substring(item.indexOf("$") + 1, item.indexOf("[")).trim();
-            // 4. Obtener el nombre (lo que está entre el ID y el $)
-            //final var name = item.substring(primerEspacio, item.indexOf("$")).trim();
-            productInfo.setIdProduct(Long.parseLong(id));
-            productInfo.setPrice(new BigDecimal(price));
-            productInfo.setQuantityOnSale(new BigDecimal(quantity));
-            products.add(productInfo);
-        }
-        final var productsInner = new ArrayList<PojoIntSaleProductData>();
-        products.forEach(p -> productsInner.add(saleProductMapper.toInner(p)));
-        
         try {
-            salesController.registerSale(totalSale, productsInner, this.userData.getIdUser());
+            salesController.registerSale(totalSale, getProductData(), this.userData.getIdUser());
             disableButtons();
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
@@ -296,7 +275,30 @@ public class Sales extends javax.swing.JPanel {
     private void btnDebtorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDebtorsActionPerformed
         try {
             final var debtors = wrapperDebtorsMapper.toOuter(debtorsController.getAllDebtors());
-            final var debtorsDialog = new DebtorsDialog<>(this, "Deudores", debtors.getDebtors(), item -> System.out.println(""));
+            final var debtorsDialog = new DebtorsDialog<>(
+                this,
+                "Deudores",
+                debtors.getDebtors(),
+                totalSale,
+                item -> {
+                    /** formato de pagos amountTIMESTAMPtimestamp */
+                    final var partialPayments = 
+                                    item.getPayments().trim().split(BloSalesV2Utils.SEPARATOR_PAYMENTS);
+                    /** es nuevo deudor  */
+                    if (item.getIdDebtor() == 0) {
+                        try {
+                            var pay = BloSalesV2Utils.getAmountFromPartialPayments(item.getPayments(), 0);
+                            salesController.registerSaleWithNewDebtor(
+                                pay,
+                                getProductData(),
+                                userData.getIdUser(),
+                                debtorMapper.toInner(item)
+                            );
+                       } catch (BloSalesV2Exception ex) {
+                            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+                       }
+                    }
+                });
             debtorsDialog.setVisible(true);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
@@ -334,6 +336,34 @@ public class Sales extends javax.swing.JPanel {
             }
             return v.toString().contains(term);
         }).findAny().orElse(null);
+    }
+    
+    private List<PojoIntSaleProductData> getProductData() {
+        final var model = (DefaultListModel<String>) lstProductsSales.getModel();
+        final var products = new ArrayList<PojoSaleProductData>();
+        PojoSaleProductData productInfo;
+        /** parsea los datos de una fila y crea un nuevo pojo para guardar */
+        for (var i = 0; i < model.size(); i++) {
+            final var item = model.get(i);
+            productInfo = new PojoSaleProductData();
+            //idProduct product $price [quantity]
+            // 1. Obtener el ID (desde el inicio hasta el primer espacio)
+            final var primerEspacio = item.indexOf(" ");
+            final var id = item.substring(0, primerEspacio);
+            // 2. Obtener la cantidad (lo que está entre [ y ])
+            final var quantity = item.substring(item.indexOf("[") + 1, item.indexOf("]"));
+            // 3. Obtener el precio (lo que está entre $ y el espacio antes del [)
+            final var price = item.substring(item.indexOf("$") + 1, item.indexOf("[")).trim();
+            // 4. Obtener el nombre (lo que está entre el ID y el $)
+            //final var name = item.substring(primerEspacio, item.indexOf("$")).trim();
+            productInfo.setIdProduct(Long.parseLong(id));
+            productInfo.setPrice(new BigDecimal(price));
+            productInfo.setQuantityOnSale(new BigDecimal(quantity));
+            products.add(productInfo);
+        }
+        final var productsInner = new ArrayList<PojoIntSaleProductData>();
+        products.forEach(p -> productsInner.add(saleProductMapper.toInner(p)));
+        return productsInner;
     }
     
     /**
