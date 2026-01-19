@@ -12,12 +12,15 @@ import com.blo.sales.v2.model.mapper.DebtorEntityMapper;
 import com.blo.sales.v2.model.mapper.WrapperDebtorsEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.view.commons.GUILogger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
 public class DebtorsModelImpl implements IDebtorsModel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(DebtorsModelImpl.class.getName());
     
     private static final Connection conn = DBConnection.getConnection();
     
@@ -74,13 +77,14 @@ public class DebtorsModelImpl implements IDebtorsModel {
     @Override
     public PojoIntDebtor getDebtorById(long idDebtor) throws BloSalesV2Exception {
         try {
+            logger.log("id buscado " + idDebtor);
             final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_DEBTOR_BY_ID);
             ps.setLong(1, idDebtor);
             final var rs = ps.executeQuery();
             BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.ERROR_PRODUCT_NOT_FOUND);
             final var d = new DebtorEntity();
             d.setId_debtor(rs.getLong(BloSalesV2Columns.ID_DEBTOR));
-            d.setName(rs.getString(rs.getString(BloSalesV2Columns.NAME)));
+            d.setName(rs.getString(BloSalesV2Columns.NAME));
             d.setPayments(rs.getString(BloSalesV2Columns.PAYMENTS));
             d.setDebt(rs.getBigDecimal(BloSalesV2Columns.DEBT));
             return mapper.toOuter(d);
@@ -94,6 +98,7 @@ public class DebtorsModelImpl implements IDebtorsModel {
         try {
             DBConnection.disableAutocommit();
             final var debtorMapped = mapper.toInner(debtor);
+            logger.log("deudor actualizado " + debtor.toString());
             debtorMapped.setName(debtor.getName());
             debtorMapped.setPayments(debtor.getPayments());
             debtorMapped.setDebt(debtor.getDebt());

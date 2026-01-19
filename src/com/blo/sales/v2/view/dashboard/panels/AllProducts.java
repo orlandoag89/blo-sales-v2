@@ -9,6 +9,7 @@ import com.blo.sales.v2.controller.pojos.enums.TypesIntEnum;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.ProductMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoCategoriesMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoProductsMapper;
@@ -26,6 +27,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class AllProducts extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(AllProducts.class.getName());
 
     private PojoLoggedInUser userData;
     
@@ -327,6 +330,7 @@ public class AllProducts extends javax.swing.JPanel {
             }
             /** se actualiza cuando hay un cambio en algun producto */
             GUICommons.addDoubleClickOnTable(tblProducts, (Long id) -> {
+                logger.log(id + "<- id");
                 pnlManageProduct.setVisible(true);
                 final var productSelected = 
                         productsData.getProducts().stream().filter(p -> p.getIdProduct() == id).findFirst().orElse(null);

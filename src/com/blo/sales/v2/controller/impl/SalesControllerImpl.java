@@ -26,6 +26,7 @@ import com.blo.sales.v2.model.entities.enums.TypesEntityEnum;
 import com.blo.sales.v2.model.impl.SalesModelImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.view.commons.GUILogger;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -33,6 +34,8 @@ import java.util.List;
  * validar flujo para caja de dinero 
  */
 public class SalesControllerImpl implements ISalesController {
+    
+    private static final GUILogger logger = GUILogger.getLogger(SalesControllerImpl.class.getName());
     
     private static SalesControllerImpl instance;
     
@@ -159,38 +162,40 @@ public class SalesControllerImpl implements ISalesController {
     public PojoIntDebtor registerSaleWithDebtor(
             BigDecimal totalSale,
             List<PojoIntSaleProductData> productsInfo,
-            String partialPay,
+            BigDecimal partialPay,
+            String partialPayments,
             long idUser,
             long idDebtor
     ) throws BloSalesV2Exception {
         /** validaciones */
         final var debtorFound = debtorsController.getDebtorById(idDebtor);
+        // se guarda deuda original
         BloSalesV2Utils.validateRule(debtorFound == null, "Deudor no encontrado");
+        debtorFound.setDebt(totalSale);
         /** se actualiza deudor */
-        if (partialPay.isBlank()) {
+        if (partialPay.compareTo(BigDecimal.ZERO) == 0) {
+            logger.log("sin pago parcial");
             // el deudor no ha abonado
             registerSale(BigDecimal.ZERO, productsInfo, idUser);
-            final var amount = debtorFound.getDebt().add(totalSale);
-            debtorFound.setDebt(amount);
             return debtorsController.updateDebtor(debtorFound, idDebtor);
         }
         // el deudor ha abonado algo
-        final var payment = new BigDecimal(partialPay);
-        // se regitra venta
-        final var sale = registerSale(payment, productsInfo, idUser);
-        final var amount = debtorFound.getDebt().subtract(payment);
-        // se cubrio toda la deuda
-        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
-            // se eliminan pagos abonos
-            debtorFound.setPayments(BloSalesV2Utils.EMPTY_STRING);
-            // monto igual a 0
-            debtorFound.setDebt(BigDecimal.ZERO);
+        logger.log("abono de deudor " + partialPay);
+        // flujo cuando no se cubre deuda completa
+        if (partialPay.compareTo(debtorFound.getDebt()) < 0) {
+            logger.log("el deudor pago completo");
+            registerSale(partialPay, productsInfo, idUser);
+            debtorFound.setPayments(partialPayments);
+            debtorFound.setDebt(partialPay);
+            logger.log("debtor found actualizado " + debtorFound.toString());
             return debtorsController.updateDebtor(debtorFound, idDebtor);
         }
-        // se actualiza el total y se agrega un pago parcial
-        final var partiaPayment = BloSalesV2Utils.SEPARATOR_PAYMENTS + partialPay + "-" + sale.getTimestamp();
-        debtorFound.setDebt(amount);
-        debtorFound.setPayments(debtorFound.getPayments() + partiaPayment);
+        // se cubre deuda completa
+        logger.log("se cubre deuda completa");
+        // validar que no se guarden numeros negativos en la deuda
+        registerSale(totalSale, productsInfo, idUser);
+        debtorFound.setPayments(BloSalesV2Utils.EMPTY_STRING);
+        debtorFound.setDebt(BigDecimal.ZERO);
         return debtorsController.updateDebtor(debtorFound, idDebtor);
     }
     

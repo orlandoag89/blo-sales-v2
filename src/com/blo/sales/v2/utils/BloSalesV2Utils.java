@@ -23,7 +23,7 @@ public final class BloSalesV2Utils {
     
     public static final String CURRENCY_REGEX = "^\\d+(\\.\\d{1,2})?$";
     
-    public static final String SEPARATOR_PAYMENTS = "|";
+    public static final String SEPARATOR_PAYMENTS = "\\|";
     
     public static final String INVALID_TEXT = "Texto no v\u00e1lido";
     
@@ -77,17 +77,17 @@ public final class BloSalesV2Utils {
      * @param payments
      * @return 
      */
-    public static BigDecimal getAmountFromPartialPayments(String payments, int index) throws BloSalesV2Exception {
+    public static BigDecimal getFirstLastPayment(String payments, BloSalesV2UtilsEnum index) throws BloSalesV2Exception {
         if (payments.trim().isBlank()) {
             return BigDecimal.ZERO;
         }
         final var partialPayments = payments.split(SEPARATOR_PAYMENTS);
-        BloSalesV2Utils.validateRule(index > partialPayments.length, "El indice buscado no existe, la busqueda comienza a partir de 0");
-        if (partialPayments.length != 0) {
-            final var amount = partialPayments[index].split("TIMESTAMP")[0];
-            return new BigDecimal(amount);
+        var indexSearch = 0;
+        if (index.compareTo(BloSalesV2UtilsEnum.LAST) == 0) {
+            indexSearch = partialPayments.length - 1;
         }
-        return BigDecimal.ZERO;
+        final var payFound = partialPayments[indexSearch].split("TIMESTAMP")[0].trim();
+        return new BigDecimal(payFound);
     }
 }
 

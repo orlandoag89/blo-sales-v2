@@ -43,4 +43,9 @@ public class DebtorEntity {
     public void setPayments(String payments) {
         this.payments = payments;
     }
+
+    @Override
+    public String toString() {
+        return "DebtorEntity{" + "id_debtor=" + id_debtor + ", name=" + name + ", debt=" + debt + ", payments=" + payments + '}';
+    }
 }

@@ -52,7 +52,7 @@ public final class BloSalesV2Queries {
     
     public static final String SELECT_DEBTORS = "SELECT id_debtor, name, debt, payments FROM debtors";
     
-    public static final String UPDATE_DEBTOR = "UPDATE debtors SET (name = ?, total = ?, payments = ?) FROM debtors WHERE id_debtor = ?";
+    public static final String UPDATE_DEBTOR = "UPDATE debtors SET name = ?, debt = ?, payments = ? WHERE id_debtor = ?";
     
     /** deudores ventas */
     public static final String INSERT_DEBTOR_SALE = "INSERT INTO debtor_sale(fk_debtor, fk_sale, timestamp) VALUES (?, ?, ?)";

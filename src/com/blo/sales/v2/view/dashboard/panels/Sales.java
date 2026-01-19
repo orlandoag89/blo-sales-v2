@@ -9,7 +9,9 @@ import com.blo.sales.v2.controller.impl.SalesControllerImpl;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.utils.BloSalesV2UtilsEnum;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.dialogs.DebtorsDialog;
 import com.blo.sales.v2.view.dialogs.SelectorDialog;
 import com.blo.sales.v2.view.mappers.DebtorMapper;
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 
 public class Sales extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(Sales.class.getName());
     
     private IProductsController productsController;
     
@@ -53,9 +57,6 @@ public class Sales extends javax.swing.JPanel {
     
     private DebtorMapper debtorMapper;
     
-    /**
-     * Creates new form Sales
-     */
     public Sales(PojoLoggedInUser userData) {
         productsController = ProductsControllerImpl.getInstance();
         mapperProducts = WrapperPojoProductsMapper.getInstance();
@@ -281,22 +282,30 @@ public class Sales extends javax.swing.JPanel {
                 debtors.getDebtors(),
                 totalSale,
                 item -> {
-                    /** formato de pagos amountTIMESTAMPtimestamp */
-                    final var partialPayments = 
-                                    item.getPayments().trim().split(BloSalesV2Utils.SEPARATOR_PAYMENTS);
-                    /** es nuevo deudor  */
-                    if (item.getIdDebtor() == 0) {
-                        try {
-                            var pay = BloSalesV2Utils.getAmountFromPartialPayments(item.getPayments(), 0);
+                    try {
+                        /** formato de pagos amountTIMESTAMPtimestamp */
+                        logger.log("deudor " + item.toString());
+                        final var pay = BloSalesV2Utils.getFirstLastPayment(item.getPayments(), BloSalesV2UtilsEnum.LAST);
+                        /** es nuevo deudor  */
+                        if (item.getIdDebtor() == 0) {
                             salesController.registerSaleWithNewDebtor(
                                 pay,
                                 getProductData(),
                                 userData.getIdUser(),
                                 debtorMapper.toInner(item)
                             );
-                       } catch (BloSalesV2Exception ex) {
-                            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
-                       }
+                        } else {
+                            /** validar pagos ventas */
+                            salesController.registerSaleWithDebtor(
+                                item.getDebt(),
+                                getProductData(),
+                                pay,
+                                item.getPayments(),
+                                userData.getIdUser(),
+                                item.getIdDebtor());
+                        }
+                    } catch (BloSalesV2Exception ex) {
+                        Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 });
             debtorsDialog.setVisible(true);

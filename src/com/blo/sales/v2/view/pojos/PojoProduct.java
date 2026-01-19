@@ -86,7 +86,7 @@ public class PojoProduct {
 
     @Override
     public String toString() {
-        return this.idProduct + " " + this.product + " $" + this.price;
+        return this.idProduct + " (" + this.quantity +")" + this.product + " $" + this.price;
     }
     
 }

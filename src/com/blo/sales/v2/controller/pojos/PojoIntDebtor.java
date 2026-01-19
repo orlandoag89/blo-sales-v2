@@ -43,4 +43,9 @@ public class PojoIntDebtor {
     public void setPayments(String payments) {
         this.payments = payments;
     }
+
+    @Override
+    public String toString() {
+        return "PojoIntDebtor{" + "idDebtor=" + idDebtor + ", name=" + name + ", debt=" + debt + ", payments=" + payments + '}';
+    }
 }

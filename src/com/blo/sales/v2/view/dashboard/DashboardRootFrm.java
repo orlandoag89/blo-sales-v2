@@ -3,6 +3,7 @@ package com.blo.sales.v2.view.dashboard;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.dashboard.panels.AllProducts;
 import com.blo.sales.v2.view.dashboard.panels.Categories;
+import com.blo.sales.v2.view.dashboard.panels.Console;
 import com.blo.sales.v2.view.dashboard.panels.RegisterProduct;
 import com.blo.sales.v2.view.dashboard.panels.Sales;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
@@ -29,6 +30,8 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         optStock = new javax.swing.JMenuItem();
         optRegister = new javax.swing.JMenuItem();
         optCategory = new javax.swing.JMenuItem();
+        itmProg = new javax.swing.JMenu();
+        optConsole = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -83,6 +86,18 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         mnuBar.add(itmStock);
 
+        itmProg.setText("Programacion");
+
+        optConsole.setText("Consola");
+        optConsole.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optConsoleActionPerformed(evt);
+            }
+        });
+        itmProg.add(optConsole);
+
+        mnuBar.add(itmProg);
+
         setJMenuBar(mnuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -120,6 +135,10 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private void optAddSaleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optAddSaleActionPerformed
         GUICommons.showPanel(content, new Sales(userData));
     }//GEN-LAST:event_optAddSaleActionPerformed
+
+    private void optConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optConsoleActionPerformed
+        GUICommons.showPanel(content, new Console());
+    }//GEN-LAST:event_optConsoleActionPerformed
     
     private void openAllProducts() {
         GUICommons.showPanel(content, new AllProducts(userData));
@@ -127,11 +146,13 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel content;
+    private javax.swing.JMenu itmProg;
     private javax.swing.JMenu itmSales;
     private javax.swing.JMenu itmStock;
     private javax.swing.JMenuBar mnuBar;
     private javax.swing.JMenuItem optAddSale;
     private javax.swing.JMenuItem optCategory;
+    private javax.swing.JMenuItem optConsole;
     private javax.swing.JMenuItem optRegister;
     private javax.swing.JMenuItem optStock;
     // End of variables declaration//GEN-END:variables
