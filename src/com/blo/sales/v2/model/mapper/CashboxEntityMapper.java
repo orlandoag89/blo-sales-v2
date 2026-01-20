@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.blo.sales.v2.model.mapper;
 
 import com.blo.sales.v2.controller.pojos.PojoIntCashbox;
@@ -11,10 +7,6 @@ import com.blo.sales.v2.model.entities.enums.CashboxEntityEnum;
 import com.blo.sales.v2.utils.IToInner;
 import com.blo.sales.v2.utils.IToOuter;
 
-/**
- *
- * @author Orlando
- */
 public class CashboxEntityMapper implements IToInner<CashboxEntity, PojoIntCashbox>, IToOuter<CashboxEntity, PojoIntCashbox> {
     
     public static CashboxEntityMapper instance;
@@ -53,6 +45,7 @@ public class CashboxEntityMapper implements IToInner<CashboxEntity, PojoIntCashb
         outer.setAmount(inner.getAmount());
         outer.setStatus(CashboxStatusIntEnum.valueOf(inner.getStatus().name()));
         outer.setTimestamp(inner.getTimestamp());
+        outer.setUserFrom(inner.getUsername());
         return outer;
     }
     

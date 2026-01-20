@@ -1,9 +1,9 @@
-package com.blo.sales.v2.controller.pojos;
+package com.blo.sales.v2.view.pojos;
 
-import com.blo.sales.v2.controller.pojos.enums.CashboxStatusIntEnum;
+import com.blo.sales.v2.view.pojos.enums.CashboxStatusEnum;
 import java.math.BigDecimal;
 
-public class PojoIntCashbox {
+public class PojoCashbox {
     
     private long idCashbox;
     
@@ -13,9 +13,17 @@ public class PojoIntCashbox {
     
     private BigDecimal amount;
     
-    private CashboxStatusIntEnum status;
+    private CashboxStatusEnum status;
     
     private String userFrom;
+
+    public String getUserFrom() {
+        return userFrom;
+    }
+
+    public void setUserFrom(String userFrom) {
+        this.userFrom = userFrom;
+    }
 
     public long getIdCashbox() {
         return idCashbox;
@@ -49,19 +57,12 @@ public class PojoIntCashbox {
         this.amount = initialAmount;
     }
 
-    public CashboxStatusIntEnum getStatus() {
+    public CashboxStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(CashboxStatusIntEnum status) {
+    public void setStatus(CashboxStatusEnum status) {
         this.status = status;
     }
 
-    public String getUserFrom() {
-        return userFrom;
-    }
-
-    public void setUserFrom(String userFrom) {
-        this.userFrom = userFrom;
-    }
 }

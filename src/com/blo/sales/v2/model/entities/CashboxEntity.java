@@ -14,6 +14,8 @@ public class CashboxEntity {
     private BigDecimal amount;
     
     private CashboxEntityEnum status;
+    
+    private String username;
 
     public long getId_cashbox() {
         return id_cashbox;
@@ -53,6 +55,14 @@ public class CashboxEntity {
 
     public void setStatus(CashboxEntityEnum status) {
         this.status = status;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
     
 }

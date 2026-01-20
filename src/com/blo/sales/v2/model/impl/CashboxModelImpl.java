@@ -1,32 +1,36 @@
 package com.blo.sales.v2.model.impl;
 
 import com.blo.sales.v2.controller.pojos.PojoIntCashbox;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntCashboxes;
 import com.blo.sales.v2.model.ICashboxModel;
 import com.blo.sales.v2.model.config.DBConnection;
 import com.blo.sales.v2.model.constants.BloSalesV2Columns;
 import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.entities.CashboxEntity;
+import com.blo.sales.v2.model.entities.WrapperCashboxesEntity;
 import com.blo.sales.v2.model.entities.enums.CashboxEntityEnum;
 import com.blo.sales.v2.model.mapper.CashboxEntityMapper;
+import com.blo.sales.v2.model.mapper.WrapperCashboxesEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CashboxModelImpl implements ICashboxModel {
     
     private static final Connection conn = DBConnection.getConnection();
+        
+    private static final CashboxEntityMapper mapper = CashboxEntityMapper.getInstance();
+    
+    private static final WrapperCashboxesEntityMapper wrapperMapper = WrapperCashboxesEntityMapper.getInstance();
     
     private static CashboxModelImpl instance;
     
-    private CashboxEntityMapper mapper;
-    
-    private CashboxModelImpl() {
-        mapper = CashboxEntityMapper.getInstance();
-    }
+    private CashboxModelImpl() { }
     
     public static CashboxModelImpl getInstance() {
         if (instance == null) {
@@ -114,6 +118,31 @@ public class CashboxModelImpl implements ICashboxModel {
             } catch (SQLException e) {
                 throw new BloSalesV2Exception(e.getMessage());
             }
+        }
+    }
+    
+    @Override
+    public WrapperPojoIntCashboxes getAllCashboxes() throws BloSalesV2Exception {
+        try {
+            final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_ALL_CASHBOXES_AND_USERS);
+            final var data = ps.executeQuery();
+            final var out = new WrapperCashboxesEntity();
+            final var lst = new ArrayList<CashboxEntity>();
+            CashboxEntity cashbox = null;
+            while(data.next()) {
+                cashbox = new CashboxEntity();
+                cashbox.setId_cashbox(data.getLong(BloSalesV2Columns.ID_CASHBOX));
+                cashbox.setAmount(data.getBigDecimal(BloSalesV2Columns.AMOUNT));
+                cashbox.setFk_user(data.getLong(BloSalesV2Columns.FK_USER));
+                cashbox.setStatus(CashboxEntityEnum.valueOf(data.getString(BloSalesV2Columns.STATUS)));
+                cashbox.setTimestamp(data.getString(BloSalesV2Columns.TIMESTAMP));
+                cashbox.setUsername(data.getString(BloSalesV2Columns.USER_NAME));
+                lst.add(cashbox);
+            }
+            out.setCashboxes(lst);
+            return wrapperMapper.toOuter(out);
+        } catch (SQLException ex) {
+            throw new BloSalesV2Exception(ex.getMessage());
         }
     }
     

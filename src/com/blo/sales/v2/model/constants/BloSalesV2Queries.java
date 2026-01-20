@@ -45,6 +45,8 @@ public final class BloSalesV2Queries {
     
     public static final String SELECT_OPEN_CASHBOX = "SELECT id_cashbox, fk_user, timestamp, status, amount FROM cashboxes WHERE status = ? LIMIT 1";
     
+    public static final String SELECT_ALL_CASHBOXES_AND_USERS = "SELECT id_cashbox, fk_user, timestamp, status, amount, username FROM cashboxes c INNER JOIN users u WHERE c.fk_user = u.id_user";
+    
     /** deudores */
     public static final String INSERT_DEBTOR = "INSERT INTO debtors(name, debt, payments) VALUES (?, ?, ?)";
     
