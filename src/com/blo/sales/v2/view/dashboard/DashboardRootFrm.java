@@ -4,6 +4,7 @@ import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.dashboard.panels.AllProducts;
 import com.blo.sales.v2.view.dashboard.panels.Categories;
 import com.blo.sales.v2.view.dashboard.panels.Console;
+import com.blo.sales.v2.view.dashboard.panels.Debtors;
 import com.blo.sales.v2.view.dashboard.panels.RegisterProduct;
 import com.blo.sales.v2.view.dashboard.panels.Sales;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
@@ -15,7 +16,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     public DashboardRootFrm(PojoLoggedInUser userData) {
         this.userData = userData;
         initComponents();
-        openAllProducts();
+        GUICommons.showPanel(content, new Sales(userData));
     }
 
     @SuppressWarnings("unchecked")
@@ -30,6 +31,8 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         optStock = new javax.swing.JMenuItem();
         optRegister = new javax.swing.JMenuItem();
         optCategory = new javax.swing.JMenuItem();
+        itmAdmon = new javax.swing.JMenu();
+        optDebtors = new javax.swing.JMenuItem();
         itmProg = new javax.swing.JMenu();
         optConsole = new javax.swing.JMenuItem();
 
@@ -86,6 +89,18 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         mnuBar.add(itmStock);
 
+        itmAdmon.setText("Administracion");
+
+        optDebtors.setText("Deudores");
+        optDebtors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optDebtorsActionPerformed(evt);
+            }
+        });
+        itmAdmon.add(optDebtors);
+
+        mnuBar.add(itmAdmon);
+
         itmProg.setText("Programacion");
 
         optConsole.setText("Consola");
@@ -139,6 +154,10 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private void optConsoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optConsoleActionPerformed
         GUICommons.showPanel(content, new Console());
     }//GEN-LAST:event_optConsoleActionPerformed
+
+    private void optDebtorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optDebtorsActionPerformed
+        GUICommons.showPanel(content, new Debtors(userData));
+    }//GEN-LAST:event_optDebtorsActionPerformed
     
     private void openAllProducts() {
         GUICommons.showPanel(content, new AllProducts(userData));
@@ -146,6 +165,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel content;
+    private javax.swing.JMenu itmAdmon;
     private javax.swing.JMenu itmProg;
     private javax.swing.JMenu itmSales;
     private javax.swing.JMenu itmStock;
@@ -153,6 +173,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private javax.swing.JMenuItem optAddSale;
     private javax.swing.JMenuItem optCategory;
     private javax.swing.JMenuItem optConsole;
+    private javax.swing.JMenuItem optDebtors;
     private javax.swing.JMenuItem optRegister;
     private javax.swing.JMenuItem optStock;
     // End of variables declaration//GEN-END:variables

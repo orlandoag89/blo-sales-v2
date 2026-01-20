@@ -183,10 +183,9 @@ public class SalesControllerImpl implements ISalesController {
         logger.log("abono de deudor " + partialPay);
         // flujo cuando no se cubre deuda completa
         if (partialPay.compareTo(debtorFound.getDebt()) < 0) {
-            logger.log("el deudor pago completo");
+            logger.log("el deudor no pago completo");
             registerSale(partialPay, productsInfo, idUser);
             debtorFound.setPayments(partialPayments);
-            debtorFound.setDebt(partialPay);
             logger.log("debtor found actualizado " + debtorFound.toString());
             return debtorsController.updateDebtor(debtorFound, idDebtor);
         }

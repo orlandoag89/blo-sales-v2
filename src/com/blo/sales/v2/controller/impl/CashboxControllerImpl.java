@@ -5,8 +5,11 @@ import com.blo.sales.v2.controller.pojos.PojoIntCashbox;
 import com.blo.sales.v2.model.ICashboxModel;
 import com.blo.sales.v2.model.impl.CashboxModelImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.view.commons.GUILogger;
 
 public class CashboxControllerImpl implements ICashboxController {
+    
+    private static final GUILogger logger = GUILogger.getLogger(CashboxControllerImpl.class.getName());
     
     private static CashboxControllerImpl instance;
     
@@ -25,6 +28,7 @@ public class CashboxControllerImpl implements ICashboxController {
 
     @Override
     public PojoIntCashbox addCashbox(PojoIntCashbox cashbox) throws BloSalesV2Exception {
+        logger.log("creando caja de dinero");
         return model.addCashbox(cashbox);
     }
 

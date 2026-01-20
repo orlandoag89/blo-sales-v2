@@ -2,7 +2,9 @@ package com.blo.sales.v2.utils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Minúsculas: á -> \u00e1 é -> \u00e9 í -> \u00ed ó -> \u00f3 ú -> \u00fa ñ ->
@@ -23,7 +25,7 @@ public final class BloSalesV2Utils {
     
     public static final String CURRENCY_REGEX = "^\\d+(\\.\\d{1,2})?$";
     
-    public static final String SEPARATOR_PAYMENTS = "\\|";
+    public static final String SEPARATOR_PAYMENTS = ",";
     
     public static final String INVALID_TEXT = "Texto no v\u00e1lido";
     

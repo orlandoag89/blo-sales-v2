@@ -3,6 +3,7 @@ package com.blo.sales.v2.controller;
 import com.blo.sales.v2.controller.pojos.PojoIntDebtor;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntDebtors;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import java.math.BigDecimal;
 
 public interface IDebtorsController {
     
@@ -13,5 +14,7 @@ public interface IDebtorsController {
     PojoIntDebtor saveDebtor(PojoIntDebtor debtor) throws BloSalesV2Exception;
     
     PojoIntDebtor updateDebtor(PojoIntDebtor debtor, long idDebtor) throws BloSalesV2Exception;
+    
+    PojoIntDebtor addPayment(BigDecimal pay, long idUser, long idDebtor) throws BloSalesV2Exception;
     
 }
