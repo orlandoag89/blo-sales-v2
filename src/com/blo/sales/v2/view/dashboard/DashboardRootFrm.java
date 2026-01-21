@@ -2,7 +2,7 @@ package com.blo.sales.v2.view.dashboard;
 
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.dashboard.panels.AllProducts;
-import com.blo.sales.v2.view.dashboard.panels.Cashboxes;
+import com.blo.sales.v2.view.dashboard.panels.CashboxesOpen;
 import com.blo.sales.v2.view.dashboard.panels.Categories;
 import com.blo.sales.v2.view.dashboard.panels.Console;
 import com.blo.sales.v2.view.dashboard.panels.Debtors;
@@ -34,10 +34,10 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         optCategory = new javax.swing.JMenuItem();
         itmAdmon = new javax.swing.JMenu();
         optDebtors = new javax.swing.JMenuItem();
-        itmProg = new javax.swing.JMenu();
-        optConsole = new javax.swing.JMenuItem();
         itmContability = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        itmProg = new javax.swing.JMenu();
+        optConsole = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -49,7 +49,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 504, Short.MAX_VALUE)
+            .addGap(0, 505, Short.MAX_VALUE)
         );
 
         itmSales.setText("Ventas");
@@ -104,6 +104,18 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         mnuBar.add(itmAdmon);
 
+        itmContability.setText("Contabilidad");
+
+        jMenuItem1.setText("Caja abierta");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        itmContability.add(jMenuItem1);
+
+        mnuBar.add(itmContability);
+
         itmProg.setText("Programacion");
 
         optConsole.setText("Consola");
@@ -115,18 +127,6 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         itmProg.add(optConsole);
 
         mnuBar.add(itmProg);
-
-        itmContability.setText("Contabilidad");
-
-        jMenuItem1.setText("Caja");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        itmContability.add(jMenuItem1);
-
-        mnuBar.add(itmContability);
 
         setJMenuBar(mnuBar);
 
@@ -175,7 +175,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     }//GEN-LAST:event_optDebtorsActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        GUICommons.showPanel(content, new Cashboxes(userData));
+        GUICommons.showPanel(content, new CashboxesOpen(userData));
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     
     private void openAllProducts() {

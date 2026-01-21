@@ -87,6 +87,7 @@ public class CashboxModelImpl implements ICashboxModel {
                 cashbox.setAmount(data.getBigDecimal(BloSalesV2Columns.AMOUNT));
                 cashbox.setStatus(CashboxEntityEnum.valueOf(data.getString(BloSalesV2Columns.STATUS)));
                 cashbox.setTimestamp(data.getString(BloSalesV2Columns.TIMESTAMP));
+                cashbox.setUsername(data.getString(BloSalesV2Columns.USER_NAME));
             }
             return mapper.toOuter(cashbox);
         } catch (SQLException ex) {

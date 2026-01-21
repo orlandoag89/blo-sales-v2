@@ -55,4 +55,18 @@ public final class BloSalesV2Columns {
     public static final String FK_SALE = "fk_sale";
     
     public static final String FK_DEBTOR = "fk_debtor";
+    
+    public static final String ID_ACTIVE_COST = "id_active_cost";
+    
+    public static final String CONCEPT = "concept";
+    
+    public static final String TYPE = "type";
+    
+    public static final String COMPLETE = "complete";
+    
+    public static final String ID_CASHBOXES_ACTIVES_COSTS = "id_cashboxes_actives_costs";
+    
+    public static final String FK_CASHBOX = "fk_cashbox";
+    
+    public static final String FK_ACTIVES_COSTS = "fk_actives_costs";
 }

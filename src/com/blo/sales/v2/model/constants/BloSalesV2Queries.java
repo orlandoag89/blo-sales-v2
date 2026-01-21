@@ -43,7 +43,8 @@ public final class BloSalesV2Queries {
     
     public static final String UPDATE_CASHBOX = "UPDATE cashboxes SET timestamp = ?, status = ?, amount = ? WHERE id_cashbox = ?";
     
-    public static final String SELECT_OPEN_CASHBOX = "SELECT id_cashbox, fk_user, timestamp, status, amount FROM cashboxes WHERE status = ? LIMIT 1";
+    //public static final String SELECT_OPEN_CASHBOX = "SELECT id_cashbox, fk_user, timestamp, status, amount FROM cashboxes WHERE status = ? LIMIT 1";
+    public static final String SELECT_OPEN_CASHBOX = "SELECT id_cashbox, fk_user, timestamp, status, amount, username FROM cashboxes c INNER JOIN users u WHERE c.fk_user = u.id_user AND status = ? LIMIT 1";
     
     public static final String SELECT_ALL_CASHBOXES_AND_USERS = "SELECT id_cashbox, fk_user, timestamp, status, amount, username FROM cashboxes c INNER JOIN users u WHERE c.fk_user = u.id_user";
     
@@ -59,4 +60,9 @@ public final class BloSalesV2Queries {
     /** deudores ventas */
     public static final String INSERT_DEBTOR_SALE = "INSERT INTO debtor_sale(fk_debtor, fk_sale, timestamp) VALUES (?, ?, ?)";
 
+    /** activos pasivos */
+    public static final String INSERT_ACTIVE_COSTS = "INSERT INTO actives_costs(concept, amount, type, complete) VALUES (?, ?, ?, ?)";
+    
+    /** relacion activos pasivos con caja de dinero */
+    public static final String INSERT_CASHBOXES_ACTIVE_COSTS = "INSERT INTO cashboxes_actives_costs(fk_cashbox, fk_actives_costs, timestamp) VALUES (?, ?, ?)";
 }
