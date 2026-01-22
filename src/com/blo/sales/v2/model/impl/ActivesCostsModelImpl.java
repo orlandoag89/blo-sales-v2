@@ -1,16 +1,16 @@
 package com.blo.sales.v2.model.impl;
 
-import com.blo.sales.v2.controller.pojos.PojoIntActiveCost;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntActivesCosts;
 import com.blo.sales.v2.model.config.DBConnection;
 import com.blo.sales.v2.model.constants.BloSalesV2Queries;
-import com.blo.sales.v2.model.mapper.ActiveCostEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
-import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUILogger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import com.blo.sales.v2.model.IActivesCostsModel;
+import com.blo.sales.v2.model.constants.BloSalesV2Columns;
+import com.blo.sales.v2.model.mapper.WrapperActivesCostsEntityMapper;
 
 public class ActivesCostsModelImpl implements IActivesCostsModel {
 
@@ -18,7 +18,7 @@ public class ActivesCostsModelImpl implements IActivesCostsModel {
     
     private static final GUILogger logger = GUILogger.getLogger(ActivesCostsModelImpl.class.getName());
     
-    private static final ActiveCostEntityMapper mapper = ActiveCostEntityMapper.getInstance();
+    private static final WrapperActivesCostsEntityMapper mapper = WrapperActivesCostsEntityMapper.getInstance();
     
     private static ActivesCostsModelImpl instance;
 
@@ -32,28 +32,32 @@ public class ActivesCostsModelImpl implements IActivesCostsModel {
     }
     
     @Override
-    public PojoIntActiveCost addActiveCost(PojoIntActiveCost activeCost) throws BloSalesV2Exception {
+    public WrapperPojoIntActivesCosts addActiveCost(WrapperPojoIntActivesCosts activesCosts) throws BloSalesV2Exception {
         try {
             DBConnection.disableAutocommit();
-            logger.log("guardando " + activeCost.toString());
-            final var activeCostInner = mapper.toInner(activeCost);
+            logger.log("guardando " + activesCosts.getActivesCosts().size());
+            final var activesCostsInner = mapper.toInner(activesCosts);
             // 2. Usar prepareStatement con RETURN_GENERATED_KEYS (Más estándar que prepareCall para INSERT)
             final var ps = conn.prepareStatement(BloSalesV2Queries.INSERT_ACTIVE_COSTS, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, activeCostInner.getConcept());
-            ps.setBigDecimal(2, activeCostInner.getAmount());
-            ps.setString(3, activeCostInner.getType().name());
-            ps.setBoolean(4, activeCostInner.isComplete());
-            final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
+            for (final var activeCost: activesCostsInner.getActivesCosts()) {
+                ps.setString(1, activeCost.getConcept());
+                ps.setBigDecimal(2, activeCost.getAmount());
+                ps.setString(3, activeCost.getType().name());
+                ps.setBoolean(4, activeCost.isComplete());
+                ps.addBatch();
             }
-            final var rs = ps.getGeneratedKeys();
-            if (rs.next()){
-                activeCostInner.setId_actives_costs(rs.getLong(1));
-                DBConnection.doCommit();
+            // ejecuta la pila
+            ps.executeBatch();
+            DBConnection.doCommit();
+            // se guardan keys
+            var i = 0;
+            final var rsKeys = ps.getGeneratedKeys();
+            while(rsKeys.next()) {
+                activesCostsInner.getActivesCosts().get(i).setId_actives_costs(rsKeys.getLong(1));
+                i++;
+                logger.log("registro guardado " + i);
             }
-            logger.log("registro guardado " + activeCostInner.toString());
-            return mapper.toOuter(activeCostInner);
+            return mapper.toOuter(activesCostsInner);
         } catch (SQLException ex) {
             throw new BloSalesV2Exception(ex.getMessage());
         } finally {

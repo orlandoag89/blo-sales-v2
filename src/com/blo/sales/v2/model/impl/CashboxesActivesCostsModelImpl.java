@@ -49,7 +49,7 @@ public class CashboxesActivesCostsModelImpl implements ICashboxesActivesCostsMod
             }
             final var rs = ps.getGeneratedKeys();
             if (rs.next()){
-                dataInner.setId_cashboxes_actives_costs(rs.getLong(BloSalesV2Columns.ID_CASHBOXES_ACTIVES_COSTS));
+                dataInner.setId_cashboxes_actives_costs(rs.getLong(1));
                 DBConnection.doCommit();
             }
             logger.log("registro guardado " + dataInner.toString());

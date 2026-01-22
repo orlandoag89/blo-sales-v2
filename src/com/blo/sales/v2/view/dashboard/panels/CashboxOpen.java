@@ -5,23 +5,22 @@ import com.blo.sales.v2.controller.impl.CashboxControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.dialogs.CashboxDialog;
-import com.blo.sales.v2.view.dialogs.CashboxDialog;
-import com.blo.sales.v2.view.dialogs.DebtorsDialog;
 import com.blo.sales.v2.view.mappers.PojoCashboxMapper;
-import com.blo.sales.v2.view.mappers.WrapperPojoCashboxesMapper;
-import com.blo.sales.v2.view.pojos.PojoActiveCost;
+import com.blo.sales.v2.view.mappers.WrapperPojoActivesCostsMapper;
 import com.blo.sales.v2.view.pojos.PojoCashbox;
+import com.blo.sales.v2.view.pojos.PojoDialogCashboxData;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
-import com.blo.sales.v2.view.pojos.WrapperPojoCashboxes;
+import com.blo.sales.v2.view.pojos.WrapperPojoActivesCosts;
 import com.blo.sales.v2.view.pojos.enums.CashboxStatusEnum;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
-public class CashboxesOpen extends javax.swing.JPanel {
+public class CashboxOpen extends javax.swing.JPanel {
     
     private static final ICashboxController cashboxController = CashboxControllerImpl.getInstance();
+    
+    private static final WrapperPojoActivesCostsMapper activesCostMapper = WrapperPojoActivesCostsMapper.getInstance();
     
     private static final PojoCashboxMapper mapper = PojoCashboxMapper.getInstance();
     
@@ -29,30 +28,16 @@ public class CashboxesOpen extends javax.swing.JPanel {
     
     private PojoCashbox openCashbox;
     
-    public CashboxesOpen(PojoLoggedInUser userData) {
+    public CashboxOpen(PojoLoggedInUser userData) {
         this.userData = userData;
         initComponents();
         try {
-            openCashbox = mapper.toOuter(cashboxController.getOpenCashbox());
-            loadDataAndTitles(openCashbox);
+            loadDataAndCashbox();
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(CashboxesOpen.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CashboxOpen.class.getName()).log(Level.SEVERE, null, ex);
         }
-       /* try {
-            final var cashboxes = retrieveCashboxes();
-            loadDataAndTitles(cashboxes);
-            openCashbox = 
-                    cashboxes.getCashboxes().stream().filter(c -> c.getStatus().compareTo(CashboxStatusEnum.OPEN) == 0).findFirst().orElse(null);
-        } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(CashboxesOpen.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
     }
-    
-    /** metodo que recupera las cajas de dinero cerradas */
-    /*private WrapperPojoCashboxes retrieveCashboxes() throws BloSalesV2Exception {
-        return mapper.toOuter(cashboxController.getOpenCashbox());
-    }*/
-    
+        
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -106,30 +91,49 @@ public class CashboxesOpen extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCloseNowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseNowActionPerformed
+        if (openCashbox == null) {
+            return;
+        }
         final var cashboxDialog = new CashboxDialog<>(
-                this,
-                "Cerrando caja de dinero",
-                openCashbox,
-                (List<PojoActiveCost> items) -> {
-                    items.forEach(System.out::println);
+            this,
+            "Cerrando caja de dinero",
+            openCashbox,
+            (PojoDialogCashboxData data) -> {
+                try {
+                    final var wrapper = new WrapperPojoActivesCosts();
+                    wrapper.setActivesCosts(data.getItems());
+                    openCashbox.setAmount(data.getTotalAmountInCashbox());
+                    final var cashboxClosed = cashboxController.closeCashbox(mapper.toInner(openCashbox), activesCostMapper.toInner(wrapper));
+                    if (mapper.toOuter(cashboxClosed).getStatus().compareTo(CashboxStatusEnum.CLOSE) == 0) {
+                         loadDataAndCashbox();
+                    }
+                } catch (BloSalesV2Exception ex) {
+                    Logger.getLogger(CashboxOpen.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            }
         );
         cashboxDialog.setVisible(true);
     }//GEN-LAST:event_btnCloseNowActionPerformed
-
-     private void loadDataAndTitles(PojoCashbox cashbox) throws BloSalesV2Exception {
+    private void loadDataAndCashbox() throws BloSalesV2Exception {
+        openCashbox = mapper.toOuter(cashboxController.getOpenCashbox());
+        loadDataAndTitles(openCashbox); 
+    }
+    
+    private void loadDataAndTitles(PojoCashbox cashbox) throws BloSalesV2Exception {
         final String[] titles = {"ID", "Monto", "Gestionada por", "Fecha"};
         GUICommons.loadTitleOnTable(tblCashboxes, titles, false);
         final var model = (DefaultTableModel) tblCashboxes.getModel();
-        final Object[] row = {
-            cashbox.getIdCashbox(),
-            cashbox.getAmount(),
-            cashbox.getUserFrom(),
-            cashbox.getTimestamp()
-        };
-        model.addRow(row);
+        if (cashbox != null) {
+            final Object[] row = {
+                cashbox.getIdCashbox(),
+                cashbox.getAmount(),
+                cashbox.getUserFrom(),
+                cashbox.getTimestamp()
+            };
+            model.addRow(row);
+        }
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCloseNow;
     private javax.swing.JScrollPane jScrollPane1;

@@ -64,4 +64,9 @@ public class PojoIntCashbox {
     public void setUserFrom(String userFrom) {
         this.userFrom = userFrom;
     }
+
+    @Override
+    public String toString() {
+        return "PojoIntCashbox{" + "idCashbox=" + idCashbox + ", fkUser=" + fkUser + ", timestamp=" + timestamp + ", amount=" + amount + ", status=" + status + ", userFrom=" + userFrom + '}';
+    }
 }

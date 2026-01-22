@@ -5,6 +5,7 @@ import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.pojos.PojoActiveCost;
 import com.blo.sales.v2.view.pojos.PojoCashbox;
+import com.blo.sales.v2.view.pojos.PojoDialogCashboxData;
 import com.blo.sales.v2.view.pojos.enums.ActivesCostsEnum;
 import java.awt.Component;
 import java.math.BigDecimal;
@@ -31,6 +32,8 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
     private BigDecimal totalActivesCosts;
     
     private Consumer<T> callback;
+    
+    private PojoDialogCashboxData dataNewCashbox;
 
     public CashboxDialog(Component parent, String title, PojoCashbox cashboxData, Consumer<T> callback) {
         super(SwingUtilities.getWindowAncestor(parent), title, ModalityType.APPLICATION_MODAL);
@@ -39,6 +42,7 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
         lstCosts = new ArrayList<>();
         modelActives = new DefaultListModel();
         modelPasives = new DefaultListModel();
+        dataNewCashbox = new PojoDialogCashboxData();
         totalActives = BigDecimal.ZERO;
         totalPasives = BigDecimal.ZERO;
         totalActivesCosts = cashboxData.getAmount();
@@ -234,7 +238,9 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        this.callback.accept((T) lstCosts);
+        dataNewCashbox.setItems(lstCosts);
+        this.callback.accept((T) dataNewCashbox);
+        this.dispose();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnContinueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinueActionPerformed
@@ -270,6 +276,10 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
                 totalActivesCosts = totalActivesCosts.subtract(amount);
                 //cashboxData.setAmount(amountOnCashbox.subtract(amount));
             }
+            dataNewCashbox.setTotalActives(totalActives);
+            dataNewCashbox.setTotalPasives(totalPasives);
+            dataNewCashbox.setTotalAmountInCashbox(totalActivesCosts);
+            
             GUICommons.setTextToLabel(lblTotalToCashbox, "Total neto: " + totalActivesCosts);
             GUICommons.setTextToField(txtCategoryName, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToField(nmbAmount, BloSalesV2Utils.EMPTY_STRING);

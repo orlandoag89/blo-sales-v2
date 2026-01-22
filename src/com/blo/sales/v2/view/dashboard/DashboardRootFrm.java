@@ -2,7 +2,7 @@ package com.blo.sales.v2.view.dashboard;
 
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.dashboard.panels.AllProducts;
-import com.blo.sales.v2.view.dashboard.panels.CashboxesOpen;
+import com.blo.sales.v2.view.dashboard.panels.CashboxOpen;
 import com.blo.sales.v2.view.dashboard.panels.Categories;
 import com.blo.sales.v2.view.dashboard.panels.Console;
 import com.blo.sales.v2.view.dashboard.panels.Debtors;
@@ -175,7 +175,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     }//GEN-LAST:event_optDebtorsActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        GUICommons.showPanel(content, new CashboxesOpen(userData));
+        GUICommons.showPanel(content, new CashboxOpen(userData));
     }//GEN-LAST:event_jMenuItem1ActionPerformed
     
     private void openAllProducts() {
