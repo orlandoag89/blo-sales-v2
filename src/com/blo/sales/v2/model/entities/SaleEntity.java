@@ -44,5 +44,10 @@ public class SaleEntity {
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
+
+    @Override
+    public String toString() {
+        return "SaleEntity{" + "id_sale=" + id_sale + ", total=" + total + ", sale_status=" + sale_status + ", timestamp=" + timestamp + '}';
+    }
     
 }

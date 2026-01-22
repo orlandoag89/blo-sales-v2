@@ -8,6 +8,7 @@ import com.blo.sales.v2.view.dashboard.panels.Console;
 import com.blo.sales.v2.view.dashboard.panels.Debtors;
 import com.blo.sales.v2.view.dashboard.panels.RegisterProduct;
 import com.blo.sales.v2.view.dashboard.panels.Sales;
+import com.blo.sales.v2.view.dashboard.panels.SalesView;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 
 public class DashboardRootFrm extends javax.swing.JFrame {
@@ -28,6 +29,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         mnuBar = new javax.swing.JMenuBar();
         itmSales = new javax.swing.JMenu();
         optAddSale = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         itmStock = new javax.swing.JMenu();
         optStock = new javax.swing.JMenuItem();
         optRegister = new javax.swing.JMenuItem();
@@ -61,6 +63,14 @@ public class DashboardRootFrm extends javax.swing.JFrame {
             }
         });
         itmSales.add(optAddSale);
+
+        jMenuItem2.setText("Ver todas las ventas");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        itmSales.add(jMenuItem2);
 
         mnuBar.add(itmSales);
 
@@ -177,6 +187,10 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         GUICommons.showPanel(content, new CashboxOpen(userData));
     }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        GUICommons.showPanel(content, new SalesView());
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
     
     private void openAllProducts() {
         GUICommons.showPanel(content, new AllProducts(userData));
@@ -190,6 +204,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private javax.swing.JMenu itmSales;
     private javax.swing.JMenu itmStock;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuBar mnuBar;
     private javax.swing.JMenuItem optAddSale;
     private javax.swing.JMenuItem optCategory;

@@ -33,9 +33,19 @@ public class Sales extends javax.swing.JPanel {
     
     private static final GUILogger logger = GUILogger.getLogger(Sales.class.getName());
     
-    private IProductsController productsController;
+    private IProductsController productsController = ProductsControllerImpl.getInstance();
     
-    private WrapperPojoProductsMapper mapperProducts;
+    private WrapperPojoProductsMapper mapperProducts = WrapperPojoProductsMapper.getInstance();
+    
+    private ISalesController salesController = SalesControllerImpl.getInstance();
+    
+    private IDebtorsController debtorsController = DebtorsControllerImpl.getInstance();
+    
+    private PojoSaleProductDataMapper saleProductMapper = PojoSaleProductDataMapper.getInstance();
+    
+    private WrapperDebtorsMapper wrapperDebtorsMapper = WrapperDebtorsMapper.getInstance();
+    
+    private DebtorMapper debtorMapper = DebtorMapper.getInstance();
     
     private List<PojoProduct> products;
 
@@ -45,27 +55,10 @@ public class Sales extends javax.swing.JPanel {
     
     private PojoProduct productFound;
     
-    private ISalesController salesController;
-    
-    private IDebtorsController debtorsController;
-    
-    private PojoSaleProductDataMapper saleProductMapper;
-    
     private PojoLoggedInUser userData;
-    
-    private WrapperDebtorsMapper wrapperDebtorsMapper;
-    
-    private DebtorMapper debtorMapper;
-    
+        
     public Sales(PojoLoggedInUser userData) {
-        productsController = ProductsControllerImpl.getInstance();
-        mapperProducts = WrapperPojoProductsMapper.getInstance();
         modelLst = new DefaultListModel<String>();
-        salesController = SalesControllerImpl.getInstance();
-        saleProductMapper = PojoSaleProductDataMapper.getInstance();
-        debtorsController = DebtorsControllerImpl.getInstance();
-        wrapperDebtorsMapper = WrapperDebtorsMapper.getInstance();
-        debtorMapper = DebtorMapper.getInstance();
         this.userData = userData;
         totalSale = BigDecimal.ZERO;
         initComponents();

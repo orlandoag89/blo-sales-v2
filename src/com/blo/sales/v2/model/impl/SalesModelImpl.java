@@ -1,27 +1,36 @@
 package com.blo.sales.v2.model.impl;
 
 import com.blo.sales.v2.controller.pojos.PojoIntSale;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntSalesAndStock;
 import com.blo.sales.v2.model.ISalesModel;
 import com.blo.sales.v2.model.config.DBConnection;
+import com.blo.sales.v2.model.constants.BloSalesV2Columns;
 import com.blo.sales.v2.model.constants.BloSalesV2Queries;
+import com.blo.sales.v2.model.entities.SaleAndProductEntity;
+import com.blo.sales.v2.model.entities.WrapperSalesAndStockEntity;
 import com.blo.sales.v2.model.mapper.SaleEntityMapper;
+import com.blo.sales.v2.model.mapper.WrapperSalesAndStockEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.view.commons.GUILogger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class SalesModelImpl implements ISalesModel {
     
     private static final Connection conn = DBConnection.getConnection();
     
+    private static final GUILogger logger = GUILogger.getLogger(SalesModelImpl.class.getName());
+    
+    private static final SaleEntityMapper saleMapper = SaleEntityMapper.getInstance();
+    
+    private static final WrapperSalesAndStockEntityMapper salesAndStockMapper = WrapperSalesAndStockEntityMapper.getInstance();
+    
     private static SalesModelImpl instance;
     
-    private SaleEntityMapper saleMapper;
-    
-    private SalesModelImpl() {
-        saleMapper = SaleEntityMapper.getInstance();
-    }
+    private SalesModelImpl() { }
     
     public static SalesModelImpl getInstance() {
         if (instance == null) {
@@ -33,6 +42,7 @@ public class SalesModelImpl implements ISalesModel {
     @Override
     public PojoIntSale registerSale(PojoIntSale sale) throws BloSalesV2Exception {
         try {
+            logger.log("se comienza a registrar venta");
             final var innerSale = saleMapper.toInner(sale);
             DBConnection.disableAutocommit();
             final var ps = conn.prepareStatement(BloSalesV2Queries.INSERT_SALE, Statement.RETURN_GENERATED_KEYS);
@@ -48,6 +58,7 @@ public class SalesModelImpl implements ISalesModel {
                 innerSale.setId_sale(rs.getLong(1));
             }
             DBConnection.doCommit();
+            logger.log("venta registrada " + innerSale.toString());
             return saleMapper.toOuter(innerSale);
         } catch (SQLException ex) {
             throw new BloSalesV2Exception(ex.getMessage());
@@ -59,6 +70,34 @@ public class SalesModelImpl implements ISalesModel {
             }
         }
         
+    }
+
+    @Override
+    public WrapperPojoIntSalesAndStock retrieveAllSalesDetail() throws BloSalesV2Exception {
+         try {
+            logger.log("recuperando relacion ventas y productos");
+            final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_SALES_DETAIL);
+            final var data = ps.executeQuery();
+            final var wrapper = new WrapperSalesAndStockEntity();
+            SaleAndProductEntity saleDetail = null;
+            final var details = new ArrayList<SaleAndProductEntity>();
+            while(data.next()) {
+                saleDetail = new SaleAndProductEntity();
+                saleDetail.setId_product(data.getLong(BloSalesV2Columns.ID_PRODUCT));
+                saleDetail.setId_sale(data.getLong(BloSalesV2Columns.ID_SALE));
+                saleDetail.setProduct(data.getString(BloSalesV2Columns.PRODUCT));
+                saleDetail.setQuantity_on_sale(data.getBigDecimal(BloSalesV2Columns.QUANTITY_ON_SALE));
+                saleDetail.setTotal_on_sale(data.getBigDecimal(BloSalesV2Columns.TOTAL_ON_SALE));
+                saleDetail.setTimestamp(data.getString(BloSalesV2Columns.TIMESTAMP));
+               // logger.log("sale detail info [" + saleDetail.toString() + "]");
+                details.add(saleDetail);
+            }
+            wrapper.setSalesDetail(details);
+            logger.log("registros encontrados " + details.size());
+            return salesAndStockMapper.toOuter(wrapper);
+        } catch (SQLException ex) {
+            throw new BloSalesV2Exception(ex.getMessage());
+        }
     }
     
 }

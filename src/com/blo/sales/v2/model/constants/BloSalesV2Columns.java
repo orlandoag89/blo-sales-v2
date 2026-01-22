@@ -69,4 +69,10 @@ public final class BloSalesV2Columns {
     public static final String FK_CASHBOX = "fk_cashbox";
     
     public static final String FK_ACTIVES_COSTS = "fk_actives_costs";
+    
+    public static final String ID_SALE = "id_sale";
+    
+    public static final String QUANTITY_ON_SALE = "quantity_sale";
+    
+    public static final String TOTAL_ON_SALE = "total_on_sale";
 }

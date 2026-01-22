@@ -16,6 +16,7 @@ import com.blo.sales.v2.controller.pojos.PojoIntProduct;
 import com.blo.sales.v2.controller.pojos.PojoIntSale;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProduct;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntSalesAndStock;
 import com.blo.sales.v2.controller.pojos.enums.CashboxStatusIntEnum;
 import com.blo.sales.v2.controller.pojos.enums.ReasonsIntEnum;
 import com.blo.sales.v2.controller.pojos.enums.SalesStatusIntEnum;
@@ -30,41 +31,29 @@ import com.blo.sales.v2.view.commons.GUILogger;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * validar flujo para caja de dinero 
- */
 public class SalesControllerImpl implements ISalesController {
     
     private static final GUILogger logger = GUILogger.getLogger(SalesControllerImpl.class.getName());
     
     private static SalesControllerImpl instance;
     
-    private ISalesModel saleModel;
+    private static final ISalesModel saleModel = SalesModelImpl.getInstance();
     
-    private IUserController userController;
+    private static final IUserController userController = UserControllerImpl.getInstance();
     
-    private IHistoryController historyController;
+    private static final IHistoryController historyController = HistoryControllerImpl.getInstance();
     
-    private IProductsController productsController;
+    private static final IProductsController productsController = ProductsControllerImpl.getInstance();
     
-    private ISalesProductController salesProductsController;
+    private static final ISalesProductController salesProductsController = SalesProductControllerImpl.getInstance();
     
-    private ICashboxController cashboxController;
+    private static final ICashboxController cashboxController = CashboxControllerImpl.getInstance();
     
-    private IDebtorsController debtorsController;
+    private static final IDebtorsController debtorsController = DebtorsControllerImpl.getInstance();
     
-    private IDebtorsSalesController debtorsSalesController;
+    private static final IDebtorsSalesController debtorsSalesController = DebtorsSalesControllerImpl.getInstance();
     
-    private SalesControllerImpl() {
-        saleModel = SalesModelImpl.getInstance();
-        historyController = HistoryControllerImpl.getInstance();
-        userController = UserControllerImpl.getInstance();
-        productsController = ProductsControllerImpl.getInstance();
-        salesProductsController = SalesProductControllerImpl.getInstance();
-        cashboxController = CashboxControllerImpl.getInstance();
-        debtorsController = DebtorsControllerImpl.getInstance();
-        debtorsSalesController = DebtorsSalesControllerImpl.getInstance();
-    }
+    private SalesControllerImpl() { }
     
     public static SalesControllerImpl getInstance() {
         if (instance == null) {
@@ -198,6 +187,12 @@ public class SalesControllerImpl implements ISalesController {
         return debtorsController.updateDebtor(debtorFound, idDebtor);
     }
     
+    @Override
+    public WrapperPojoIntSalesAndStock retrieveAllSalesDetail() throws BloSalesV2Exception {
+        logger.log("recuperando todas las ventas");
+        return saleModel.retrieveAllSalesDetail();
+    }
+    
     /**
      * filtra un producto o regresa null
      * @param products registros de la base de datos
@@ -208,5 +203,5 @@ public class SalesControllerImpl implements ISalesController {
         return products.stream().filter(item -> item.getIdProduct() == idProduct).findAny().orElse(null);
         
     }
-    
+
 }

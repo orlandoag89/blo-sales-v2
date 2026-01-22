@@ -47,18 +47,18 @@ public class AllProducts extends javax.swing.JPanel {
     private WrapperPojoCategoriesMapper categoriesMapper;
     
     public AllProducts(PojoLoggedInUser userData) {
-            this.userData = userData;
-            productsController = ProductsControllerImpl.getInstance();
-            categories = CategoriesControllerImpl.getInstance();
-            productsMapper = WrapperPojoProductsMapper.getInstance();
-            productMapper = ProductMapper.getInstance();
-            categoriesMapper = WrapperPojoCategoriesMapper.getInstance();
-            initComponents();
-            lblIdProduct.setVisible(false);
-            
-            loadTitlesAndData();
-            initFilter();
-            initPanelManagement();
+        this.userData = userData;
+        productsController = ProductsControllerImpl.getInstance();
+        categories = CategoriesControllerImpl.getInstance();
+        productsMapper = WrapperPojoProductsMapper.getInstance();
+        productMapper = ProductMapper.getInstance();
+        categoriesMapper = WrapperPojoCategoriesMapper.getInstance();
+        initComponents();
+        lblIdProduct.setVisible(false);
+
+        loadTitlesAndData();
+        initFilter();
+        initPanelManagement();
     }
     
     @SuppressWarnings("unchecked")
