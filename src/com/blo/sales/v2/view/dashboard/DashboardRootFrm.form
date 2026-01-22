@@ -9,20 +9,20 @@
             <Property name="text" type="java.lang.String" value="Ventas"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="optViewSales">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Ver"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="optViewSalesActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="optAddSale">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Registrar venta"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="optAddSaleActionPerformed"/>
-              </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Ver todas las ventas"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem2ActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -78,12 +78,17 @@
             <Property name="text" type="java.lang.String" value="Contabilidad"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+            <MenuItem class="javax.swing.JMenuItem" name="optAllCashboxes">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Ver todas las cajas"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="optOpoenCashbox">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Caja abierta"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="optOpoenCashboxActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>

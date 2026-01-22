@@ -75,4 +75,8 @@ public final class BloSalesV2Columns {
     public static final String QUANTITY_ON_SALE = "quantity_sale";
     
     public static final String TOTAL_ON_SALE = "total_on_sale";
+    
+    public static final String SALE_STATUS = "sale_status";
+    
+    public static final String TOTAL = "total";
 }

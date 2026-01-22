@@ -8,7 +8,7 @@ import com.blo.sales.v2.view.dashboard.panels.Console;
 import com.blo.sales.v2.view.dashboard.panels.Debtors;
 import com.blo.sales.v2.view.dashboard.panels.RegisterProduct;
 import com.blo.sales.v2.view.dashboard.panels.Sales;
-import com.blo.sales.v2.view.dashboard.panels.SalesView;
+import com.blo.sales.v2.view.dashboard.panels.SalesViewer;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 
 public class DashboardRootFrm extends javax.swing.JFrame {
@@ -28,8 +28,8 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         content = new javax.swing.JPanel();
         mnuBar = new javax.swing.JMenuBar();
         itmSales = new javax.swing.JMenu();
+        optViewSales = new javax.swing.JMenuItem();
         optAddSale = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
         itmStock = new javax.swing.JMenu();
         optStock = new javax.swing.JMenuItem();
         optRegister = new javax.swing.JMenuItem();
@@ -37,7 +37,8 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         itmAdmon = new javax.swing.JMenu();
         optDebtors = new javax.swing.JMenuItem();
         itmContability = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        optAllCashboxes = new javax.swing.JMenuItem();
+        optOpoenCashbox = new javax.swing.JMenuItem();
         itmProg = new javax.swing.JMenu();
         optConsole = new javax.swing.JMenuItem();
 
@@ -56,6 +57,14 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         itmSales.setText("Ventas");
 
+        optViewSales.setText("Ver");
+        optViewSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optViewSalesActionPerformed(evt);
+            }
+        });
+        itmSales.add(optViewSales);
+
         optAddSale.setText("Registrar venta");
         optAddSale.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -63,14 +72,6 @@ public class DashboardRootFrm extends javax.swing.JFrame {
             }
         });
         itmSales.add(optAddSale);
-
-        jMenuItem2.setText("Ver todas las ventas");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
-            }
-        });
-        itmSales.add(jMenuItem2);
 
         mnuBar.add(itmSales);
 
@@ -116,13 +117,16 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         itmContability.setText("Contabilidad");
 
-        jMenuItem1.setText("Caja abierta");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        optAllCashboxes.setText("Ver todas las cajas");
+        itmContability.add(optAllCashboxes);
+
+        optOpoenCashbox.setText("Caja abierta");
+        optOpoenCashbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                optOpoenCashboxActionPerformed(evt);
             }
         });
-        itmContability.add(jMenuItem1);
+        itmContability.add(optOpoenCashbox);
 
         mnuBar.add(itmContability);
 
@@ -184,13 +188,13 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         GUICommons.showPanel(content, new Debtors(userData));
     }//GEN-LAST:event_optDebtorsActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void optOpoenCashboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optOpoenCashboxActionPerformed
         GUICommons.showPanel(content, new CashboxOpen(userData));
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_optOpoenCashboxActionPerformed
 
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        GUICommons.showPanel(content, new SalesView());
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
+    private void optViewSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optViewSalesActionPerformed
+        GUICommons.showPanel(content, new SalesViewer());
+    }//GEN-LAST:event_optViewSalesActionPerformed
     
     private void openAllProducts() {
         GUICommons.showPanel(content, new AllProducts(userData));
@@ -203,14 +207,15 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private javax.swing.JMenu itmProg;
     private javax.swing.JMenu itmSales;
     private javax.swing.JMenu itmStock;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuBar mnuBar;
     private javax.swing.JMenuItem optAddSale;
+    private javax.swing.JMenuItem optAllCashboxes;
     private javax.swing.JMenuItem optCategory;
     private javax.swing.JMenuItem optConsole;
     private javax.swing.JMenuItem optDebtors;
+    private javax.swing.JMenuItem optOpoenCashbox;
     private javax.swing.JMenuItem optRegister;
     private javax.swing.JMenuItem optStock;
+    private javax.swing.JMenuItem optViewSales;
     // End of variables declaration//GEN-END:variables
 }

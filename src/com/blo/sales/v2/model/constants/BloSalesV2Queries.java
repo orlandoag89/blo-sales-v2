@@ -35,11 +35,14 @@ public final class BloSalesV2Queries {
     /** ventas */
     public static final String INSERT_SALE = "INSERT INTO sales(total, sale_status, timestamp) VALUES (?, ?, ?)";
     
+    public static final String SELECT_SALE_BY_STATUS = "SELECT id_sale, total, sale_status, timestamp FROM sales WHERE sale_status = ?";
+    
     /** ventas product */
     public static final String INSERT_SALE_PRODUCT = "INSERT INTO sale_product(fk_sale, fk_product, quantity_sale, total_on_sale, timestamp) VALUES (?, ?, ?, ?, ?)";
     
     public static final String SELECT_SALES_DETAIL = "SELECT s.id_sale, st.id_product, st.product, ps.quantity_sale, ps.total_on_sale, ps.timestamp FROM sales s INNER JOIN sale_product ps ON s.id_sale = ps.fk_sale INNER JOIN stock st ON ps.fk_product = st.id_product";
     
+    public static final String SELECT_SALE_CLOSED = "SELECT s.id_sale, st.id_product, st.product, ps.quantity_sale, ps.total_on_sale, ps.timestamp FROM sales s INNER JOIN sale_product ps ON s.id_sale = ps.fk_sale INNER JOIN stock st ON ps.fk_product = st.id_product WHERE s.sale_status = ?";
     /** cajas de dinero */
     public static final String INSERT_CASHBOX = "INSERT INTO cashboxes(fk_user, timestamp, status, amount) VALUES (?, ?, ?, ?)";
     

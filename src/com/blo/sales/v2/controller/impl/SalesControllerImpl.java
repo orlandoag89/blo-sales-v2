@@ -193,6 +193,12 @@ public class SalesControllerImpl implements ISalesController {
         return saleModel.retrieveAllSalesDetail();
     }
     
+    @Override
+    public WrapperPojoIntSalesAndStock retrieveSalesByStatus(SalesStatusIntEnum saleStatus) throws BloSalesV2Exception {
+        logger.log("recuperando ventas por status " + saleStatus.name());
+        return saleModel.retrieveSalesByStatus(saleStatus);
+    }
+    
     /**
      * filtra un producto o regresa null
      * @param products registros de la base de datos
@@ -203,5 +209,4 @@ public class SalesControllerImpl implements ISalesController {
         return products.stream().filter(item -> item.getIdProduct() == idProduct).findAny().orElse(null);
         
     }
-
 }
