@@ -34,7 +34,7 @@ public class GUILogger {
         row.append(" ");
         row.append(str);
         row.append("\n");
-        System.out.println(row.toString());
+        System.out.println(str);
     }
     
     public String getLogs() {

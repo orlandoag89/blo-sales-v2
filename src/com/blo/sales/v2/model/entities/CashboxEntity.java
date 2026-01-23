@@ -64,5 +64,10 @@ public class CashboxEntity {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    @Override
+    public String toString() {
+        return "CashboxEntity{" + "id_cashbox=" + id_cashbox + ", fk_user=" + fk_user + ", timestamp=" + timestamp + ", amount=" + amount + ", status=" + status + ", username=" + username + '}';
+    }
     
 }

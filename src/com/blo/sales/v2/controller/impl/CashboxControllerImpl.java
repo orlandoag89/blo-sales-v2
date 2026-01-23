@@ -7,6 +7,7 @@ import com.blo.sales.v2.controller.pojos.PojoIntCashbox;
 import com.blo.sales.v2.controller.pojos.PojoIntCashboxesActivesCosts;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntActivesCosts;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntCashboxes;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntCashboxesDetails;
 import com.blo.sales.v2.controller.pojos.enums.CashboxStatusIntEnum;
 import com.blo.sales.v2.model.ICashboxModel;
 import com.blo.sales.v2.model.impl.CashboxModelImpl;
@@ -75,6 +76,12 @@ public class CashboxControllerImpl implements ICashboxController {
             }
         }
         return cashbox;
+    }
+
+    @Override
+    public WrapperPojoIntCashboxesDetails getCashboxesDetail() throws BloSalesV2Exception {
+        logger.log("recuperando detalles de caja");
+        return model.getCashboxesDetail();
     }
 
 }

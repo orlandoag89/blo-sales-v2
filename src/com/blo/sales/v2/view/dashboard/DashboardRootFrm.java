@@ -1,6 +1,7 @@
 package com.blo.sales.v2.view.dashboard;
 
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.dashboard.panels.AllCashboxes;
 import com.blo.sales.v2.view.dashboard.panels.AllProducts;
 import com.blo.sales.v2.view.dashboard.panels.CashboxOpen;
 import com.blo.sales.v2.view.dashboard.panels.Categories;
@@ -118,6 +119,11 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         itmContability.setText("Contabilidad");
 
         optAllCashboxes.setText("Ver todas las cajas");
+        optAllCashboxes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optAllCashboxesActionPerformed(evt);
+            }
+        });
         itmContability.add(optAllCashboxes);
 
         optOpoenCashbox.setText("Caja abierta");
@@ -195,6 +201,10 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private void optViewSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optViewSalesActionPerformed
         GUICommons.showPanel(content, new SalesViewer());
     }//GEN-LAST:event_optViewSalesActionPerformed
+
+    private void optAllCashboxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optAllCashboxesActionPerformed
+        GUICommons.showPanel(content, new AllCashboxes());
+    }//GEN-LAST:event_optAllCashboxesActionPerformed
     
     private void openAllProducts() {
         GUICommons.showPanel(content, new AllProducts(userData));

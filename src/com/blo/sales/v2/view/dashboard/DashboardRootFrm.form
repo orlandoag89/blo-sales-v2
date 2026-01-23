@@ -82,6 +82,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Ver todas las cajas"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="optAllCashboxesActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="optOpoenCashbox">
               <Properties>
