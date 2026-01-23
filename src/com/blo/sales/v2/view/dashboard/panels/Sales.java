@@ -22,6 +22,8 @@ import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.PojoProduct;
 import com.blo.sales.v2.view.pojos.PojoSaleProductData;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -125,7 +127,7 @@ public class Sales extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPayLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnComplete)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 199, Short.MAX_VALUE)
                 .addComponent(btnDebtors)
                 .addContainerGap())
         );
@@ -147,7 +149,7 @@ public class Sales extends javax.swing.JPanel {
             }
         });
 
-        lblBarCode.setText("Código de barras");
+        lblBarCode.setText("Código de barras / nombre");
 
         btnByName.setText("Por nombre");
         btnByName.addActionListener(new java.awt.event.ActionListener() {
@@ -169,7 +171,7 @@ public class Sales extends javax.swing.JPanel {
                 .addGroup(pnlSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlSearchLayout.createSequentialGroup()
                         .addComponent(lblBarCode)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 276, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 223, Short.MAX_VALUE)
                         .addComponent(btnByName))
                     .addComponent(txtSearch))
                 .addGap(6, 6, 6))
@@ -198,9 +200,9 @@ public class Sales extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(pnlPay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(pnlPay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1)
                         .addContainerGap())))
@@ -214,13 +216,11 @@ public class Sales extends javax.swing.JPanel {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlPay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
                         .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(154, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlPay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -244,6 +244,8 @@ public class Sales extends javax.swing.JPanel {
         try {
             salesController.registerSale(totalSale, getProductData(), this.userData.getIdUser());
             disableButtons();
+            GUICommons.setTextToLabel(lblTotal, "Total: 0");
+            totalSale = BigDecimal.ZERO;
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -309,13 +311,31 @@ public class Sales extends javax.swing.JPanel {
 
     private void addItemToList() {
         try {
-            final var quantity = GUICommons.getTextFromJText(nmbQuantity);
-            /** agrega un elemento a la lista de productos */
-            modelLst.addElement(productFound.toString() + " [" + quantity + "]");
-            lstProductsSales.setModel(modelLst);
-            if (productFound != null) {
-                totalSale = totalSale.add(productFound.getPrice().multiply(new BigDecimal(quantity)));
+            if (productFound == null) {
+                throw new BloSalesV2Exception("Producto no seleccionado");
             }
+            final var quantity = GUICommons.getTextFromJText(nmbQuantity);
+            // valida si se puede con pesos solamente si el producto se vende por kg
+            var onSaleQuantity = new BigDecimal(BigInteger.ZERO);
+            if (quantity.startsWith("P") && productFound.isKg()) {
+                // Extraemos el valor numérico después de la 'P'
+                final var cash = new BigDecimal(quantity.substring(1));
+                final var price = productFound.getPrice();
+                // 1. Calculamos la fracción de kilo (10 / 154)
+                // 2. Multiplicamos por 1000 para pasar a gramos
+                // 3. Redondeamos al final a 2 decimales
+                onSaleQuantity = cash.divide(price, 6, RoundingMode.HALF_UP)
+                    //.multiply(new BigDecimal("1000"))
+                    .setScale(4, RoundingMode.HALF_UP);
+                totalSale = totalSale.add(cash);
+            } else {
+                // Si no empieza con P, se asume que la cantidad ya es numérica (gramos o piezas)
+                onSaleQuantity = new BigDecimal(quantity);
+                totalSale = totalSale.add(productFound.getPrice().multiply(onSaleQuantity));
+                
+            }
+            modelLst.addElement(productFound.toString() + " [" + onSaleQuantity + "]");
+            lstProductsSales.setModel(modelLst);
             GUICommons.setTextToField(txtSearch, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToLabel(lblTotal, "Total: $" + totalSale);
             GUICommons.setTextToField(nmbQuantity, "1");
