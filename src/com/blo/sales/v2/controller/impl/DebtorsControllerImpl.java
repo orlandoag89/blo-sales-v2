@@ -18,6 +18,8 @@ public class DebtorsControllerImpl implements IDebtorsController {
     
     private static final GUILogger logger = GUILogger.getLogger(DebtorsControllerImpl.class.getName());
     
+    private static final long ID_PRODUCT_PAY = 1;
+    
     private static final IDebtorsModel model = DebtorsModelImpl.getInstance();
     
     private static final IProductsController productsController = ProductsControllerImpl.getInstance();
@@ -63,7 +65,7 @@ public class DebtorsControllerImpl implements IDebtorsController {
         BloSalesV2Utils.validateRule(debtorFound == null, "Deudor no encontrado");
         logger.log("deudor encontrado " + debtorFound.toString());
         // se registra como venta
-        final var productPay = productsController.getProductById(1000);
+        final var productPay = productsController.getProductById(ID_PRODUCT_PAY);
         final var productsLst = new ArrayList<PojoIntSaleProductData>();
         final var item = new PojoIntSaleProductData();
         item.setIdProduct(productPay.getIdProduct());
