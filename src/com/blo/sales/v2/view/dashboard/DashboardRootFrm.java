@@ -34,6 +34,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         itmStock = new javax.swing.JMenu();
         optStock = new javax.swing.JMenuItem();
         optRegister = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
         optCategory = new javax.swing.JMenuItem();
         itmAdmon = new javax.swing.JMenu();
         optDebtors = new javax.swing.JMenuItem();
@@ -93,6 +94,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
             }
         });
         itmStock.add(optRegister);
+        itmStock.add(jSeparator1);
 
         optCategory.setText("Categorias");
         optCategory.addActionListener(new java.awt.event.ActionListener() {
@@ -217,6 +219,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private javax.swing.JMenu itmProg;
     private javax.swing.JMenu itmSales;
     private javax.swing.JMenu itmStock;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JMenuBar mnuBar;
     private javax.swing.JMenuItem optAddSale;
     private javax.swing.JMenuItem optAllCashboxes;

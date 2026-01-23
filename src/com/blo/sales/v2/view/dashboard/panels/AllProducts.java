@@ -309,7 +309,7 @@ public class AllProducts extends javax.swing.JPanel {
             final var productsData = productsMapper.toOuter(this.productsController.getAllProducts());
             final var categories = categoriesMapper.toOuter(this.categories.getAllCategories());
             if (userData.getRole().equals(RolesEnum.ROOT)) {
-                final String[] titles = {"ID", "Codigo de barras", "Producto", "Cantidad en existencia", "Costo de venta", "¿Por kg?", "Categoria"};
+                final String[] titles = {"ID", "Codigo de barras", "Producto", "Cantidad en existencia", "Precio", "Costo de venta", "¿Por kg?", "Categoria"};
                 GUICommons.loadTitleOnTable(tblProducts, titles, false);
                 final var model = (DefaultTableModel) tblProducts.getModel();
                 model.setRowCount(0);
@@ -321,6 +321,7 @@ public class AllProducts extends javax.swing.JPanel {
                         p.getBarCode(),
                         p.getProduct(),
                         p.getQuantity(),
+                        p.getPrice(),
                         p.getCostOfSale(),
                         p.isKg() ? "SI": "NO",
                         category.getCategory()

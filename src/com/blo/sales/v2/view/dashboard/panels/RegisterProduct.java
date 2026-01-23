@@ -162,6 +162,11 @@ public class RegisterProduct extends javax.swing.JPanel {
             data.setFkCategory(Long.parseLong(idMark));
             data.setKg(GUICommons.isCheckedCkeckBox(chkbxItsKg));
             productsController.registerProduct(productMapper.toInner(data));
+            GUICommons.setTextToField(txtProductName, BloSalesV2Utils.EMPTY_STRING);
+            GUICommons.setTextToField(txtBarCode, BloSalesV2Utils.EMPTY_STRING);
+            GUICommons.setTextToField(nmbQuantity, BloSalesV2Utils.EMPTY_STRING);
+            GUICommons.setTextToField(nmbPrice, BloSalesV2Utils.EMPTY_STRING);
+            GUICommons.setTextToField(nmbSaleCost, BloSalesV2Utils.EMPTY_STRING);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
         }
