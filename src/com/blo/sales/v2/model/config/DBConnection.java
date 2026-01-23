@@ -6,6 +6,12 @@ import java.sql.SQLException;
 
 public class DBConnection {
     // Datos de configuración
+    /**
+     * modificar el id del producto pago
+     * 1: PRE / PRO
+     * 1000: DEV
+     * com.blo.sales.v2.controller.impl.DebtorsControllerImpl.ID_PRODUCT_PAY
+     * */
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/blo-sales-v2-dev";
     private static final String USER = "root";
     private static final String PASSWORD = "";
