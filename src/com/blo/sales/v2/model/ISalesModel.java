@@ -1,6 +1,7 @@
 package com.blo.sales.v2.model;
 
 import com.blo.sales.v2.controller.pojos.PojoIntSale;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntSales;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntSalesAndStock;
 import com.blo.sales.v2.controller.pojos.enums.SalesStatusIntEnum;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
@@ -12,4 +13,8 @@ public interface ISalesModel {
     WrapperPojoIntSalesAndStock retrieveAllSalesDetail() throws BloSalesV2Exception;
     
     WrapperPojoIntSalesAndStock retrieveSalesByStatus(SalesStatusIntEnum saleStatus) throws BloSalesV2Exception;
+    
+    WrapperPojoIntSales retrieveSalesDataByStatus(SalesStatusIntEnum saleStatus) throws BloSalesV2Exception;
+    
+    boolean setCashboxSale(long idSale) throws BloSalesV2Exception;
 }

@@ -73,6 +73,9 @@
       </SubComponents>
     </Container>
     <Component class="javax.swing.JTextField" name="txtSearchTerm">
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSearchTermKeyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblFilter">
       <Properties>

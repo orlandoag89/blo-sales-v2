@@ -3,12 +3,14 @@ package com.blo.sales.v2.controller.impl;
 import com.blo.sales.v2.controller.IActivesCostsController;
 import com.blo.sales.v2.controller.ICashboxController;
 import com.blo.sales.v2.controller.ICashboxesActivesCostsController;
+import com.blo.sales.v2.controller.ISalesController;
 import com.blo.sales.v2.controller.pojos.PojoIntCashbox;
 import com.blo.sales.v2.controller.pojos.PojoIntCashboxesActivesCosts;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntActivesCosts;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntCashboxes;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntCashboxesDetails;
 import com.blo.sales.v2.controller.pojos.enums.CashboxStatusIntEnum;
+import com.blo.sales.v2.controller.pojos.enums.SalesStatusIntEnum;
 import com.blo.sales.v2.model.ICashboxModel;
 import com.blo.sales.v2.model.impl.CashboxModelImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
@@ -23,6 +25,8 @@ public class CashboxControllerImpl implements ICashboxController {
     private static final ICashboxesActivesCostsController cashboxesAactivesCostsController = CashboxesActivesCostsControllerImpl.getInstance();
     
     private static final IActivesCostsController activesCostsController = ActivesCostsControllerImpl.getInstance();
+    
+    private static final ISalesController salesController = SalesControllerImpl.getInstance();
     
     private static CashboxControllerImpl instance;
         
@@ -73,6 +77,13 @@ public class CashboxControllerImpl implements ICashboxController {
                 item.setTimestamp(cashbox.getTimestamp());
                 final var relationSaved = cashboxesAactivesCostsController.addRelationship(item);
                 logger.log("relacion guardada en la db " + relationSaved.toString());
+            }
+        }
+        // cerrar ventas del dia
+        final var sales = salesController.retrieveSalesDataByStatus(SalesStatusIntEnum.CLOSE);
+        if (sales.getSales() != null && !sales.getSales().isEmpty()) {
+            for (final var s: sales.getSales()) {
+                salesController.setCashboxSale(s.getIdSale());
             }
         }
         return cashbox;

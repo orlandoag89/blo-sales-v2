@@ -304,6 +304,7 @@ public class AllProducts extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_nmbQuantityKeyReleased
 
+    /** ajustar filtro de categorias */
     private void loadTitlesAndData() {
         try {
             final var productsData = productsMapper.toOuter(this.productsController.getAllProducts());

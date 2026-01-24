@@ -15,5 +15,5 @@ public interface IProductsController {
     WrapperPojoIntProducts getAllProducts() throws BloSalesV2Exception;
     
     PojoIntProduct getProductById(long idProduct) throws BloSalesV2Exception;
-    
+       
 }

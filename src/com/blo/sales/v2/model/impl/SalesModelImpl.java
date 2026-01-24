@@ -1,6 +1,7 @@
 package com.blo.sales.v2.model.impl;
 
 import com.blo.sales.v2.controller.pojos.PojoIntSale;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntSales;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntSalesAndStock;
 import com.blo.sales.v2.controller.pojos.enums.SalesStatusIntEnum;
 import com.blo.sales.v2.model.ISalesModel;
@@ -8,9 +9,13 @@ import com.blo.sales.v2.model.config.DBConnection;
 import com.blo.sales.v2.model.constants.BloSalesV2Columns;
 import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.entities.SaleAndProductEntity;
+import com.blo.sales.v2.model.entities.SaleEntity;
 import com.blo.sales.v2.model.entities.WrapperSalesAndStockEntity;
+import com.blo.sales.v2.model.entities.WrapperSalesEntity;
+import com.blo.sales.v2.model.entities.enums.SaleStatusEntityEnum;
 import com.blo.sales.v2.model.mapper.SaleEntityMapper;
 import com.blo.sales.v2.model.mapper.WrapperSalesAndStockEntityMapper;
+import com.blo.sales.v2.model.mapper.WrapperSalesEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUILogger;
@@ -28,7 +33,9 @@ public class SalesModelImpl implements ISalesModel {
     private static final SaleEntityMapper saleMapper = SaleEntityMapper.getInstance();
     
     private static final WrapperSalesAndStockEntityMapper salesAndStockMapper = WrapperSalesAndStockEntityMapper.getInstance();
-        
+    
+    private static final WrapperSalesEntityMapper salesEntityMapper = WrapperSalesEntityMapper.getInstance();
+            
     private static SalesModelImpl instance;
     
     private SalesModelImpl() { }
@@ -123,6 +130,50 @@ public class SalesModelImpl implements ISalesModel {
             wrapper.setSalesDetail(details);
             logger.log("registros encontrados " + details.size());
             return salesAndStockMapper.toOuter(wrapper);
+        } catch (SQLException ex) {
+            throw new BloSalesV2Exception(ex.getMessage());
+        }
+    }
+
+    @Override
+    public WrapperPojoIntSales retrieveSalesDataByStatus(SalesStatusIntEnum saleStatus) throws BloSalesV2Exception {
+        try {
+            logger.log("recuperando ventas " + saleStatus.name());
+            final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_SALE_BY_STATUS);
+            ps.setString(1, saleStatus.name());
+            final var data = ps.executeQuery();
+            final var wrapper = new WrapperSalesEntity();
+            SaleEntity saleDetail = null;
+            final var details = new ArrayList<SaleEntity>();
+            while(data.next()) {
+                saleDetail = new SaleEntity();
+                saleDetail.setId_sale(data.getLong(BloSalesV2Columns.ID_SALE));
+                saleDetail.setTotal(data.getBigDecimal(BloSalesV2Columns.TOTAL));
+                saleDetail.setTimestamp(data.getString(BloSalesV2Columns.TIMESTAMP));
+                saleDetail.setSales_status(SaleStatusEntityEnum.valueOf(data.getString(BloSalesV2Columns.SALE_STATUS)));
+                details.add(saleDetail);
+            }
+            wrapper.setSales(details);
+            logger.log("registros encontrados " + details.size());
+            return salesEntityMapper.toOuter(wrapper);
+        } catch (SQLException ex) {
+            throw new BloSalesV2Exception(ex.getMessage());
+        }
+    }
+
+    @Override
+    public boolean setCashboxSale(long idSale) throws BloSalesV2Exception {
+        try {
+            logger.log("enviando a cashbox la venta " + idSale);
+            DBConnection.disableAutocommit();
+            final var ps = conn.prepareStatement(BloSalesV2Queries.SET_ON_CASHBOX);
+            ps.setLong(1, idSale);
+            final var rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
+            }
+            DBConnection.doCommit();
+            return true;
         } catch (SQLException ex) {
             throw new BloSalesV2Exception(ex.getMessage());
         }
