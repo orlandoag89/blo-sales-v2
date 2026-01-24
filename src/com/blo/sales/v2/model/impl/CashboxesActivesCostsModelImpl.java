@@ -52,7 +52,7 @@ public class CashboxesActivesCostsModelImpl implements ICashboxesActivesCostsMod
                 dataInner.setId_cashboxes_actives_costs(rs.getLong(1));
                 DBConnection.doCommit();
             }
-            logger.log("registro guardado " + dataInner.toString());
+            logger.log("registro guardado ");
             return mapper.toOuter(dataInner);
         } catch (SQLException ex) {
             throw new BloSalesV2Exception(ex.getMessage());

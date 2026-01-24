@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
 
 public class Sales extends javax.swing.JPanel {
@@ -52,8 +51,6 @@ public class Sales extends javax.swing.JPanel {
     
     private List<PojoProduct> products;
 
-    private DefaultListModel modelLst;
-    
     private BigDecimal totalSale;
     
     private PojoProduct productFound;
@@ -61,7 +58,6 @@ public class Sales extends javax.swing.JPanel {
     private PojoLoggedInUser userData;
         
     public Sales(PojoLoggedInUser userData) {
-        modelLst = new DefaultListModel<String>();
         this.userData = userData;
         totalSale = BigDecimal.ZERO;
         initComponents();
@@ -69,7 +65,7 @@ public class Sales extends javax.swing.JPanel {
         disableButtons();
         try {
             retrieveProducts();
-            final String[] titles = {"ID", "Cantidad comprada", "Producto", "Precio", "Total"};
+            final String[] titles = {"ID", "Producto", "Cantidad comprada", "Precio", "Total"};
             GUICommons.loadTitleOnTable(tblProductsSales, titles, false);
             GUICommons.addDoubleClickOnTable(tblProductsSales, id -> {
                 final var model = (DefaultTableModel) tblProductsSales.getModel();
@@ -77,7 +73,7 @@ public class Sales extends javax.swing.JPanel {
                 final var indexSelected = tblProductsSales.getSelectedRow();
                 if (indexSelected != -1) {
                     final var filaModelo = tblProductsSales.convertRowIndexToModel(indexSelected);
-                    final var price = model.getValueAt(filaModelo, 3).toString();
+                    final var price = model.getValueAt(filaModelo, 4).toString();
                     totalSale = totalSale.subtract(new BigDecimal(price));
                     model.removeRow(indexSelected);
                     GUICommons.setTextToLabel(lblTotal, "Total: $" + totalSale);
@@ -96,8 +92,6 @@ public class Sales extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        lstProductsSales = new javax.swing.JList<>();
         lblTotal = new javax.swing.JLabel();
         pnlPay = new javax.swing.JPanel();
         btnComplete = new javax.swing.JButton();
@@ -110,8 +104,6 @@ public class Sales extends javax.swing.JPanel {
         btnByName = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblProductsSales = new javax.swing.JTable();
-
-        jScrollPane1.setViewportView(lstProductsSales);
 
         btnComplete.setText("Completo");
         btnComplete.addActionListener(new java.awt.event.ActionListener() {
@@ -145,7 +137,7 @@ public class Sales extends javax.swing.JPanel {
                 .addGroup(pnlPayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnComplete)
                     .addComponent(btnDebtors))
-                .addContainerGap(98, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
 
         lblQuantity.setText("Cantidad");
@@ -225,12 +217,8 @@ public class Sales extends javax.swing.JPanel {
                                 .addComponent(pnlPay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(lblTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addGap(6, 6, 6)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 19, Short.MAX_VALUE))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 9, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -239,13 +227,11 @@ public class Sales extends javax.swing.JPanel {
                 .addComponent(pnlSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pnlPay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -272,6 +258,7 @@ public class Sales extends javax.swing.JPanel {
             disableButtons();
             GUICommons.setTextToLabel(lblTotal, "Total: 0");
             totalSale = BigDecimal.ZERO;
+            resetFields();
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -343,6 +330,7 @@ public class Sales extends javax.swing.JPanel {
             final var quantity = GUICommons.getTextFromJText(nmbQuantity);
             // valida si se puede con pesos solamente si el producto se vende por kg
             var onSaleQuantity = new BigDecimal(BigInteger.ZERO);
+            var onSalePrice = new BigDecimal(BigInteger.ZERO);
             if (quantity.startsWith("P") && productFound.isKg()) {
                 // Extraemos el valor numérico después de la 'P'
                 final var cash = new BigDecimal(quantity.substring(1));
@@ -354,18 +342,20 @@ public class Sales extends javax.swing.JPanel {
                     //.multiply(new BigDecimal("1000"))
                     .setScale(4, RoundingMode.HALF_UP);
                 totalSale = totalSale.add(cash);
+                onSalePrice = cash;
             } else {
                 // Si no empieza con P, se asume que la cantidad ya es numérica (gramos o piezas)
                 onSaleQuantity = new BigDecimal(quantity);
-                totalSale = totalSale.add(productFound.getPrice().multiply(onSaleQuantity));
+                onSalePrice = productFound.getPrice().multiply(onSaleQuantity);
+                totalSale = totalSale.add(onSalePrice);
             }
             final var model = (DefaultTableModel) tblProductsSales.getModel();
             final Object[] productInfoData = {
                 productFound.getIdProduct(),
-                productFound.getQuantity(),
                 productFound.getProduct(),
+                onSaleQuantity,
                 productFound.getPrice(),
-                onSaleQuantity
+                onSalePrice
             };
             model.addRow(productInfoData);
             GUICommons.setTextToField(txtSearch, BloSalesV2Utils.EMPTY_STRING);
@@ -394,33 +384,13 @@ public class Sales extends javax.swing.JPanel {
     
     /** AJUSTAR PARA USAR TABLA */
     private List<PojoIntSaleProductData> getProductData() {
-        final var model = (DefaultListModel<String>) lstProductsSales.getModel();
         final var products = new ArrayList<PojoSaleProductData>();
         PojoSaleProductData productInfo;
         /** parsea los datos de una fila y crea un nuevo pojo para guardar */
         for (var i = 0; i < tblProductsSales.getAlignmentX(); i++) {
             productInfo = new PojoSaleProductData();
             productInfo.setIdProduct((long) tblProductsSales.getValueAt(i, 0));
-            //productInfo.setPrice(new BigDecimal());
         }
-        /*for (var i = 0; i < model.size(); i++) {
-            final var item = model.get(i);
-            productInfo = new PojoSaleProductData();
-            //idProduct product $price [quantity]
-            // 1. Obtener el ID (desde el inicio hasta el primer espacio)
-            final var primerEspacio = item.indexOf(" ");
-            final var id = item.substring(0, primerEspacio);
-            // 2. Obtener la cantidad (lo que está entre [ y ])
-            final var quantity = item.substring(item.indexOf("[") + 1, item.indexOf("]"));
-            // 3. Obtener el precio (lo que está entre $ y el espacio antes del [)
-            final var price = item.substring(item.indexOf("$") + 1, item.indexOf("[")).trim();
-            // 4. Obtener el nombre (lo que está entre el ID y el $)
-            //final var name = item.substring(primerEspacio, item.indexOf("$")).trim();
-            productInfo.setIdProduct(Long.parseLong(id));
-            productInfo.setPrice(new BigDecimal(price));
-            productInfo.setQuantityOnSale(new BigDecimal(quantity));
-            products.add(productInfo);
-        }*/
         final var productsInner = new ArrayList<PojoIntSaleProductData>();
         products.forEach(p -> productsInner.add(saleProductMapper.toInner(p)));
         return productsInner;
@@ -436,7 +406,9 @@ public class Sales extends javax.swing.JPanel {
     
     private void resetFields() {
         GUICommons.setTextToField(nmbQuantity, "1");
-        lstProductsSales.clearSelection();
+        final var model = (DefaultTableModel) tblProductsSales.getModel();
+        model.setRowCount(0);
+        tblProductsSales.repaint();
         GUICommons.setTextToLabel(lblTotal, "0");
     }
     
@@ -449,12 +421,10 @@ public class Sales extends javax.swing.JPanel {
     private javax.swing.JButton btnByName;
     private javax.swing.JButton btnComplete;
     private javax.swing.JButton btnDebtors;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblBarCode;
     private javax.swing.JLabel lblQuantity;
     private javax.swing.JLabel lblTotal;
-    private javax.swing.JList<String> lstProductsSales;
     private javax.swing.JTextField nmbQuantity;
     private javax.swing.JPanel pnlPay;
     private javax.swing.JPanel pnlSearch;
