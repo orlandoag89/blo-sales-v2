@@ -10,12 +10,16 @@ import javax.swing.SwingUtilities;
 public class SelectorDialog<T> extends javax.swing.JDialog {
     
     private List<T> items;
+    
+    private DefaultListModel<String> modeloLista;
 
     public SelectorDialog(Component parent, String title, List<T> items, Consumer<T> callback) {
         super(SwingUtilities.getWindowAncestor(parent), title, ModalityType.APPLICATION_MODAL);
         this.items = items;
         initComponents();
+        modeloLista = new DefaultListModel<>();
         loadData();
+        lstMain.setModel(modeloLista);
         GUICommons.addDoubleClickOnListEvt(lstMain, item -> {
             callback.accept((T) item);
             this.dispose();
@@ -73,7 +77,16 @@ public class SelectorDialog<T> extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtSearchTermKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchTermKeyReleased
-        
+        final var txtSearch = txtSearchTerm.getText().trim();
+        // 1. Limpiamos el modelo actual
+        modeloLista.clear();
+        // 2. Filtramos los datos originales y agregamos al modelo los que coincidan
+        for (final T item : items) {
+            final var casted = (String) item;
+            if (casted.toLowerCase().contains(txtSearch.toLowerCase())) {
+                modeloLista.addElement(casted);
+            }
+        }
     }//GEN-LAST:event_txtSearchTermKeyReleased
 
     private void loadData() {

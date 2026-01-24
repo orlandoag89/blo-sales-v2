@@ -331,7 +331,7 @@ public class Sales extends javax.swing.JPanel {
             // valida si se puede con pesos solamente si el producto se vende por kg
             var onSaleQuantity = new BigDecimal(BigInteger.ZERO);
             var onSalePrice = new BigDecimal(BigInteger.ZERO);
-            if (quantity.startsWith("P") && productFound.isKg()) {
+            if (quantity.toUpperCase().startsWith("P") && productFound.isKg()) {
                 // Extraemos el valor numérico después de la 'P'
                 final var cash = new BigDecimal(quantity.substring(1));
                 final var price = productFound.getPrice();
@@ -388,8 +388,21 @@ public class Sales extends javax.swing.JPanel {
         PojoSaleProductData productInfo;
         /** parsea los datos de una fila y crea un nuevo pojo para guardar */
         for (var i = 0; i < tblProductsSales.getAlignmentX(); i++) {
+            System.out.println(tblProductsSales.getValueAt(i, 2));
+            // 1. Obtenemos el valor y lo limpiamos de espacios
+            String rawValue = tblProductsSales.getValueAt(i, 3).toString().trim();
+
+            // 2. Reemplazamos la coma por punto (por si acaso el sistema usa formato latino)
+            // y quitamos cualquier caracter que no sea número o punto
+            String cleanValue = rawValue.replace(",", ".");
+
+            // 3. Creamos el BigDecimal
+            final var price = new BigDecimal(cleanValue);
             productInfo = new PojoSaleProductData();
             productInfo.setIdProduct((long) tblProductsSales.getValueAt(i, 0));
+            productInfo.setQuantityOnSale(new BigDecimal(tblProductsSales.getValueAt(i, 2).toString()));
+            productInfo.setPrice(price);
+            products.add(productInfo);
         }
         final var productsInner = new ArrayList<PojoIntSaleProductData>();
         products.forEach(p -> productsInner.add(saleProductMapper.toInner(p)));

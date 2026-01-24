@@ -167,7 +167,7 @@ public class SalesModelImpl implements ISalesModel {
             logger.log("enviando a cashbox la venta " + idSale);
             DBConnection.disableAutocommit();
             final var ps = conn.prepareStatement(BloSalesV2Queries.SET_ON_CASHBOX);
-            ps.setString(1, SaleStatusEntityEnum.ON_CASHBOX.name());
+            ps.setLong(1, idSale);
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
                 throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
