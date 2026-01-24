@@ -312,6 +312,7 @@ public class Sales extends javax.swing.JPanel {
                                 userData.getIdUser(),
                                 item.getIdDebtor());
                         }
+                        resetFields();
                     } catch (BloSalesV2Exception ex) {
                         Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
                     }
