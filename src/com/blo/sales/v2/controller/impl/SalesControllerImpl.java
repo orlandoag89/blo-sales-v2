@@ -16,6 +16,7 @@ import com.blo.sales.v2.controller.pojos.PojoIntProduct;
 import com.blo.sales.v2.controller.pojos.PojoIntSale;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProduct;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntSales;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntSalesAndStock;
 import com.blo.sales.v2.controller.pojos.enums.CashboxStatusIntEnum;
 import com.blo.sales.v2.controller.pojos.enums.ReasonsIntEnum;
@@ -197,6 +198,18 @@ public class SalesControllerImpl implements ISalesController {
     public WrapperPojoIntSalesAndStock retrieveSalesByStatus(SalesStatusIntEnum saleStatus) throws BloSalesV2Exception {
         logger.log("recuperando ventas por status " + saleStatus.name());
         return saleModel.retrieveSalesByStatus(saleStatus);
+    }
+
+    @Override
+    public WrapperPojoIntSales retrieveSalesDataByStatus(SalesStatusIntEnum saleStatus) throws BloSalesV2Exception {
+        logger.log("recuperando ventas por " + saleStatus.name());
+        return saleModel.retrieveSalesDataByStatus(saleStatus);
+    }
+
+    @Override
+    public boolean setCashboxSale(long idSale) throws BloSalesV2Exception {
+        logger.log("acualizando la venta " + idSale);
+        return saleModel.setCashboxSale(idSale);
     }
     
     /**
