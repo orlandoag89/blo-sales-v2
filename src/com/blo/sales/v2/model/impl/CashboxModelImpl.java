@@ -101,7 +101,8 @@ public class CashboxModelImpl implements ICashboxModel {
                 cashbox.setTimestamp(data.getString(BloSalesV2Columns.TIMESTAMP));
                 cashbox.setUsername(data.getString(BloSalesV2Columns.USER_NAME));
             }
-            logger.log("cashbox data " + cashbox.toString());
+            final var cashboxExists = cashbox == null;
+            logger.log("cashbox data "+ cashboxExists);
             return mapper.toOuter(cashbox);
         } catch (SQLException ex) {
             throw new BloSalesV2Exception(ex.getMessage());
