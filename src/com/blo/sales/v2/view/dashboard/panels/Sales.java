@@ -10,6 +10,7 @@ import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.utils.BloSalesV2UtilsEnum;
+import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.dialogs.DebtorsDialog;
@@ -35,19 +36,19 @@ public class Sales extends javax.swing.JPanel {
     
     private static final GUILogger logger = GUILogger.getLogger(Sales.class.getName());
     
-    private IProductsController productsController = ProductsControllerImpl.getInstance();
+    private static final IProductsController productsController = ProductsControllerImpl.getInstance();
     
-    private WrapperPojoProductsMapper mapperProducts = WrapperPojoProductsMapper.getInstance();
+    private static final WrapperPojoProductsMapper mapperProducts = WrapperPojoProductsMapper.getInstance();
     
-    private ISalesController salesController = SalesControllerImpl.getInstance();
+    private static final ISalesController salesController = SalesControllerImpl.getInstance();
     
-    private IDebtorsController debtorsController = DebtorsControllerImpl.getInstance();
+    private static final IDebtorsController debtorsController = DebtorsControllerImpl.getInstance();
     
-    private PojoSaleProductDataMapper saleProductMapper = PojoSaleProductDataMapper.getInstance();
+    private static final PojoSaleProductDataMapper saleProductMapper = PojoSaleProductDataMapper.getInstance();
     
-    private WrapperDebtorsMapper wrapperDebtorsMapper = WrapperDebtorsMapper.getInstance();
+    private static final WrapperDebtorsMapper wrapperDebtorsMapper = WrapperDebtorsMapper.getInstance();
     
-    private DebtorMapper debtorMapper = DebtorMapper.getInstance();
+    private static final DebtorMapper debtorMapper = DebtorMapper.getInstance();
     
     private List<PojoProduct> products;
 
@@ -84,6 +85,7 @@ public class Sales extends javax.swing.JPanel {
             });
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
         txtSearch.requestFocusInWindow();
     }
@@ -246,6 +248,7 @@ public class Sales extends javax.swing.JPanel {
                 }
             } catch (BloSalesV2Exception ex) {
                 Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+                CommonAlerts.openError(ex.getMessage());
             }
             
         }
@@ -261,6 +264,7 @@ public class Sales extends javax.swing.JPanel {
             resetFields();
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnCompleteActionPerformed
 
@@ -315,11 +319,13 @@ public class Sales extends javax.swing.JPanel {
                         resetFields();
                     } catch (BloSalesV2Exception ex) {
                         Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+                        CommonAlerts.openError(ex.getMessage());
                     }
                 });
             debtorsDialog.setVisible(true);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnDebtorsActionPerformed
     
@@ -367,6 +373,7 @@ public class Sales extends javax.swing.JPanel {
             GUICommons.enabledButton(btnDebtors);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
     }
     /**

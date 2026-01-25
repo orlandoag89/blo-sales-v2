@@ -10,11 +10,9 @@ public class WrapperDebtorsMapper implements IToOuter<WrapperPojoIntDebtors, Wra
     
     private static WrapperDebtorsMapper instance;
     
-    private DebtorMapper mapper;
+    private static final DebtorMapper mapper = DebtorMapper.getInstance();
     
-    private WrapperDebtorsMapper() {
-        mapper = DebtorMapper.getInstance();
-    }
+    private WrapperDebtorsMapper() { }
     
     public static WrapperDebtorsMapper getInstance() {
         if (instance == null) {

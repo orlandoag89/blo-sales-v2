@@ -70,9 +70,15 @@ public class SalesControllerImpl implements ISalesController {
         for (final var product: products) {
             final var productFound = filterProductById(productsFound, product.getIdProduct());
             // validar que el producto de entrada exista en el stock
-            BloSalesV2Utils.validateRule(productFound == null, "El product " + productFound.getProduct() + " no existe");
+            BloSalesV2Utils.validateRule(
+                    productFound == null,
+                    productFound.getProduct() + BloSalesV2Utils.PRODUCT_NOT_FOUND
+            );
             // valida que el exista suficiente cantidad de producto
-            BloSalesV2Utils.validateRule(productFound.getQuantity().compareTo(product.getQuantityOnSale()) < 0, "No ha suficientes productos de " + productFound.getProduct());
+            BloSalesV2Utils.validateRule(
+                    productFound.getQuantity().compareTo(product.getQuantityOnSale()) < 0,
+                    productFound.getProduct() + BloSalesV2Utils.PRODUCT_INSUFFICIENT
+            );
         }
         userController.getUserById(idUser);
         final var timestamp = BloSalesV2Utils.getTimestamp();
@@ -160,7 +166,7 @@ public class SalesControllerImpl implements ISalesController {
         /** validaciones */
         final var debtorFound = debtorsController.getDebtorById(idDebtor);
         // se guarda deuda original
-        BloSalesV2Utils.validateRule(debtorFound == null, "Deudor no encontrado");
+        BloSalesV2Utils.validateRule(debtorFound == null, BloSalesV2Utils.DEBTOR_NOT_FOUND);
         debtorFound.setDebt(totalSale);
         /** se actualiza deudor */
         if (partialPay.compareTo(BigDecimal.ZERO) == 0) {

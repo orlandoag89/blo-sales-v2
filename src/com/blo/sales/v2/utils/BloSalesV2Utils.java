@@ -40,6 +40,12 @@ public final class BloSalesV2Utils {
     
     public static final String USER_NOT_FOUND = "Usuario no encontrado";
     
+    public static final String PRODUCT_NOT_FOUND = " no encontrado";
+    
+    public static final String PRODUCT_INSUFFICIENT = " insuficientes";
+    
+    public static final String DEBTOR_NOT_FOUND = "Deudor no encontrado";
+    
     private BloSalesV2Utils() { }
    
     /**

@@ -17,6 +17,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DebtorsModelImpl implements IDebtorsModel {
     
@@ -26,14 +28,11 @@ public class DebtorsModelImpl implements IDebtorsModel {
     
     private static DebtorsModelImpl instance;
     
-    private DebtorEntityMapper mapper;
+    private static final DebtorEntityMapper mapper = DebtorEntityMapper.getInstance();
     
-    private WrapperDebtorsEntityMapper wrapperMapper;
+    private static final WrapperDebtorsEntityMapper wrapperMapper = WrapperDebtorsEntityMapper.getInstance();
     
-    private DebtorsModelImpl() {
-        mapper = DebtorEntityMapper.getInstance();
-        wrapperMapper = WrapperDebtorsEntityMapper.getInstance();
-    }
+    private DebtorsModelImpl() { }
     
     public static DebtorsModelImpl getInstance() {
         if (instance == null) {
@@ -64,11 +63,13 @@ public class DebtorsModelImpl implements IDebtorsModel {
             DBConnection.doCommit();
             return mapper.toOuter(data);
         } catch (SQLException e) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
             throw new BloSalesV2Exception(e.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
                 throw new BloSalesV2Exception(e.getMessage());
             }
         }
@@ -89,6 +90,7 @@ public class DebtorsModelImpl implements IDebtorsModel {
             d.setDebt(rs.getBigDecimal(BloSalesV2Columns.DEBT));
             return mapper.toOuter(d);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }
@@ -114,11 +116,13 @@ public class DebtorsModelImpl implements IDebtorsModel {
             DBConnection.doCommit();
             return mapper.toOuter(debtorMapped);
         } catch (SQLException e) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
             throw new BloSalesV2Exception(e.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
                 throw new BloSalesV2Exception(e.getMessage());
             }
         }
@@ -143,6 +147,7 @@ public class DebtorsModelImpl implements IDebtorsModel {
             debtorsWrapper.setDebtors(debtors);
             return wrapperMapper.toOuter(debtorsWrapper);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }

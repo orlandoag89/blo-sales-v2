@@ -3,6 +3,7 @@ package com.blo.sales.v2.view.dashboard.panels;
 import com.blo.sales.v2.controller.ICashboxController;
 import com.blo.sales.v2.controller.impl.CashboxControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.mappers.WrapperPojoCashboxesDetailsMapper;
 import java.util.logging.Level;
@@ -40,6 +41,7 @@ public class AllCashboxes extends javax.swing.JPanel {
             });
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(AllCashboxes.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
         
     }

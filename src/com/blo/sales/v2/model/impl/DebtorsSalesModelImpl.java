@@ -9,6 +9,8 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DebtorsSalesModelImpl implements IDebtorsSalesModel {
     
@@ -16,11 +18,9 @@ public class DebtorsSalesModelImpl implements IDebtorsSalesModel {
     
     private static DebtorsSalesModelImpl instance;
     
-    private DebtorSaleEntityMapper mapper;
+    private static final DebtorSaleEntityMapper mapper = DebtorSaleEntityMapper.getInstance();
     
-    private DebtorsSalesModelImpl() {
-        mapper = DebtorSaleEntityMapper.getInstance();
-    }
+    private DebtorsSalesModelImpl() { }
     
     public static DebtorsSalesModelImpl getInstance() {
         if (instance == null) {
@@ -48,11 +48,13 @@ public class DebtorsSalesModelImpl implements IDebtorsSalesModel {
             DBConnection.doCommit();
             return mapper.toOuter(relationInner);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
                 throw new BloSalesV2Exception(ex.getMessage());
             }
         }

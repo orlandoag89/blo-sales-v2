@@ -16,21 +16,20 @@ import com.blo.sales.v2.model.entities.WrapperProductsEntity;
 import com.blo.sales.v2.model.mapper.WrapperProductsEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ProductsModelImpl implements IProductsModel {
     
     private static final Connection conn = DBConnection.getConnection();
     
-    private ProductEntityMapper mapper;
+    private static final ProductEntityMapper mapper = ProductEntityMapper.getInstance();
     
-    private WrapperProductsEntityMapper wrapperMapper;
+    private static final WrapperProductsEntityMapper wrapperMapper = WrapperProductsEntityMapper.getInstance();
     
     private static ProductsModelImpl instance;
     
-    private ProductsModelImpl() {
-        mapper = ProductEntityMapper.getInstance();
-        wrapperMapper = WrapperProductsEntityMapper.getInstance();
-    }
+    private ProductsModelImpl() { }
     
     public static ProductsModelImpl getInstance() {
         if (instance == null) {
@@ -64,11 +63,13 @@ public class ProductsModelImpl implements IProductsModel {
             DBConnection.doCommit();
             return mapper.toOuter(innerProduct);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
                 throw new BloSalesV2Exception(ex.getMessage());
             }
         }
@@ -97,6 +98,7 @@ public class ProductsModelImpl implements IProductsModel {
             productsInn.setProducts(innerProducts);
             return wrapperMapper.toOuter(productsInn);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }
@@ -121,11 +123,13 @@ public class ProductsModelImpl implements IProductsModel {
             DBConnection.doCommit();
             return mapper.toOuter(innerProduct);
         } catch (SQLException e) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
             throw new BloSalesV2Exception(e.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
                 throw new BloSalesV2Exception(e.getMessage());
             }
         }
@@ -150,6 +154,7 @@ public class ProductsModelImpl implements IProductsModel {
             p.setProduct(rs.getString(BloSalesV2Columns.PRODUCT));
             return mapper.toOuter(p);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }

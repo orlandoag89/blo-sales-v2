@@ -8,6 +8,7 @@ import com.blo.sales.v2.controller.pojos.enums.ReasonsIntEnum;
 import com.blo.sales.v2.controller.pojos.enums.TypesIntEnum;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.ProductMapper;
@@ -30,29 +31,24 @@ public class AllProducts extends javax.swing.JPanel {
     
     private static final GUILogger logger = GUILogger.getLogger(AllProducts.class.getName());
 
-    private PojoLoggedInUser userData;
+    private static final IProductsController productsController = ProductsControllerImpl.getInstance();
     
-    private IProductsController productsController;
+    private static final ICategoriesController categories = CategoriesControllerImpl.getInstance();
     
-    private ICategoriesController categories;
+    private static final WrapperPojoProductsMapper productsMapper = WrapperPojoProductsMapper.getInstance();
+    
+    private static final ProductMapper productMapper = ProductMapper.getInstance();
+    
+    private static final WrapperPojoCategoriesMapper categoriesMapper = WrapperPojoCategoriesMapper.getInstance();
     
     private TableRowSorter<DefaultTableModel> sorter;
     
     private BigDecimal currentQuantity;
     
-    private WrapperPojoProductsMapper productsMapper;
-    
-    private ProductMapper productMapper;
-    
-    private WrapperPojoCategoriesMapper categoriesMapper;
+    private PojoLoggedInUser userData;
     
     public AllProducts(PojoLoggedInUser userData) {
         this.userData = userData;
-        productsController = ProductsControllerImpl.getInstance();
-        categories = CategoriesControllerImpl.getInstance();
-        productsMapper = WrapperPojoProductsMapper.getInstance();
-        productMapper = ProductMapper.getInstance();
-        categoriesMapper = WrapperPojoCategoriesMapper.getInstance();
         initComponents();
         lblIdProduct.setVisible(false);
 
@@ -287,6 +283,7 @@ public class AllProducts extends javax.swing.JPanel {
             initPanelManagement();
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -346,7 +343,9 @@ public class AllProducts extends javax.swing.JPanel {
                     GUICommons.setTextToLabel(lblIdProduct, productSelected.getIdProduct() + "");
                 }
             });
-        } catch (final BloSalesV2Exception e) { }
+        } catch (final BloSalesV2Exception e) {
+            CommonAlerts.openError(e.getMessage());
+        }
     }
     
     /** inicializa el filtro en la tabla */

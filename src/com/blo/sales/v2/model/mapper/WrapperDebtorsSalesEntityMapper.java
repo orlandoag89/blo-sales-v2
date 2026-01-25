@@ -10,11 +10,9 @@ public class WrapperDebtorsSalesEntityMapper implements IToOuter<WrapperDebtorsS
     
     private static WrapperDebtorsSalesEntityMapper instance;
     
-    private DebtorSaleEntityMapper mapper;
+    private static final DebtorSaleEntityMapper mapper = DebtorSaleEntityMapper.getInstance();
     
-    private WrapperDebtorsSalesEntityMapper() {
-        mapper = DebtorSaleEntityMapper.getInstance();
-    }
+    private WrapperDebtorsSalesEntityMapper() { }
     
     public static WrapperDebtorsSalesEntityMapper getInstance() {
         if (instance == null) {
