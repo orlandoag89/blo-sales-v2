@@ -8,13 +8,17 @@ import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.WrapperDebtorsMapper;
-import com.blo.sales.v2.view.pojos.PojoDebtor;
+import com.blo.sales.v2.view.mappers.WrapperPojoDebtorsDetailsMapper;
+import com.blo.sales.v2.view.pojos.PojoDebtorDetail;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.WrapperPojoDebtors;
+import com.blo.sales.v2.view.pojos.WrapperPojoDebtorsDetails;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import javax.swing.DefaultListModel;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -27,34 +31,40 @@ public class Debtors extends javax.swing.JPanel {
     
     private static final WrapperDebtorsMapper mapper = WrapperDebtorsMapper.getInstance();
     
+    private static final WrapperPojoDebtorsDetailsMapper debtorsDetailsMapper = WrapperPojoDebtorsDetailsMapper.getInstance();
+    
     private PojoLoggedInUser userData;
     
     private TableRowSorter<DefaultTableModel> sorter;
     
     /** deudor seleccionado para hacer operaciones */
-    private PojoDebtor debtorSelected;
+    private PojoDebtorDetail debtorSelected;
     
     public Debtors(PojoLoggedInUser userData) {
         this.userData = userData;
         initComponents();
         try {
-            final var debtorsFromDB = retrieveDebtors();
+            final var debtorsFromDB = retrieveDebtorsDetails();
             loadDataAndTitles(debtorsFromDB);
             initFilter();
             GUICommons.addDoubleClickOnTable(tblDebtors, item -> {
-                debtorSelected = 
+                final var debtorDetail = 
                         debtorsFromDB.getDebtors().stream().
-                            filter(d -> d.getIdDebtor() == Long.parseLong(item + "")).
-                            findFirst().
-                            orElse(null);
-                logger.log("Debtor seleccionado " + debtorSelected.toString());
-                if (debtorSelected != null) {
+                            filter(d -> d.getIdDebtor() == Long.parseLong(item + ""))
+                            .collect(Collectors.toList());
+                GUICommons.setTextToField(nmbPay, BloSalesV2Utils.EMPTY_STRING);
+                if (debtorDetail != null && !debtorDetail.isEmpty()) {
+                    debtorSelected = debtorDetail.get(0);
+                    areaPayments.setText(BloSalesV2Utils.EMPTY_STRING);
                     GUICommons.setTextToField(txtName, debtorSelected.getName());
                     GUICommons.setTextToLabel(lblDebt, "debe: $" + debtorSelected.getDebt());
                     Arrays.stream(debtorSelected.getPayments().split(BloSalesV2Utils.SEPARATOR_PAYMENTS)).forEach(p -> {
                         areaPayments.append(p);
                         areaPayments.append("\n");
                     });
+                    final var model = new DefaultListModel<String>();
+                    debtorDetail.forEach(d -> model.addElement(d.getProduct()));
+                    lstProducts.setModel(model);
                 }
             });
         } catch (BloSalesV2Exception ex) {
@@ -63,25 +73,35 @@ public class Debtors extends javax.swing.JPanel {
         }
     }
     
-    private WrapperPojoDebtors retrieveDebtors() throws BloSalesV2Exception {
-        return mapper.toOuter(debtors.getAllDebtors());
+    private WrapperPojoDebtorsDetails retrieveDebtorsDetails() throws BloSalesV2Exception {
+        return debtorsDetailsMapper.toOuter(debtors.getDebtorsDetails());
     }
-
-    private void loadDataAndTitles(WrapperPojoDebtors debtors) throws BloSalesV2Exception {
-        final String[] titles = {"ID", "Nombre", "Debe", "Pagos"};
+    
+    private void loadDataAndTitles(WrapperPojoDebtorsDetails debtors) throws BloSalesV2Exception {
+        final String[] titles = {"ID", "Nombre", "Debe", "Timestamp"};
         GUICommons.loadTitleOnTable(tblDebtors, titles, false);
         final var model = (DefaultTableModel) tblDebtors.getModel();
-        debtors.getDebtors().forEach(d -> {
-            /** filtro para buscar nombre de categorias */
-            final Object[] row = {
-                d.getIdDebtor(),
-                d.getName(),
-                d.getDebt(),
-                d.getPayments()
-            };
-            model.addRow(row);
-        });
+        if (debtors.getDebtors() != null && !debtors.getDebtors().isEmpty()) {
+            final var debtorsFilter = debtors.getDebtors().stream().collect(Collectors.toMap(
+                    PojoDebtorDetail::getName, // Clave para identificar duplicados
+                    obj -> obj,// El objeto en sí
+                    (existente, reemplazo) -> existente // Si hay duplicado, se queda con el primero
+            ))
+                    .values()
+                    .stream()
+                    .collect(Collectors.toList());
+            for(final var d: debtorsFilter) {
+                final Object[] row = {
+                    d.getIdDebtor(),
+                    d.getName(),
+                    d.getDebt(),
+                    d.getTimestamp()
+                };
+                model.addRow(row);
+            }
+        }
     }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -98,6 +118,8 @@ public class Debtors extends javax.swing.JPanel {
         lblDebt = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         areaPayments = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        lstProducts = new javax.swing.JList<>();
 
         tblDebtors.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -148,20 +170,15 @@ public class Debtors extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(btnPayall)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(lblAddPartialPay)
-                                .addGap(102, 102, 102)))
-                        .addGap(39, 39, 39)
-                        .addComponent(btnSave)
-                        .addGap(94, 94, 94))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblAddPartialPay)
+                        .addGap(307, 307, 307))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnSave)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnPayall))
                             .addComponent(nmbPay, javax.swing.GroupLayout.PREFERRED_SIZE, 296, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -192,6 +209,8 @@ public class Debtors extends javax.swing.JPanel {
         areaPayments.setRows(5);
         jScrollPane2.setViewportView(areaPayments);
 
+        jScrollPane3.setViewportView(lstProducts);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -201,14 +220,15 @@ public class Debtors extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(txtSearchDebtor, javax.swing.GroupLayout.PREFERRED_SIZE, 276, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(59, 59, 59))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -220,9 +240,11 @@ public class Debtors extends javax.swing.JPanel {
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(142, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(13, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -247,7 +269,7 @@ public class Debtors extends javax.swing.JPanel {
                 payment = debtorSelected.getDebt();
             }
             debtors.addPayment(payment, userData.getIdUser(), debtorSelected.getIdDebtor());
-            loadDataAndTitles(retrieveDebtors());
+            loadDataAndTitles(retrieveDebtorsDetails());
             debtorSelected = null;
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Debtors.class.getName()).log(Level.SEVERE, null, ex);
@@ -296,8 +318,10 @@ public class Debtors extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblAddPartialPay;
     private javax.swing.JLabel lblDebt;
+    private javax.swing.JList<String> lstProducts;
     private javax.swing.JTextField nmbPay;
     private javax.swing.JTable tblDebtors;
     private javax.swing.JTextField txtName;

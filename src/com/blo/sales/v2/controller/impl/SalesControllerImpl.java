@@ -146,11 +146,7 @@ public class SalesControllerImpl implements ISalesController {
         /** se registra el deudor */
         final var debtor = debtorsController.saveDebtor(debtorData);
         /** guardar relacion deudor-venta */
-        final var debtorSale = new PojoIntDebtorSale();
-        debtorSale.setFkDebtor(debtor.getIdDebtor());
-        debtorSale.setFkSale(sale.getIdSale());
-        debtorSale.setTimestamp(sale.getTimestamp());
-        debtorsSalesController.addRelationship(debtorSale);
+        registereRelationship(debtor.getIdDebtor(), sale.getIdSale(), sale.getTimestamp());
         return debtor;
     }
     
@@ -170,9 +166,11 @@ public class SalesControllerImpl implements ISalesController {
         debtorFound.setDebt(totalSale);
         /** se actualiza deudor */
         if (partialPay.compareTo(BigDecimal.ZERO) == 0) {
-            logger.log("sin pago parcial");
             // el deudor no ha abonado
-            registerSale(BigDecimal.ZERO, productsInfo, idUser);
+            logger.log("sin pago parcial");
+            // se guarda relacion
+            final var resiteredSale = registerSale(BigDecimal.ZERO, productsInfo, idUser);
+            registereRelationship(idDebtor, resiteredSale.getIdSale(), resiteredSale.getTimestamp());
             return debtorsController.updateDebtor(debtorFound, idDebtor);
         }
         // el deudor ha abonado algo
@@ -183,6 +181,9 @@ public class SalesControllerImpl implements ISalesController {
             registerSale(partialPay, productsInfo, idUser);
             debtorFound.setPayments(partialPayments);
             logger.log("debtor found actualizado " + debtorFound.toString());
+            // se guarda relacion
+            final var resiteredSale = registerSale(BigDecimal.ZERO, productsInfo, idUser);
+            registereRelationship(idDebtor, resiteredSale.getIdSale(), resiteredSale.getTimestamp());
             return debtorsController.updateDebtor(debtorFound, idDebtor);
         }
         // se cubre deuda completa
@@ -227,5 +228,13 @@ public class SalesControllerImpl implements ISalesController {
     private PojoIntProduct filterProductById(List<PojoIntProduct> products, long idProduct) {
         return products.stream().filter(item -> item.getIdProduct() == idProduct).findAny().orElse(null);
         
+    }
+    
+    private PojoIntDebtorSale registereRelationship(long idDebtor, long idSale, String timestamp) throws BloSalesV2Exception {
+        final var debtorSale = new PojoIntDebtorSale();
+        debtorSale.setFkDebtor(idDebtor);
+        debtorSale.setFkSale(idSale);
+        debtorSale.setTimestamp(timestamp);
+        return debtorsSalesController.addRelationship(debtorSale);
     }
 }

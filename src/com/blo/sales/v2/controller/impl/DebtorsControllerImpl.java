@@ -6,6 +6,7 @@ import com.blo.sales.v2.controller.ISalesController;
 import com.blo.sales.v2.controller.pojos.PojoIntDebtor;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntDebtors;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntDebtorsDetails;
 import com.blo.sales.v2.model.IDebtorsModel;
 import com.blo.sales.v2.model.impl.DebtorsModelImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
@@ -88,6 +89,11 @@ public class DebtorsControllerImpl implements IDebtorsController {
         debtorFound.setDebt(BigDecimal.ZERO);
         debtorFound.setPayments(BloSalesV2Utils.EMPTY_STRING);
         return updateDebtor(debtorFound, idDebtor);
+    }
+
+    @Override
+    public WrapperPojoIntDebtorsDetails getDebtorsDetails() throws BloSalesV2Exception {
+        return model.getDebtorsDetails();
     }
 
 }

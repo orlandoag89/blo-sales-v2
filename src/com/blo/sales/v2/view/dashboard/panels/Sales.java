@@ -286,6 +286,7 @@ public class Sales extends javax.swing.JPanel {
     private void btnDebtorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDebtorsActionPerformed
         try {
             final var debtors = wrapperDebtorsMapper.toOuter(debtorsController.getAllDebtors());
+            final var debtorsCoopy = wrapperDebtorsMapper.toOuter(debtorsController.getAllDebtors());
             final var debtorsDialog = new DebtorsDialog<>(
                 this,
                 "Deudores",
@@ -293,9 +294,9 @@ public class Sales extends javax.swing.JPanel {
                 totalSale,
                 item -> {
                     try {
-                        /** formato de pagos amountTIMESTAMPtimestamp */
+                        /** formato de pagos amountTIMESTAMPtimestamp, */
                         logger.log("deudor " + item.toString());
-                        final var pay = BloSalesV2Utils.getFirstLastPayment(item.getPayments(), BloSalesV2UtilsEnum.LAST);
+                        var pay = BloSalesV2Utils.getFirstLastPayment(item.getPayments(), BloSalesV2UtilsEnum.LAST);
                         /** es nuevo deudor  */
                         if (item.getIdDebtor() == 0) {
                             salesController.registerSaleWithNewDebtor(
@@ -305,7 +306,14 @@ public class Sales extends javax.swing.JPanel {
                                 debtorMapper.toInner(item)
                             );
                         } else {
-                            /** validar pagos ventas */
+                            // valida que no se haya hecho un pago
+                            final var debtorFound = debtorsCoopy.getDebtors().stream().
+                                    filter(d -> d.getIdDebtor() == item.getIdDebtor()).
+                                    findFirst().
+                                    orElse(null);
+                            if (debtorFound.getPayments().equals(item.getPayments())) {
+                                pay = BigDecimal.ZERO;
+                            }
                             salesController.registerSaleWithDebtor(
                                 item.getDebt(),
                                 getProductData(),
@@ -337,7 +345,7 @@ public class Sales extends javax.swing.JPanel {
             // valida si se puede con pesos solamente si el producto se vende por kg
             var onSaleQuantity = new BigDecimal(BigInteger.ZERO);
             var onSalePrice = new BigDecimal(BigInteger.ZERO);
-            if (quantity.toUpperCase().startsWith("P") && productFound.isKg()) {
+            if (quantity.toLowerCase().startsWith("p") && productFound.isKg()) {
                 // Extraemos el valor numérico después de la 'P'
                 final var cash = new BigDecimal(quantity.substring(1));
                 final var price = productFound.getPrice();

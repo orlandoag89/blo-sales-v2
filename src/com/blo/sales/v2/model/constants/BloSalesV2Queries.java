@@ -66,6 +66,8 @@ public final class BloSalesV2Queries {
     
     public static final String UPDATE_DEBTOR = "UPDATE debtors SET name = ?, debt = ?, payments = ? WHERE id_debtor = ?";
     
+    public static final String DEBTORS_DETAILS = "SELECT d.id_debtor, d.name, d.debt, d.payments, st.product, sp.quantity_sale, sp.total_on_sale, sp.timestamp FROM debtors d INNER JOIN debtor_sale ds ON ds.fk_debtor = d.id_debtor INNER JOIN sales s ON ds.fk_sale = s.id_sale INNER JOIN sale_product sp ON sp.fk_sale = s.id_sale INNER JOIN stock st ON st.id_product = sp.fk_product";
+    
     /** deudores ventas */
     public static final String INSERT_DEBTOR_SALE = "INSERT INTO debtor_sale(fk_debtor, fk_sale, timestamp) VALUES (?, ?, ?)";
 

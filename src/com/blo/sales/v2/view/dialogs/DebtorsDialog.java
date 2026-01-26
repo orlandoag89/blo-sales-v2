@@ -231,12 +231,13 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
                 var payments = debtor.getPayments();
                 final var newDebt = new BigDecimal(GUICommons.getTextFromLabel(lblAmount).substring(1));
                 logger.log("se realiza la resta del total acumulado menos el pago " + newDebt);
+                // no se realizo pago
+                debtor.setDebt(newDebt);
                 // se realiza pago
                 if (partialPayment.compareTo(BigDecimal.ZERO) != 0) {
                     logger.log("hay un pago extra, se arma cadena de pagos");
                     payments = payments + newPay;
                     debtor.setPayments(payments);
-                    debtor.setDebt(newDebt);
                     logger.log("pagos " + debtor.getPayments());
                 }
                 // se paga toda la duda
@@ -244,7 +245,6 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
                     logger.log("se hizo el pago completo: " + totalSale);
                     debtor.setDebt(totalSale);
                 }
-                
                 logger.log("nuevos datos del deudor " + debtor.toString());
                 callback.accept((T) debtor);
                 this.dispose();
