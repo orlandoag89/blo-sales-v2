@@ -31,6 +31,7 @@ public class PojoCashboxDetailMapper implements IToOuter<PojoIntCashboxDetail, P
         outer.setStatus(CashboxStatusEnum.valueOf(inner.getStatus().name()));
         outer.setTimestamp(inner.getTimestamp());
         outer.setType(ActivesCostsEnum.valueOf(inner.getType().name()));
+        outer.setConceptAmount(inner.getConceptAmount());
         return outer;
     }
 }

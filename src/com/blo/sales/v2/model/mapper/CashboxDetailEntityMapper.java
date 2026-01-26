@@ -30,6 +30,7 @@ public class CashboxDetailEntityMapper implements IToOuter<CashboxDetailEntity, 
         outer.setIdCashbox(inner.getId_cashbox());
         outer.setStatus(CashboxStatusIntEnum.valueOf(inner.getStatus().name()));
         outer.setTimestamp(inner.getTimestamp());
+        outer.setConceptAmount(inner.getConcept_amount());
         outer.setType(ActiveCostIntEnum.valueOf(inner.getType().name()));
         return outer;
     }

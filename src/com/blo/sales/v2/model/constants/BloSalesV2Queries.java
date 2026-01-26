@@ -80,5 +80,5 @@ public final class BloSalesV2Queries {
     /** relacion activos pasivos con caja de dinero */
     public static final String INSERT_CASHBOXES_ACTIVE_COSTS = "INSERT INTO cashboxes_actives_costs(fk_cashbox, fk_actives_costs, timestamp) VALUES (?, ?, ?)";
     
-    public static final String SELECT_CASHBOXES_DATA = "SELECT c.id_cashbox, c.status, c.amount, ac.concept, ac.type, cac.timestamp FROM cashboxes c INNER JOIN cashboxes_actives_costs cac ON c.id_cashbox = cac.fk_cashbox INNER JOIN actives_costs ac ON cac.fk_actives_costs = ac.id_active_cost";
+    public static final String SELECT_CASHBOXES_DATA = "SELECT c.id_cashbox, c.status, c.amount, ac.concept, ac.type, cac.timestamp, ac.amount AS concept_amount FROM cashboxes c INNER JOIN cashboxes_actives_costs cac ON c.id_cashbox = cac.fk_cashbox INNER JOIN actives_costs ac ON cac.fk_actives_costs = ac.id_active_cost";
 }

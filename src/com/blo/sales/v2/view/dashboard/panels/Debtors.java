@@ -6,12 +6,9 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
-import com.blo.sales.v2.view.commons.GUILogger;
-import com.blo.sales.v2.view.mappers.WrapperDebtorsMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoDebtorsDetailsMapper;
 import com.blo.sales.v2.view.pojos.PojoDebtorDetail;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
-import com.blo.sales.v2.view.pojos.WrapperPojoDebtors;
 import com.blo.sales.v2.view.pojos.WrapperPojoDebtorsDetails;
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -24,12 +21,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class Debtors extends javax.swing.JPanel {
-
-    private static final GUILogger logger = GUILogger.getLogger(Debtors.class.getName());
     
     private static final IDebtorsController debtors = DebtorsControllerImpl.getInstance();
-    
-    private static final WrapperDebtorsMapper mapper = WrapperDebtorsMapper.getInstance();
     
     private static final WrapperPojoDebtorsDetailsMapper debtorsDetailsMapper = WrapperPojoDebtorsDetailsMapper.getInstance();
     

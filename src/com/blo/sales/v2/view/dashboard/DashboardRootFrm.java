@@ -38,10 +38,10 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         optCategory = new javax.swing.JMenuItem();
         itmAdmon = new javax.swing.JMenu();
-        optDebtors = new javax.swing.JMenuItem();
         itmContability = new javax.swing.JMenu();
         optAllCashboxes = new javax.swing.JMenuItem();
         optOpoenCashbox = new javax.swing.JMenuItem();
+        optDebtors = new javax.swing.JMenuItem();
         itmProg = new javax.swing.JMenu();
         optConsole = new javax.swing.JMenuItem();
 
@@ -109,16 +109,6 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         itmAdmon.setText("Administracion");
 
-        optDebtors.setText("Deudores");
-        optDebtors.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optDebtorsActionPerformed(evt);
-            }
-        });
-        itmAdmon.add(optDebtors);
-
-        mnuBar.add(itmAdmon);
-
         itmContability.setText("Contabilidad");
 
         optAllCashboxes.setText("Cajas");
@@ -137,7 +127,17 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         });
         itmContability.add(optOpoenCashbox);
 
-        mnuBar.add(itmContability);
+        itmAdmon.add(itmContability);
+
+        optDebtors.setText("Deudores");
+        optDebtors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optDebtorsActionPerformed(evt);
+            }
+        });
+        itmAdmon.add(optDebtors);
+
+        mnuBar.add(itmAdmon);
 
         itmProg.setText("Programacion");
 
