@@ -201,12 +201,12 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
         try {
             debtorName = GUICommons.getTextFromJText(this.txtName);
-            GUICommons.enabledButton(btnRegister);
             debtor = new PojoDebtor();
             debtor.setName(debtorName);
             debtor.setPayments(BloSalesV2Utils.EMPTY_STRING);
             debtor.setDebt(BigDecimal.ZERO);
             GUICommons.enabledButton(btnSaveRegister);
+            GUICommons.disabledButton(btnRegister);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(DebtorsDialog.class.getName()).log(Level.SEVERE, null, ex);
         }

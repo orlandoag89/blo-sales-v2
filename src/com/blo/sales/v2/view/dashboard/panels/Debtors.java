@@ -262,7 +262,8 @@ public class Debtors extends javax.swing.JPanel {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
             final var dbt = GUICommons.getTextFromLabel(lblDebt);
-            final var amount = new BigDecimal(dbt.lastIndexOf("$") + 1);
+            System.out.println(dbt);
+            final var amount = new BigDecimal(dbt.substring(dbt.lastIndexOf("$") + 1));
             var payment = GUICommons.getNumberFromJText(nmbPay);
             if (payment.compareTo(amount) >= 0) {
                 // se realiza el pago completo

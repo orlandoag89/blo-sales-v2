@@ -185,5 +185,29 @@ public class DebtorsModelImpl implements IDebtorsModel {
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }
+
+    @Override
+    public void deleteDebtor(long idDebtor) throws BloSalesV2Exception {
+        try {
+            DBConnection.disableAutocommit();
+            final var ps = conn.prepareStatement(BloSalesV2Queries.DEBTOR_DELETE);
+            ps.setLong(1, idDebtor);
+            final var rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_DELETING_DATA_ON_DATA_BASE);
+            }
+            DBConnection.doCommit();
+        } catch (SQLException e) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
+            throw new BloSalesV2Exception(e.getMessage());
+        } finally {
+            try {
+                DBConnection.enableAutocommit();
+            } catch (SQLException e) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
+                throw new BloSalesV2Exception(e.getMessage());
+            }
+        }
+    }
     
 }

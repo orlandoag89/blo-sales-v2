@@ -6,6 +6,7 @@ import com.blo.sales.v2.model.config.DBConnection;
 import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.mapper.DebtorSaleEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -47,6 +48,30 @@ public class DebtorsSalesModelImpl implements IDebtorsSalesModel {
             }
             DBConnection.doCommit();
             return mapper.toOuter(relationInner);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new BloSalesV2Exception(ex.getMessage());
+        } finally {
+            try {
+                DBConnection.enableAutocommit();
+            } catch (SQLException ex) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+                throw new BloSalesV2Exception(ex.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void deleteRelationhip(long fkDebtor) throws BloSalesV2Exception {
+         try {
+            DBConnection.disableAutocommit();
+            final var ps = conn.prepareStatement(BloSalesV2Queries.DELETE_DEBTOR_SALE);
+            ps.setLong(1, fkDebtor);
+            final var rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_DELETING_DATA_ON_DATA_BASE);
+            }
+            DBConnection.doCommit();
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());

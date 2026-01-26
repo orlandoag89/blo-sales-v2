@@ -20,4 +20,6 @@ public interface IDebtorsController {
     
     WrapperPojoIntDebtorsDetails getDebtorsDetails() throws BloSalesV2Exception;
     
+    void deleteDebtor(long idDebtor) throws BloSalesV2Exception;
+    
 }

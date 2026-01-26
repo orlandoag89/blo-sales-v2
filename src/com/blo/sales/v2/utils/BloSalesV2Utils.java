@@ -34,6 +34,8 @@ public final class BloSalesV2Utils {
     
     public static final String ERROR_UPDATING_ON_DATA_BASE = "Error inesperado actualizando el registro";
     
+    public static final String ERROR_DELETING_DATA_ON_DATA_BASE = "Error inesperado borrando registro";
+    
     public static final String ERROR_CATEGORY_NOT_FOUND = "Categor\u00eda no encontrada";
     
     public static final String ERROR_PRODUCT_NOT_FOUND = "Producto no encontrado";

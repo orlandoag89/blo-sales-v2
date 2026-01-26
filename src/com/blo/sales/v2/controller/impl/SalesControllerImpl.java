@@ -189,7 +189,8 @@ public class SalesControllerImpl implements ISalesController {
         // se cubre deuda completa
         logger.log("se cubre deuda completa");
         // validar que no se guarden numeros negativos en la deuda
-        registerSale(totalSale, productsInfo, idUser);
+        final var registeredSale = registerSale(totalSale, productsInfo, idUser);
+        debtorsSalesController.deleteRelationhip(registeredSale.getIdSale());
         debtorFound.setPayments(BloSalesV2Utils.EMPTY_STRING);
         debtorFound.setDebt(BigDecimal.ZERO);
         return debtorsController.updateDebtor(debtorFound, idDebtor);
@@ -230,6 +231,14 @@ public class SalesControllerImpl implements ISalesController {
         
     }
     
+    /**
+     * registra la relacion deudor-venta
+     * @param idDebtor
+     * @param idSale
+     * @param timestamp
+     * @return
+     * @throws BloSalesV2Exception 
+     */
     private PojoIntDebtorSale registereRelationship(long idDebtor, long idSale, String timestamp) throws BloSalesV2Exception {
         final var debtorSale = new PojoIntDebtorSale();
         debtorSale.setFkDebtor(idDebtor);
