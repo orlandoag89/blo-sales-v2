@@ -2,6 +2,7 @@ package com.blo.sales.v2.model;
 
 import com.blo.sales.v2.controller.pojos.PojoIntDebtor;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntDebtors;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntDebtorsDetails;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 
 public interface IDebtorsModel {
@@ -13,5 +14,9 @@ public interface IDebtorsModel {
     PojoIntDebtor updateDebtor(PojoIntDebtor debtor, long idDebtor) throws BloSalesV2Exception;
     
     WrapperPojoIntDebtors getAllDebtors() throws BloSalesV2Exception;
+    
+    WrapperPojoIntDebtorsDetails getDebtorsDetails() throws BloSalesV2Exception;
+    
+    void deleteDebtor(long idDebtor) throws BloSalesV2Exception;
     
 }

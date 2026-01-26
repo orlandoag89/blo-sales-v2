@@ -8,13 +8,11 @@ import java.util.ArrayList;
 
 public class WrapperProductsEntityMapper implements IToOuter<WrapperProductsEntity, WrapperPojoIntProducts> {
     
-    private ProductEntityMapper mapper;
+    private static final ProductEntityMapper mapper = ProductEntityMapper.getInstance();
     
     private static WrapperProductsEntityMapper instance;
     
-    private WrapperProductsEntityMapper() {
-        mapper = ProductEntityMapper.getInstance();
-    }
+    private WrapperProductsEntityMapper() { }
     
     public static WrapperProductsEntityMapper getInstance() {
         if (instance == null) {

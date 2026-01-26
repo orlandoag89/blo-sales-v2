@@ -17,6 +17,16 @@ public class CashboxDetailEntity {
     private ActivesCostsEntityEnum type;
     
     private String timestamp;
+    
+    private BigDecimal concept_amount;
+
+    public BigDecimal getConcept_amount() {
+        return concept_amount;
+    }
+
+    public void setConcept_amount(BigDecimal concept_amount) {
+        this.concept_amount = concept_amount;
+    }
 
     public long getId_cashbox() {
         return id_cashbox;

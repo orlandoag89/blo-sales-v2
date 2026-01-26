@@ -1,11 +1,13 @@
 package com.blo.sales.v2.controller.impl;
 
 import com.blo.sales.v2.controller.IDebtorsController;
+import com.blo.sales.v2.controller.IDebtorsSalesController;
 import com.blo.sales.v2.controller.IProductsController;
 import com.blo.sales.v2.controller.ISalesController;
 import com.blo.sales.v2.controller.pojos.PojoIntDebtor;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntDebtors;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntDebtorsDetails;
 import com.blo.sales.v2.model.IDebtorsModel;
 import com.blo.sales.v2.model.impl.DebtorsModelImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
@@ -25,6 +27,8 @@ public class DebtorsControllerImpl implements IDebtorsController {
     private static final IProductsController productsController = ProductsControllerImpl.getInstance();
     
     private static final ISalesController salesController = SalesControllerImpl.getInstance();
+    
+    private static final IDebtorsSalesController debtorsSales = DebtorsSalesControllerImpl.getInstance();
     
     private static DebtorsControllerImpl instance;
     
@@ -87,7 +91,19 @@ public class DebtorsControllerImpl implements IDebtorsController {
         logger.log("pago completo");
         debtorFound.setDebt(BigDecimal.ZERO);
         debtorFound.setPayments(BloSalesV2Utils.EMPTY_STRING);
-        return updateDebtor(debtorFound, idDebtor);
+        debtorsSales.deleteRelationhip(idDebtor);
+        deleteDebtor(idDebtor);
+        return null;
+    }
+
+    @Override
+    public WrapperPojoIntDebtorsDetails getDebtorsDetails() throws BloSalesV2Exception {
+        return model.getDebtorsDetails();
+    }
+
+    @Override
+    public void deleteDebtor(long idDebtor) throws BloSalesV2Exception {
+        model.deleteDebtor(idDebtor);
     }
 
 }

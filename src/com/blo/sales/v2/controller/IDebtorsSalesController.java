@@ -7,4 +7,6 @@ public interface IDebtorsSalesController {
     
     PojoIntDebtorSale addRelationship(PojoIntDebtorSale debtor) throws BloSalesV2Exception;
     
+    void deleteRelationhip(long fkDebtor) throws BloSalesV2Exception;
+    
 }

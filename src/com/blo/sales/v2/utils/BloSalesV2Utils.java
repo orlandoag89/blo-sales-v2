@@ -34,11 +34,31 @@ public final class BloSalesV2Utils {
     
     public static final String ERROR_UPDATING_ON_DATA_BASE = "Error inesperado actualizando el registro";
     
-    public static final String ERROR_CATEGORY_NOT_FOUND = "Categor\u00e9a no encontrada";
+    public static final String ERROR_DELETING_DATA_ON_DATA_BASE = "Error inesperado borrando registro";
+    
+    public static final String ERROR_CATEGORY_NOT_FOUND = "Categor\u00eda no encontrada";
     
     public static final String ERROR_PRODUCT_NOT_FOUND = "Producto no encontrado";
     
     public static final String USER_NOT_FOUND = "Usuario no encontrado";
+    
+    public static final String PRODUCT_NOT_FOUND = " no encontrado";
+    
+    public static final String PRODUCT_INSUFFICIENT = " insuficientes";
+    
+    public static final String DEBTOR_NOT_FOUND = "Deudor no encontrado";
+    
+    public static final String CATEGORY_NO_SELECTED = "Categor\u00eda no seleccionada";
+    
+    public static final String CATEGORY_NOT_FOUND = "Categor\u00eda no encontrada";
+    
+    public static final String PRODUCT_NOT_SELECTED = "El producto no ha sido seleccionado o no existe en el inventario";
+    
+    public static final String BAR_CODE_EXCEPTION = "El c\u00f3digo de barras ya est\u00e1 registrado con otro producto, por favor verifica";
+    
+    public static final String CATEGORY_PROTECTED = "Esta categor\u00eda est\u00e1 protegida";
+    
+    public static final long DEBTORS_PAYMENTS = 1;
     
     private BloSalesV2Utils() { }
    

@@ -9,6 +9,8 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HistoryModelImpl implements IHistoryModel {
     
@@ -16,11 +18,9 @@ public class HistoryModelImpl implements IHistoryModel {
     
     private static HistoryModelImpl instance;
     
-    private MovementEntityMapper mapper;
+    private static final MovementEntityMapper mapper = MovementEntityMapper.getInstance();
     
-    private HistoryModelImpl() {
-        mapper = MovementEntityMapper.getInstance();
-    }
+    private HistoryModelImpl() { }
     
     public static HistoryModelImpl getInstance() {
         if (instance == null) {
@@ -51,11 +51,13 @@ public class HistoryModelImpl implements IHistoryModel {
             DBConnection.doCommit();
             return mapper.toOuter(inMovement);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
                 throw new BloSalesV2Exception(ex.getMessage());
             }
         }

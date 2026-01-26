@@ -16,21 +16,20 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CategoriesModelImpl implements ICategoriesModel {
 
     private static final Connection conn = DBConnection.getConnection();
 
-    private CategoryEntityMapper categoryMapper;
-    
-    private WrapperCategoriesEntityMapper wrapperCategoriesEntityMapper;
+    private static final CategoryEntityMapper categoryMapper = CategoryEntityMapper.getInstance();
+   
+    private static final WrapperCategoriesEntityMapper wrapperCategoriesEntityMapper = WrapperCategoriesEntityMapper.getInstance();
 
     public static CategoriesModelImpl instance;
     
-    private CategoriesModelImpl() {
-        categoryMapper = CategoryEntityMapper.getInstance();
-        wrapperCategoriesEntityMapper = WrapperCategoriesEntityMapper.getInstance();
-    }
+    private CategoriesModelImpl() { }
     
     public static CategoriesModelImpl getInstance() {
         if (instance == null) {
@@ -60,11 +59,13 @@ public class CategoriesModelImpl implements ICategoriesModel {
             DBConnection.doCommit();
             return categoryMapper.toOuter(data);
         } catch (SQLException e) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
             throw new BloSalesV2Exception(e.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
                 throw new BloSalesV2Exception(e.getMessage());
             }
         }
@@ -87,6 +88,7 @@ public class CategoriesModelImpl implements ICategoriesModel {
             wrapper.setCategories(categories);
             return wrapperCategoriesEntityMapper.toOuter(wrapper);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }
@@ -110,11 +112,13 @@ public class CategoriesModelImpl implements ICategoriesModel {
             DBConnection.doCommit();
             return categoryMapper.toOuter(categoryFound);
         } catch (SQLException e) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
             throw new BloSalesV2Exception(e.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
                 throw new BloSalesV2Exception(e.getMessage());
             }
         }
@@ -133,6 +137,7 @@ public class CategoriesModelImpl implements ICategoriesModel {
             category.setDescription(rs.getString(3));
             return categoryMapper.toOuter(category);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }

@@ -3,7 +3,6 @@ package com.blo.sales.v2.model.impl;
 import com.blo.sales.v2.controller.pojos.PojoIntCashboxesActivesCosts;
 import com.blo.sales.v2.model.ICashboxesActivesCostsModel;
 import com.blo.sales.v2.model.config.DBConnection;
-import com.blo.sales.v2.model.constants.BloSalesV2Columns;
 import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.mapper.CashboxesActivesCostsEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
@@ -12,6 +11,8 @@ import com.blo.sales.v2.view.commons.GUILogger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CashboxesActivesCostsModelImpl implements ICashboxesActivesCostsModel {
     
@@ -55,11 +56,13 @@ public class CashboxesActivesCostsModelImpl implements ICashboxesActivesCostsMod
             logger.log("registro guardado ");
             return mapper.toOuter(dataInner);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
                 throw new BloSalesV2Exception(ex.getMessage());
             }
         }

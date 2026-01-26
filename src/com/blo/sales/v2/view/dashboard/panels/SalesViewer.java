@@ -4,6 +4,7 @@ import com.blo.sales.v2.controller.ISalesController;
 import com.blo.sales.v2.controller.impl.SalesControllerImpl;
 import com.blo.sales.v2.controller.pojos.enums.SalesStatusIntEnum;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.mappers.WrapperPojoSalesAndStockMapper;
 import com.blo.sales.v2.view.pojos.WrapperPojoSalesAndStock;
@@ -142,6 +143,7 @@ public class SalesViewer extends javax.swing.JPanel {
             }
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(SalesViewer.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         } 
     }//GEN-LAST:event_jTabbedPane1StateChanged
     

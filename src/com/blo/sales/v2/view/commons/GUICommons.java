@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -30,6 +31,10 @@ public final class GUICommons {
     
     /** tecla enter */
     public static final int ENTER_KEY_CODE = 10;
+    
+    private static final int WIDTH = 700;
+    
+    private static final int HEIGHT = 500;
 
     private GUICommons() {
     }
@@ -195,5 +200,14 @@ public final class GUICommons {
     
     public static void enabledButton(JButton btn) {
         btn.setEnabled(true);
+    }
+    
+    public static void setDimensions(JFrame content) {
+        content.setSize(WIDTH, HEIGHT);
+    }
+    
+    public static void allWindow(JFrame content) {
+        content.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        content.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }

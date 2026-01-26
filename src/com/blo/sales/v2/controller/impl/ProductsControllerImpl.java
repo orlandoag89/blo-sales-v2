@@ -18,21 +18,17 @@ import com.blo.sales.v2.utils.BloSalesV2Utils;
 
 public class ProductsControllerImpl implements IProductsController {
     
-    private ICategoriesController categoriesController;
+    private static final ICategoriesController categoriesController = CategoriesControllerImpl.getInstance();
     
-    private IProductsModel model;
+    private static final IProductsModel model = ProductsModelImpl.getInstance();
     
-    private IUserController user;
+    private static final IUserController user = UserControllerImpl.getInstance();
     
-    private IHistoryController historyController;
+    private static final IHistoryController historyController = HistoryControllerImpl.getInstance();
     
     private static ProductsControllerImpl instance;
     
     private ProductsControllerImpl() {
-        categoriesController = CategoriesControllerImpl.getInstance();
-        model = ProductsModelImpl.getInstance();
-        user = UserControllerImpl.getInstance();
-        historyController = HistoryControllerImpl.getInstance();
     }
     
     public static ProductsControllerImpl getInstance() {
@@ -45,9 +41,21 @@ public class ProductsControllerImpl implements IProductsController {
     @Override
     public PojoIntProduct registerProduct(PojoIntProduct product) throws BloSalesV2Exception {
         product.setTimestamp(BloSalesV2Utils.getTimestamp());
+        BloSalesV2Utils.validateRule(
+                product.getFkCategory() == BloSalesV2Utils.DEBTORS_PAYMENTS,
+                BloSalesV2Utils.CATEGORY_PROTECTED
+        );
+        final var productBarCode = model.getProductByBarCode(product.getBarCode());
+        BloSalesV2Utils.validateRule(
+                productBarCode != null,
+                BloSalesV2Utils.BAR_CODE_EXCEPTION
+        );
         /** valida la existencia de la categoria */
         final var categoryFound = categoriesController.getCategoryById(product.getFkCategory());
-        BloSalesV2Utils.validateRule(categoryFound.getIdCategory() == 0, "CATEGORIA NO ENCONTRADA --- (com.blo.sales.v2.controller.impl)");
+        BloSalesV2Utils.validateRule(
+                categoryFound.getIdCategory() == 0,
+                BloSalesV2Utils.CATEGORY_NOT_FOUND
+        );
         return model.registerProduct(product);
     }
 

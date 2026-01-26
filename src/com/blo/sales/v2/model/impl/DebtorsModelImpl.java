@@ -2,13 +2,17 @@ package com.blo.sales.v2.model.impl;
 
 import com.blo.sales.v2.controller.pojos.PojoIntDebtor;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntDebtors;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntDebtorsDetails;
 import com.blo.sales.v2.model.IDebtorsModel;
 import com.blo.sales.v2.model.config.DBConnection;
 import com.blo.sales.v2.model.constants.BloSalesV2Columns;
 import com.blo.sales.v2.model.constants.BloSalesV2Queries;
+import com.blo.sales.v2.model.entities.DebtorDetailEntity;
 import com.blo.sales.v2.model.entities.DebtorEntity;
+import com.blo.sales.v2.model.entities.WrapperDebtorsDetailsEntity;
 import com.blo.sales.v2.model.entities.WrapperDebtorsEntity;
 import com.blo.sales.v2.model.mapper.DebtorEntityMapper;
+import com.blo.sales.v2.model.mapper.WrapperDebtorsDetailsEntityMapper;
 import com.blo.sales.v2.model.mapper.WrapperDebtorsEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
@@ -17,6 +21,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DebtorsModelImpl implements IDebtorsModel {
     
@@ -26,14 +32,13 @@ public class DebtorsModelImpl implements IDebtorsModel {
     
     private static DebtorsModelImpl instance;
     
-    private DebtorEntityMapper mapper;
+    private static final DebtorEntityMapper mapper = DebtorEntityMapper.getInstance();
     
-    private WrapperDebtorsEntityMapper wrapperMapper;
+    private static final WrapperDebtorsEntityMapper wrapperMapper = WrapperDebtorsEntityMapper.getInstance();
     
-    private DebtorsModelImpl() {
-        mapper = DebtorEntityMapper.getInstance();
-        wrapperMapper = WrapperDebtorsEntityMapper.getInstance();
-    }
+    private static final WrapperDebtorsDetailsEntityMapper debtorsDetailsMapper = WrapperDebtorsDetailsEntityMapper.getInstance();
+    
+    private DebtorsModelImpl() { }
     
     public static DebtorsModelImpl getInstance() {
         if (instance == null) {
@@ -64,11 +69,13 @@ public class DebtorsModelImpl implements IDebtorsModel {
             DBConnection.doCommit();
             return mapper.toOuter(data);
         } catch (SQLException e) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
             throw new BloSalesV2Exception(e.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
                 throw new BloSalesV2Exception(e.getMessage());
             }
         }
@@ -89,6 +96,7 @@ public class DebtorsModelImpl implements IDebtorsModel {
             d.setDebt(rs.getBigDecimal(BloSalesV2Columns.DEBT));
             return mapper.toOuter(d);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }
@@ -114,11 +122,13 @@ public class DebtorsModelImpl implements IDebtorsModel {
             DBConnection.doCommit();
             return mapper.toOuter(debtorMapped);
         } catch (SQLException e) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
             throw new BloSalesV2Exception(e.getMessage());
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
                 throw new BloSalesV2Exception(e.getMessage());
             }
         }
@@ -143,7 +153,60 @@ public class DebtorsModelImpl implements IDebtorsModel {
             debtorsWrapper.setDebtors(debtors);
             return wrapperMapper.toOuter(debtorsWrapper);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
+        }
+    }
+
+    @Override
+    public WrapperPojoIntDebtorsDetails getDebtorsDetails() throws BloSalesV2Exception {
+        try {
+            final var ps = conn.prepareStatement(BloSalesV2Queries.DEBTORS_DETAILS);
+            final var rs = ps.executeQuery();
+            final var debtorsDetails = new WrapperDebtorsDetailsEntity();
+            final var details = new ArrayList<DebtorDetailEntity>();
+            DebtorDetailEntity detail;
+            while(rs.next()) {
+                detail = new DebtorDetailEntity();
+                detail.setDebt(rs.getBigDecimal(BloSalesV2Columns.DEBT));
+                detail.setId_debtor(rs.getLong(BloSalesV2Columns.ID_DEBTOR));
+                detail.setName(rs.getString(BloSalesV2Columns.NAME));
+                detail.setPayments(rs.getString(BloSalesV2Columns.PAYMENTS));
+                detail.setProduct(rs.getString(BloSalesV2Columns.PRODUCT));
+                detail.setQuantity_sale(rs.getBigDecimal(BloSalesV2Columns.QUANTITY_ON_SALE));
+                detail.setTimestamp(rs.getString(BloSalesV2Columns.TIMESTAMP));
+                detail.setTotal_on_sale(rs.getBigDecimal(BloSalesV2Columns.TOTAL_ON_SALE));
+                details.add(detail);
+            }
+            debtorsDetails.setDebtors(details);
+            return debtorsDetailsMapper.toOuter(debtorsDetails);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new BloSalesV2Exception(ex.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteDebtor(long idDebtor) throws BloSalesV2Exception {
+        try {
+            DBConnection.disableAutocommit();
+            final var ps = conn.prepareStatement(BloSalesV2Queries.DEBTOR_DELETE);
+            ps.setLong(1, idDebtor);
+            final var rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_DELETING_DATA_ON_DATA_BASE);
+            }
+            DBConnection.doCommit();
+        } catch (SQLException e) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
+            throw new BloSalesV2Exception(e.getMessage());
+        } finally {
+            try {
+                DBConnection.enableAutocommit();
+            } catch (SQLException e) {
+                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
+                throw new BloSalesV2Exception(e.getMessage());
+            }
         }
     }
     

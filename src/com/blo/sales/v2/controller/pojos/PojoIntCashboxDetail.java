@@ -18,6 +18,16 @@ public class PojoIntCashboxDetail {
     
     private String timestamp;
 
+    private BigDecimal conceptAmount;
+
+    public BigDecimal getConceptAmount() {
+        return conceptAmount;
+    }
+
+    public void setConceptAmount(BigDecimal conceptAmount) {
+        this.conceptAmount = conceptAmount;
+    }
+    
     public long getIdCashbox() {
         return idCashbox;
     }

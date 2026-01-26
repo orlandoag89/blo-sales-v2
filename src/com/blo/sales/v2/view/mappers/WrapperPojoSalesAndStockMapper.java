@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class WrapperPojoSalesAndStockMapper implements IToOuter<WrapperPojoIntSalesAndStock, WrapperPojoSalesAndStock> {
 
-    private static PojoSaleAndProductMapper mapper = PojoSaleAndProductMapper.getInstance();
+    private static final PojoSaleAndProductMapper mapper = PojoSaleAndProductMapper.getInstance();
     
     private static WrapperPojoSalesAndStockMapper instance;
     

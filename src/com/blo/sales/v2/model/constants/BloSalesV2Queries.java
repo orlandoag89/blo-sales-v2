@@ -29,6 +29,8 @@ public final class BloSalesV2Queries {
     
     public static final String SELECT_ONE_PRODUCT = "SELECT id_product, product, quantity, cost_of_sale, price, timestamp, is_kg, bar_code, fk_category FROM stock WHERE id_product = ?";
     
+    public static final String SELECT_PRODUCT_BY_BAR_CODE = "SELECT id_product, product, quantity, cost_of_sale, price, timestamp, is_kg, bar_code, fk_category FROM stock WHERE bar_code = ?";
+    
     /** historial */
     public static final String INSERT_MOVEMENT = "INSERT INTO history(fk_product, fk_user, type, quantity, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
     
@@ -64,14 +66,19 @@ public final class BloSalesV2Queries {
     
     public static final String UPDATE_DEBTOR = "UPDATE debtors SET name = ?, debt = ?, payments = ? WHERE id_debtor = ?";
     
+    public static final String DEBTORS_DETAILS = "SELECT d.id_debtor, d.name, d.debt, d.payments, st.product, sp.quantity_sale, sp.total_on_sale, sp.timestamp FROM debtors d INNER JOIN debtor_sale ds ON ds.fk_debtor = d.id_debtor INNER JOIN sales s ON ds.fk_sale = s.id_sale INNER JOIN sale_product sp ON sp.fk_sale = s.id_sale INNER JOIN stock st ON st.id_product = sp.fk_product";
+    
+    public static final String DEBTOR_DELETE = "DELETE FROM debtors WHERE id_debtor = ?";
+    
     /** deudores ventas */
     public static final String INSERT_DEBTOR_SALE = "INSERT INTO debtor_sale(fk_debtor, fk_sale, timestamp) VALUES (?, ?, ?)";
 
+    public static final String DELETE_DEBTOR_SALE = "DELETE FROM debtor_sale WHERE debtor_sale.fk_debtor = ?";
     /** activos pasivos */
     public static final String INSERT_ACTIVE_COSTS = "INSERT INTO actives_costs(concept, amount, type, complete) VALUES (?, ?, ?, ?)";
     
     /** relacion activos pasivos con caja de dinero */
     public static final String INSERT_CASHBOXES_ACTIVE_COSTS = "INSERT INTO cashboxes_actives_costs(fk_cashbox, fk_actives_costs, timestamp) VALUES (?, ?, ?)";
     
-    public static final String SELECT_CASHBOXES_DATA = "SELECT c.id_cashbox, c.status, c.amount, ac.concept, ac.type, cac.timestamp FROM cashboxes c INNER JOIN cashboxes_actives_costs cac ON c.id_cashbox = cac.fk_cashbox INNER JOIN actives_costs ac ON cac.fk_actives_costs = ac.id_active_cost";
+    public static final String SELECT_CASHBOXES_DATA = "SELECT c.id_cashbox, c.status, c.amount, ac.concept, ac.type, cac.timestamp, ac.amount AS concept_amount FROM cashboxes c INNER JOIN cashboxes_actives_costs cac ON c.id_cashbox = cac.fk_cashbox INNER JOIN actives_costs ac ON cac.fk_actives_costs = ac.id_active_cost";
 }

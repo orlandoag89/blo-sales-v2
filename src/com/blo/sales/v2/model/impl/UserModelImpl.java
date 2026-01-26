@@ -14,21 +14,20 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserModelImpl implements IUserModel {
     
     private static final Connection conn = DBConnection.getConnection();
     
-    private UserLoggedEntityMapper userEntityMapper;
+    private static final UserLoggedEntityMapper userEntityMapper = UserLoggedEntityMapper.getInstance();
     
-    private UserEntityMapper userMapper;
+    private static final UserEntityMapper userMapper = UserEntityMapper.getInstance();
     
     private static UserModelImpl instance;
     
-    private UserModelImpl() {
-        userEntityMapper = UserLoggedEntityMapper.getInstance();
-        userMapper = UserEntityMapper.getInstance();
-    }
+    private UserModelImpl() { }
     
     public static UserModelImpl getInstance() {
         if (instance == null) {
@@ -44,8 +43,10 @@ public class UserModelImpl implements IUserModel {
             final var userFound = selectUserEntity(userData.getUserName(), userData.getPassword());
             return userEntityMapper.toOuter(userFound);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }
@@ -83,6 +84,7 @@ public class UserModelImpl implements IUserModel {
             userFound.setUsername(rs.getString(BloSalesV2Columns.USER_NAME));
             return userMapper.toOuter(userFound);
         } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(ex.getMessage());
         }
         

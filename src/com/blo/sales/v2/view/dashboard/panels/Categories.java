@@ -4,6 +4,7 @@ import com.blo.sales.v2.controller.ICategoriesController;
 import com.blo.sales.v2.controller.impl.CategoriesControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.mappers.CategoryMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoCategoriesMapper;
@@ -15,19 +16,16 @@ import javax.swing.DefaultListModel;
 
 public class Categories extends javax.swing.JPanel {
     
-    private CategoryMapper categoryMapper;
+    private CategoryMapper categoryMapper = CategoryMapper.getInstance();
     
-    private WrapperPojoCategoriesMapper wrapperPojoCategoriesMapper;
+    private WrapperPojoCategoriesMapper wrapperPojoCategoriesMapper = WrapperPojoCategoriesMapper.getInstance();
     
-    private ICategoriesController categoriesController;
+    private ICategoriesController categoriesController = CategoriesControllerImpl.getInstance();
     
     /** Variable global para almacenar categorias y usarla en cualquer metodo */
     private WrapperPojoCategories categoriesGlobal;
 
     public Categories() {
-        categoryMapper = CategoryMapper.getInstance();
-        wrapperPojoCategoriesMapper = WrapperPojoCategoriesMapper.getInstance();
-        categoriesController = CategoriesControllerImpl.getInstance();
         initComponents();
         loadCategories();
         content.setVisible(false);
@@ -37,6 +35,7 @@ public class Categories extends javax.swing.JPanel {
                 setData(item);
             } catch (BloSalesV2Exception ex) {
                 Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
+                CommonAlerts.openError(ex.getMessage());
             }
         });
     }
@@ -162,10 +161,13 @@ public class Categories extends javax.swing.JPanel {
                             .addGap(18, 18, 18)
                             .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(btnSave))
-                .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 723, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(content, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -206,6 +208,7 @@ public class Categories extends javax.swing.JPanel {
             GUICommons.setTextToField(txtDescription, BloSalesV2Utils.EMPTY_STRING);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
@@ -229,6 +232,7 @@ public class Categories extends javax.swing.JPanel {
             btnCancelActionPerformed(evt);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveChangesActionPerformed
 
@@ -246,6 +250,7 @@ public class Categories extends javax.swing.JPanel {
             lstCategories.setModel(model);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
         
     }

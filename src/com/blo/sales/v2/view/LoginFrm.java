@@ -15,15 +15,13 @@ import java.util.logging.Logger;
 
 public class LoginFrm extends javax.swing.JFrame {
     
-    private UserMapper userMapper;
-    private LoggedInUserMapper loggedInUserMapper;
-    private IUserController userController;
+    private static final UserMapper userMapper = UserMapper.getInstance();
+    private static final LoggedInUserMapper loggedInUserMapper = LoggedInUserMapper.getInstance();
+    private static final IUserController userController = UserControllerImpl.getInstance();
 
     public LoginFrm() {
-        userMapper = UserMapper.getInstance();
-        loggedInUserMapper = LoggedInUserMapper.getInstance();
-        userController = UserControllerImpl.getInstance();
         initComponents();
+        GUICommons.setDimensions(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -93,16 +91,16 @@ public class LoginFrm extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(132, 132, 132)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(155, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(377, Short.MAX_VALUE))
         );
 
         pack();

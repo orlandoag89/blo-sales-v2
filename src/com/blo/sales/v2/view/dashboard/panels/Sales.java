@@ -10,6 +10,7 @@ import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.utils.BloSalesV2UtilsEnum;
+import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.dialogs.DebtorsDialog;
@@ -35,19 +36,19 @@ public class Sales extends javax.swing.JPanel {
     
     private static final GUILogger logger = GUILogger.getLogger(Sales.class.getName());
     
-    private IProductsController productsController = ProductsControllerImpl.getInstance();
+    private static final IProductsController productsController = ProductsControllerImpl.getInstance();
     
-    private WrapperPojoProductsMapper mapperProducts = WrapperPojoProductsMapper.getInstance();
+    private static final WrapperPojoProductsMapper mapperProducts = WrapperPojoProductsMapper.getInstance();
     
-    private ISalesController salesController = SalesControllerImpl.getInstance();
+    private static final ISalesController salesController = SalesControllerImpl.getInstance();
     
-    private IDebtorsController debtorsController = DebtorsControllerImpl.getInstance();
+    private static final IDebtorsController debtorsController = DebtorsControllerImpl.getInstance();
     
-    private PojoSaleProductDataMapper saleProductMapper = PojoSaleProductDataMapper.getInstance();
+    private static final PojoSaleProductDataMapper saleProductMapper = PojoSaleProductDataMapper.getInstance();
     
-    private WrapperDebtorsMapper wrapperDebtorsMapper = WrapperDebtorsMapper.getInstance();
+    private static final WrapperDebtorsMapper wrapperDebtorsMapper = WrapperDebtorsMapper.getInstance();
     
-    private DebtorMapper debtorMapper = DebtorMapper.getInstance();
+    private static final DebtorMapper debtorMapper = DebtorMapper.getInstance();
     
     private List<PojoProduct> products;
 
@@ -84,6 +85,7 @@ public class Sales extends javax.swing.JPanel {
             });
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
         txtSearch.requestFocusInWindow();
     }
@@ -126,7 +128,7 @@ public class Sales extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPayLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnComplete)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 199, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnDebtors)
                 .addContainerGap())
         );
@@ -212,13 +214,11 @@ public class Sales extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(pnlPay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lblTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 9, Short.MAX_VALUE))))
+                        .addComponent(pnlPay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1288, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -226,8 +226,8 @@ public class Sales extends javax.swing.JPanel {
                 .addGap(4, 4, 4)
                 .addComponent(pnlSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pnlPay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -246,6 +246,7 @@ public class Sales extends javax.swing.JPanel {
                 }
             } catch (BloSalesV2Exception ex) {
                 Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+                CommonAlerts.openError(ex.getMessage());
             }
             
         }
@@ -261,6 +262,7 @@ public class Sales extends javax.swing.JPanel {
             resetFields();
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnCompleteActionPerformed
 
@@ -284,6 +286,7 @@ public class Sales extends javax.swing.JPanel {
     private void btnDebtorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDebtorsActionPerformed
         try {
             final var debtors = wrapperDebtorsMapper.toOuter(debtorsController.getAllDebtors());
+            final var debtorsCoopy = wrapperDebtorsMapper.toOuter(debtorsController.getAllDebtors());
             final var debtorsDialog = new DebtorsDialog<>(
                 this,
                 "Deudores",
@@ -291,9 +294,9 @@ public class Sales extends javax.swing.JPanel {
                 totalSale,
                 item -> {
                     try {
-                        /** formato de pagos amountTIMESTAMPtimestamp */
+                        /** formato de pagos amountTIMESTAMPtimestamp, */
                         logger.log("deudor " + item.toString());
-                        final var pay = BloSalesV2Utils.getFirstLastPayment(item.getPayments(), BloSalesV2UtilsEnum.LAST);
+                        var pay = BloSalesV2Utils.getFirstLastPayment(item.getPayments(), BloSalesV2UtilsEnum.LAST);
                         /** es nuevo deudor  */
                         if (item.getIdDebtor() == 0) {
                             salesController.registerSaleWithNewDebtor(
@@ -303,7 +306,14 @@ public class Sales extends javax.swing.JPanel {
                                 debtorMapper.toInner(item)
                             );
                         } else {
-                            /** validar pagos ventas */
+                            // valida que no se haya hecho un pago
+                            final var debtorFound = debtorsCoopy.getDebtors().stream().
+                                    filter(d -> d.getIdDebtor() == item.getIdDebtor()).
+                                    findFirst().
+                                    orElse(null);
+                            if (debtorFound.getPayments().equals(item.getPayments())) {
+                                pay = BigDecimal.ZERO;
+                            }
                             salesController.registerSaleWithDebtor(
                                 item.getDebt(),
                                 getProductData(),
@@ -313,26 +323,29 @@ public class Sales extends javax.swing.JPanel {
                                 item.getIdDebtor());
                         }
                         resetFields();
+                        totalSale = BigDecimal.ZERO;
                     } catch (BloSalesV2Exception ex) {
                         Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+                        CommonAlerts.openError(ex.getMessage());
                     }
                 });
             debtorsDialog.setVisible(true);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnDebtorsActionPerformed
     
     private void addItemToList() {
         try {
             if (productFound == null) {
-                throw new BloSalesV2Exception("Producto no seleccionado");
+                throw new BloSalesV2Exception(BloSalesV2Utils.PRODUCT_NOT_SELECTED);
             }
             final var quantity = GUICommons.getTextFromJText(nmbQuantity);
             // valida si se puede con pesos solamente si el producto se vende por kg
             var onSaleQuantity = new BigDecimal(BigInteger.ZERO);
             var onSalePrice = new BigDecimal(BigInteger.ZERO);
-            if (quantity.toUpperCase().startsWith("P") && productFound.isKg()) {
+            if (quantity.toLowerCase().startsWith("p") && productFound.isKg()) {
                 // Extraemos el valor numérico después de la 'P'
                 final var cash = new BigDecimal(quantity.substring(1));
                 final var price = productFound.getPrice();
@@ -367,6 +380,7 @@ public class Sales extends javax.swing.JPanel {
             GUICommons.enabledButton(btnDebtors);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            CommonAlerts.openError(ex.getMessage());
         }
     }
     /**
@@ -388,16 +402,13 @@ public class Sales extends javax.swing.JPanel {
         final var products = new ArrayList<PojoSaleProductData>();
         PojoSaleProductData productInfo;
         /** parsea los datos de una fila y crea un nuevo pojo para guardar */
-        for (var i = 0; i < tblProductsSales.getAlignmentX(); i++) {
-            System.out.println(tblProductsSales.getValueAt(i, 2));
+        for (var i = 0; i < tblProductsSales.getRowCount(); i++) {
             // 1. Obtenemos el valor y lo limpiamos de espacios
-            String rawValue = tblProductsSales.getValueAt(i, 3).toString().trim();
+            final var rawValue = tblProductsSales.getValueAt(i, 3).toString().trim();
 
             // 2. Reemplazamos la coma por punto (por si acaso el sistema usa formato latino)
             // y quitamos cualquier caracter que no sea número o punto
-            String cleanValue = rawValue.replace(",", ".");
-
-            // 3. Creamos el BigDecimal
+            final var cleanValue = rawValue.replace(",", ".");
             final var price = new BigDecimal(cleanValue);
             productInfo = new PojoSaleProductData();
             productInfo.setIdProduct((long) tblProductsSales.getValueAt(i, 0));

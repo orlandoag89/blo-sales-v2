@@ -182,6 +182,7 @@ public class CashboxModelImpl implements ICashboxModel {
                 cashbox.setStatus(CashboxEntityEnum.valueOf(data.getString(BloSalesV2Columns.STATUS)));
                 cashbox.setTimestamp(data.getString(BloSalesV2Columns.TIMESTAMP));
                 cashbox.setType(ActivesCostsEntityEnum.valueOf(data.getString(BloSalesV2Columns.TYPE)));
+                cashbox.setConcept_amount(data.getBigDecimal(BloSalesV2Columns.CONCEPT_AMOUNT));
                 lst.add(cashbox);
             }
             logger.log("cashboxes " + lst.size());
