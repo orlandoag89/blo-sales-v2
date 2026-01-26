@@ -14,4 +14,6 @@ public interface IProductsModel {
     
     PojoIntProduct getProductById(long idProduct) throws BloSalesV2Exception;
     
+    PojoIntProduct getProductByBarCode(String barCode) throws BloSalesV2Exception;
+    
 }

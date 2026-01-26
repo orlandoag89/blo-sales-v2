@@ -19,6 +19,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     public DashboardRootFrm(PojoLoggedInUser userData) {
         this.userData = userData;
         initComponents();
+        GUICommons.allWindow(this);
         GUICommons.showPanel(content, new Sales(userData));
     }
 
@@ -50,11 +51,11 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         content.setLayout(contentLayout);
         contentLayout.setHorizontalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 667, Short.MAX_VALUE)
+            .addGap(0, 658, Short.MAX_VALUE)
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 505, Short.MAX_VALUE)
+            .addGap(0, 465, Short.MAX_VALUE)
         );
 
         itmSales.setText("Ventas");
@@ -120,7 +121,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         itmContability.setText("Contabilidad");
 
-        optAllCashboxes.setText("Ver todas las cajas");
+        optAllCashboxes.setText("Cajas");
         optAllCashboxes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 optAllCashboxesActionPerformed(evt);
@@ -128,7 +129,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         });
         itmContability.add(optAllCashboxes);
 
-        optOpoenCashbox.setText("Caja abierta");
+        optOpoenCashbox.setText("Caja");
         optOpoenCashbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 optOpoenCashboxActionPerformed(evt);
@@ -219,7 +220,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private javax.swing.JMenu itmProg;
     private javax.swing.JMenu itmSales;
     private javax.swing.JMenu itmStock;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JMenuBar mnuBar;
     private javax.swing.JMenuItem optAddSale;
     private javax.swing.JMenuItem optAllCashboxes;

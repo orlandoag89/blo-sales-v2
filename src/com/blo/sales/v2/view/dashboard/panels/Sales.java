@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
 public class Sales extends javax.swing.JPanel {
@@ -316,6 +315,7 @@ public class Sales extends javax.swing.JPanel {
                                 item.getIdDebtor());
                         }
                         resetFields();
+                        totalSale = BigDecimal.ZERO;
                     } catch (BloSalesV2Exception ex) {
                         Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
                         CommonAlerts.openError(ex.getMessage());
@@ -331,7 +331,7 @@ public class Sales extends javax.swing.JPanel {
     private void addItemToList() {
         try {
             if (productFound == null) {
-                throw new BloSalesV2Exception("Producto no seleccionado");
+                throw new BloSalesV2Exception(BloSalesV2Utils.PRODUCT_NOT_SELECTED);
             }
             final var quantity = GUICommons.getTextFromJText(nmbQuantity);
             // valida si se puede con pesos solamente si el producto se vende por kg

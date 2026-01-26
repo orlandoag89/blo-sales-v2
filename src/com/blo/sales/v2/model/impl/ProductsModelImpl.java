@@ -158,5 +158,31 @@ public class ProductsModelImpl implements IProductsModel {
             throw new BloSalesV2Exception(ex.getMessage());
         }
     }
+
+    @Override
+    public PojoIntProduct getProductByBarCode(String barCode) throws BloSalesV2Exception {
+        try {
+            final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_PRODUCT_BY_BAR_CODE);
+            ps.setString(1, barCode);
+            final var rs = ps.executeQuery();
+            final var p = new ProductEntity();
+            if (!rs.next()) {
+                return null;
+            }
+            p.setBar_code(rs.getString(BloSalesV2Columns.BAR_CODE));
+            p.setCost_of_sale(rs.getBigDecimal(BloSalesV2Columns.COST_OF_SALE));
+            p.setFk_category(rs.getInt(BloSalesV2Columns.FK_CATEGORY));
+            p.setId_product(rs.getInt(BloSalesV2Columns.ID_PRODUCT));
+            p.setKg(rs.getBoolean(BloSalesV2Columns.IS_KG));
+            p.setPrice(rs.getBigDecimal(BloSalesV2Columns.PRICE));
+            p.setQuantity(rs.getBigDecimal(BloSalesV2Columns.QUANTITY));
+            p.setTimestamp(rs.getString(BloSalesV2Columns.TIMESTAMP));
+            p.setProduct(rs.getString(BloSalesV2Columns.PRODUCT));
+            return mapper.toOuter(p);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            throw new BloSalesV2Exception(ex.getMessage());
+        }
+    }
     
 }
