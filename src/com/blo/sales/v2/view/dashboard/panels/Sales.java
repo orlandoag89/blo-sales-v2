@@ -394,16 +394,13 @@ public class Sales extends javax.swing.JPanel {
         final var products = new ArrayList<PojoSaleProductData>();
         PojoSaleProductData productInfo;
         /** parsea los datos de una fila y crea un nuevo pojo para guardar */
-        for (var i = 0; i < tblProductsSales.getAlignmentX(); i++) {
-            System.out.println(tblProductsSales.getValueAt(i, 2));
+        for (var i = 0; i < tblProductsSales.getRowCount(); i++) {
             // 1. Obtenemos el valor y lo limpiamos de espacios
-            String rawValue = tblProductsSales.getValueAt(i, 3).toString().trim();
+            final var rawValue = tblProductsSales.getValueAt(i, 3).toString().trim();
 
             // 2. Reemplazamos la coma por punto (por si acaso el sistema usa formato latino)
             // y quitamos cualquier caracter que no sea número o punto
-            String cleanValue = rawValue.replace(",", ".");
-
-            // 3. Creamos el BigDecimal
+            final var cleanValue = rawValue.replace(",", ".");
             final var price = new BigDecimal(cleanValue);
             productInfo = new PojoSaleProductData();
             productInfo.setIdProduct((long) tblProductsSales.getValueAt(i, 0));
