@@ -30,17 +30,17 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         content = new javax.swing.JPanel();
         mnuBar = new javax.swing.JMenuBar();
         itmSales = new javax.swing.JMenu();
-        optViewSales = new javax.swing.JMenuItem();
         optAddSale = new javax.swing.JMenuItem();
+        optViewSales = new javax.swing.JMenuItem();
         itmStock = new javax.swing.JMenu();
-        optStock = new javax.swing.JMenuItem();
         optRegister = new javax.swing.JMenuItem();
+        optStock = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         optCategory = new javax.swing.JMenuItem();
         itmAdmon = new javax.swing.JMenu();
         itmContability = new javax.swing.JMenu();
-        optAllCashboxes = new javax.swing.JMenuItem();
         optOpoenCashbox = new javax.swing.JMenuItem();
+        optAllCashboxes = new javax.swing.JMenuItem();
         optDebtors = new javax.swing.JMenuItem();
         itmProg = new javax.swing.JMenu();
         optConsole = new javax.swing.JMenuItem();
@@ -60,14 +60,6 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         itmSales.setText("Ventas");
 
-        optViewSales.setText("Ver");
-        optViewSales.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optViewSalesActionPerformed(evt);
-            }
-        });
-        itmSales.add(optViewSales);
-
         optAddSale.setText("Registrar venta");
         optAddSale.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -76,17 +68,17 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         });
         itmSales.add(optAddSale);
 
+        optViewSales.setText("Ver");
+        optViewSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optViewSalesActionPerformed(evt);
+            }
+        });
+        itmSales.add(optViewSales);
+
         mnuBar.add(itmSales);
 
         itmStock.setText("Inventario");
-
-        optStock.setText("Ver");
-        optStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optStockActionPerformed(evt);
-            }
-        });
-        itmStock.add(optStock);
 
         optRegister.setText("Registrar producto");
         optRegister.addActionListener(new java.awt.event.ActionListener() {
@@ -95,6 +87,14 @@ public class DashboardRootFrm extends javax.swing.JFrame {
             }
         });
         itmStock.add(optRegister);
+
+        optStock.setText("Ver");
+        optStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optStockActionPerformed(evt);
+            }
+        });
+        itmStock.add(optStock);
         itmStock.add(jSeparator1);
 
         optCategory.setText("Categorias");
@@ -111,14 +111,6 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         itmContability.setText("Contabilidad");
 
-        optAllCashboxes.setText("Cajas");
-        optAllCashboxes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optAllCashboxesActionPerformed(evt);
-            }
-        });
-        itmContability.add(optAllCashboxes);
-
         optOpoenCashbox.setText("Caja");
         optOpoenCashbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -126,6 +118,14 @@ public class DashboardRootFrm extends javax.swing.JFrame {
             }
         });
         itmContability.add(optOpoenCashbox);
+
+        optAllCashboxes.setText("Cajas");
+        optAllCashboxes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optAllCashboxesActionPerformed(evt);
+            }
+        });
+        itmContability.add(optAllCashboxes);
 
         itmAdmon.add(itmContability);
 
