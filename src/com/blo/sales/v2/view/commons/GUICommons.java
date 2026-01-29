@@ -17,6 +17,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -110,6 +111,12 @@ public final class GUICommons {
         validateRule(text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return text;
     }
+    
+    public static String getTextFromField(JTextArea area) throws BloSalesV2Exception {
+        final var text = area.getText().trim();
+        validateRule(text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        return text;
+    }
 
     public static BigDecimal getNumberFromJText(JTextField field) throws BloSalesV2Exception {
         final var txt = field.getText().trim();
@@ -133,6 +140,10 @@ public final class GUICommons {
 
     public static void setTextToField(JTextField field, String txt) {
         field.setText(txt);
+    }
+    
+    public static void setTextToField(JTextArea area, String txt) {
+        area.setText(txt);
     }
 
     public static void setTextToLabel(JLabel lbl, String txt) {

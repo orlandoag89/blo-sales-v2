@@ -81,4 +81,13 @@ public final class BloSalesV2Queries {
     public static final String INSERT_CASHBOXES_ACTIVE_COSTS = "INSERT INTO cashboxes_actives_costs(fk_cashbox, fk_actives_costs, timestamp) VALUES (?, ?, ?)";
     
     public static final String SELECT_CASHBOXES_DATA = "SELECT c.id_cashbox, c.status, c.amount, ac.concept, ac.type, cac.timestamp, ac.amount AS concept_amount FROM cashboxes c INNER JOIN cashboxes_actives_costs cac ON c.id_cashbox = cac.fk_cashbox INNER JOIN actives_costs ac ON cac.fk_actives_costs = ac.id_active_cost";
+    
+    /** notas */
+    public static final String INSERT_NOTES = "INSERT INTO notes(note, timestamp, type_note, fk_user) VALUES (?, ?, ?, ?)";
+    
+    public static final String GET_NOTES_BY_ID_USER = "SELECT id_note, note, timestamp, type_note FROM notes WHERE notes.fk_user = ?";
+    
+    public static final String DELETE_NOTE = "DELETE FROM notes WHERE notes.id_note = ?";
+    
+    public static final String UPDATE_NOTE = "UPDATE notes SET notes.note = ? wHERE notes.id_note = ?";
 }

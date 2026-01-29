@@ -2,9 +2,7 @@ package com.blo.sales.v2.utils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Minúsculas: á -> \u00e1 é -> \u00e9 í -> \u00ed ó -> \u00f3 ú -> \u00fa ñ ->
@@ -16,6 +14,8 @@ import java.util.stream.Collectors;
  * Símbolos: ¿ -> \u00bf ¡ -> \u00a1
  */
 public final class BloSalesV2Utils {
+    
+    public static final String VERSION = "v2.3.0";
     
     /** cadena vacia */
     public static final String EMPTY_STRING = "";
@@ -49,6 +49,8 @@ public final class BloSalesV2Utils {
     public static final String DEBTOR_NOT_FOUND = "Deudor no encontrado";
     
     public static final String CATEGORY_NO_SELECTED = "Categor\u00eda no seleccionada";
+    
+    public static final String NOTE_TYPE_NO_SELECTED = "Selecciona un tipo de nota";
     
     public static final String CATEGORY_NOT_FOUND = "Categor\u00eda no encontrada";
     

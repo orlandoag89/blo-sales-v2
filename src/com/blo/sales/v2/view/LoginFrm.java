@@ -4,6 +4,7 @@ import com.blo.sales.v2.view.dashboard.DashboardRootFrm;
 import com.blo.sales.v2.controller.IUserController;
 import com.blo.sales.v2.controller.impl.UserControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.pojos.PojoUser;
@@ -22,6 +23,7 @@ public class LoginFrm extends javax.swing.JFrame {
     public LoginFrm() {
         initComponents();
         GUICommons.setDimensions(this);
+        GUICommons.setTextToLabel(lblVersion, BloSalesV2Utils.VERSION);
     }
 
     @SuppressWarnings("unchecked")
@@ -34,6 +36,7 @@ public class LoginFrm extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         btnLogin = new javax.swing.JButton();
         pwdUserpassword = new javax.swing.JPasswordField();
+        lblVersion = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -94,13 +97,19 @@ public class LoginFrm extends javax.swing.JFrame {
                 .addGap(132, 132, 132)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(155, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblVersion, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(377, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 354, Short.MAX_VALUE)
+                .addComponent(lblVersion, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -169,6 +178,7 @@ public class LoginFrm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblVersion;
     private javax.swing.JPasswordField pwdUserpassword;
     private javax.swing.JTextField txtUserName;
     // End of variables declaration//GEN-END:variables
