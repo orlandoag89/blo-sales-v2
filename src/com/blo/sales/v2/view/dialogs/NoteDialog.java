@@ -131,16 +131,14 @@ public class NoteDialog<T> extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSaveChangesActionPerformed
 
     private void areaNoteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_areaNoteKeyReleased
-        final var txt = areaNote.getText().trim();
-        if (
-                evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
-                evt.getKeyCode() == GUICommons.SUPR_KEY &&
-                txt.isBlank()
-            ) {
-            GUICommons.disabledButton(btnSaveChanges);
-            return;
-        }
-        GUICommons.enabledButton(btnSaveChanges);
+        try {
+            final var txt = GUICommons.getTextFromField(areaNote, false);
+            if (GUICommons.isEmptyFieldByKeyEvt(evt, txt.isBlank())) {
+                GUICommons.disabledButton(btnSaveChanges);
+                return;
+            }
+            GUICommons.enabledButton(btnSaveChanges);
+        } catch(BloSalesV2Exception e){}
     }//GEN-LAST:event_areaNoteKeyReleased
 
     private void btnDeleteNoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteNoteActionPerformed

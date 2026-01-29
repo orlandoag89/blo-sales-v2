@@ -271,19 +271,18 @@ public class Debtors extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void nmbPayKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nmbPayKeyReleased
-        final var partialPay = nmbPay.getText().trim();
-        if (
-                evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
-                evt.getKeyCode() == GUICommons.SUPR_KEY &&
-                partialPay.isBlank()
-            ) {
-            GUICommons.setTextToField(lblDebt, "debe: $" + debtorSelected.getDebt());
-        }
-        if (
-                !partialPay.isBlank() &&
-                BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.CURRENCY_REGEX, partialPay)
-            ) {
-            GUICommons.setTextToField(lblDebt, "debe: $" + (debtorSelected.getDebt().subtract(new BigDecimal(partialPay))));
+        try {
+            final var partialPay = GUICommons.getTextFromField(nmbPay, false);
+            if (GUICommons.isEmptyFieldByKeyEvt(evt, partialPay.isBlank())) {
+                GUICommons.setTextToField(lblDebt, "debe: $" + debtorSelected.getDebt());
+            }
+            if (
+                    !partialPay.isBlank() &&
+                    BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.CURRENCY_REGEX, partialPay)
+                ) {
+                GUICommons.setTextToField(lblDebt, "debe: $" + (debtorSelected.getDebt().subtract(new BigDecimal(partialPay))));
+            }
+        } catch(BloSalesV2Exception e) {
         }
     }//GEN-LAST:event_nmbPayKeyReleased
 

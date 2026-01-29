@@ -4,6 +4,7 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import static com.blo.sales.v2.utils.BloSalesV2Utils.validateRule;
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
@@ -230,5 +231,12 @@ public final class GUICommons {
     public static void allWindow(JFrame content) {
         content.setExtendedState(JFrame.MAXIMIZED_BOTH);
         content.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+    public static boolean isEmptyFieldByKeyEvt(KeyEvent evt, boolean conditionObligatory) {
+        return evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
+                    evt.getKeyCode() == GUICommons.SUPR_KEY &&
+                    conditionObligatory;
+        
     }
 }

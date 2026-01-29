@@ -179,7 +179,7 @@ public class UserModelImpl implements IUserModel {
             final var noteInner = noteMapper.toInner(note);
             final var ps = conn.prepareStatement(BloSalesV2Queries.UPDATE_NOTE);
             ps.setString(1, noteInner.getNote());
-            ps.setLong(2, noteInner.getFk_user());
+            ps.setLong(2, noteInner.getId_note());
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
                 throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);

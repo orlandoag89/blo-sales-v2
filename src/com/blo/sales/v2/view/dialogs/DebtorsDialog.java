@@ -266,17 +266,17 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSaveRegisterActionPerformed
 
     private void txtPartialPayKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPartialPayKeyReleased
-        final var partialPayTmp = txtPartialPay.getText().trim();
-        if (
-                evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
-                evt.getKeyCode() == GUICommons.SUPR_KEY &&
-                partialPayTmp.isBlank()
-            ) {
-            GUICommons.setTextToField(lblAmount, "$" + totalSale);
-        }
-        
-        if (!partialPayTmp.isBlank() && BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.CURRENCY_REGEX, partialPayTmp)) {
-            GUICommons.setTextToField(lblAmount, "$" + (totalSale.subtract(new BigDecimal(partialPayTmp))));
+        try {
+           final var partialPayTmp = GUICommons.getTextFromField(txtPartialPay, false);
+            if (GUICommons.isEmptyFieldByKeyEvt(evt, partialPayTmp.isBlank())) {
+                GUICommons.setTextToField(lblAmount, "$" + totalSale);
+            }
+
+            if (!partialPayTmp.isBlank() && BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.CURRENCY_REGEX, partialPayTmp)) {
+                GUICommons.setTextToField(lblAmount, "$" + (totalSale.subtract(new BigDecimal(partialPayTmp))));
+            }
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(DebtorsDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_txtPartialPayKeyReleased
 

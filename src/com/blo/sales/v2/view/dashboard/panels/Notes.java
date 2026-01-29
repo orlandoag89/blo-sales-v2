@@ -170,16 +170,16 @@ public class Notes extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void areaNoteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_areaNoteKeyReleased
-        final var txt = areaNote.getText().trim();
-        if (
-                evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
-                evt.getKeyCode() == GUICommons.SUPR_KEY &&
-                txt.isBlank()
-            ) {
-            GUICommons.disabledButton(btnSaveNow);
-            return;
+        try {
+            final var txt = GUICommons.getTextFromField(areaNote, false);
+            if (GUICommons.isEmptyFieldByKeyEvt(evt, txt.isBlank())) {
+                GUICommons.disabledButton(btnSaveNow);
+                return;
+            }
+            GUICommons.enabledButton(btnSaveNow);
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(Notes.class.getName()).log(Level.SEVERE, null, ex);
         }
-        GUICommons.enabledButton(btnSaveNow);
     }//GEN-LAST:event_areaNoteKeyReleased
 
     private void btnSaveNowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveNowActionPerformed
