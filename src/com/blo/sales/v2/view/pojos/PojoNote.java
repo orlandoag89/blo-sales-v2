@@ -53,5 +53,10 @@ public class PojoNote {
     public void setTypeNote(TypeNoteEnum typeNote) {
         this.typeNote = typeNote;
     }
+
+    @Override
+    public String toString() {
+        return "PojoNote{" + "idNote=" + idNote + ", fkUser=" + fkUser + ", note=" + note + ", timesamp=" + timesamp + ", typeNote=" + typeNote + '}';
+    }
     
 }

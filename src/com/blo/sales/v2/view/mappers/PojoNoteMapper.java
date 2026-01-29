@@ -28,7 +28,7 @@ public class PojoNoteMapper implements IToInner<PojoIntNote, PojoNote>, IToOuter
         final var inner = new PojoIntNote();
         inner.setFkUser(outer.getFkUser());
         inner.setIdNote(outer.getIdNote());
-        inner.setNote(outer.getTimesamp());
+        inner.setNote(outer.getNote());
         inner.setTimesamp(outer.getTimesamp());
         inner.setTypeNote(TypeNoteIntEnum.valueOf(outer.getTypeNote().name()));
         return inner;
@@ -40,11 +40,11 @@ public class PojoNoteMapper implements IToInner<PojoIntNote, PojoNote>, IToOuter
             return null;
         }
         final var outer = new PojoNote();
-        outer.setFkUser(outer.getFkUser());
-        outer.setIdNote(outer.getIdNote());
-        outer.setNote(outer.getTimesamp());
-        outer.setTimesamp(outer.getTimesamp());
-        outer.setTypeNote(TypeNoteEnum.valueOf(outer.getTypeNote().name()));
+        outer.setFkUser(inner.getFkUser());
+        outer.setIdNote(inner.getIdNote());
+        outer.setNote(inner.getNote());
+        outer.setTimesamp(inner.getTimesamp());
+        outer.setTypeNote(TypeNoteEnum.valueOf(inner.getTypeNote().name()));
         return outer;
     }
     

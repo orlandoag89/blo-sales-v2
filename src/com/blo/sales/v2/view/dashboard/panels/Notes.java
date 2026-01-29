@@ -2,16 +2,21 @@ package com.blo.sales.v2.view.dashboard.panels;
 
 import com.blo.sales.v2.controller.IUserController;
 import com.blo.sales.v2.controller.impl.UserControllerImpl;
+import com.blo.sales.v2.controller.pojos.PojoIntNote;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntNotes;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.dialogs.NoteDialog;
 import com.blo.sales.v2.view.mappers.PojoNoteMapper;
+import com.blo.sales.v2.view.mappers.WrapperPojoNotesMapper;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.PojoNote;
 import com.blo.sales.v2.view.pojos.enums.TypeNoteEnum;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.table.DefaultTableModel;
 
 public class Notes extends javax.swing.JPanel {
     
@@ -19,9 +24,13 @@ public class Notes extends javax.swing.JPanel {
     
     private static final PojoNoteMapper noteMapper = PojoNoteMapper.getInstance();
     
-    private static final String[] titles = {"ID", "Nota"};
+    private static final WrapperPojoNotesMapper notesMapper = WrapperPojoNotesMapper.getInstance();
+    
+    private static final String[] titles = {"ID", "Nota", "Tipo", "Timestamp"};
     
     private static final String[] types_note = {"ACTIVO", "PASIVO", "OTRO"};
+    
+    private WrapperPojoIntNotes notes;
     
     private PojoLoggedInUser userData;
 
@@ -31,12 +40,40 @@ public class Notes extends javax.swing.JPanel {
         GUICommons.disabledButton(btnSaveNow);
         GUICommons.loadTitleOnTable(tblNotes, titles, false);
         loadTypesNotes();
+        retrieveNotes();
+        GUICommons.addDoubleClickOnTable(tblNotes, item -> {
+            openNoteDialog((long) item);
+        });
+    }
+    
+    private void openNoteDialog(long idNote) {
+        final var noteSelected = notes.getNotes().stream().filter(n -> n.getIdNote() == idNote).findFirst().orElse(null);
+        if (noteSelected == null) {
+            return;
+        }
+        final var dialog = new NoteDialog<>(
+            this,
+            "Eitando nota",
+            noteMapper.toOuter(noteSelected),
+            (PojoNote data) -> {
+                try {
+                    if (data == null) {
+                        controller.deleteNote(idNote);
+                    } else {
+                        controller.updateNote(noteMapper.toInner(data));
+                    }
+                    retrieveNotes();
+                } catch(BloSalesV2Exception e) {
+                }
+            }
+        );
+        dialog.setVisible(true);
     }
     
     private void loadTypesNotes() {
         final var typesModel = new DefaultComboBoxModel<String>();
-        for (var i = 0; i < types_note.length; i++) {
-            typesModel.addElement(types_note[i]);
+        for (final var types_note1 : types_note) {
+            typesModel.addElement(types_note1);
         }
         cmbxTypeNote.setModel(typesModel);
     }
@@ -159,17 +196,38 @@ public class Notes extends javax.swing.JPanel {
             data.setNote(txt);
             data.setTimesamp(BloSalesV2Utils.getTimestamp());
             data.setTypeNote(noteType);
-            final var out = controller.addNote(noteMapper.toInner(data));
-            if (out.getIdNote() != 0) {
-                GUICommons.setTextToField(areaNote, BloSalesV2Utils.EMPTY_STRING);
-                GUICommons.disabledButton(btnSaveNow);
-            }
+            controller.addNote(noteMapper.toInner(data));
+            GUICommons.setTextToField(areaNote, BloSalesV2Utils.EMPTY_STRING);
+            GUICommons.disabledButton(btnSaveNow);
+            retrieveNotes();
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Notes.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSaveNowActionPerformed
 
-
+    private void retrieveNotes() {
+        try {
+            notes = controller.getNotesByUserId(userData.getIdUser());
+            final var wrapper = notesMapper.toOuter(notes);
+            if (wrapper.getNotes() != null && !wrapper.getNotes().isEmpty()) {
+                final var model = (DefaultTableModel) tblNotes.getModel();
+                model.setRowCount(0);
+                wrapper.getNotes().forEach(n -> {
+                    final Object[] row = {
+                        n.getIdNote(),
+                        n.getNote(),
+                        n.getTypeNote().name(),
+                        n.getTimesamp()
+                    };
+                    model.addRow(row);
+                });
+                tblNotes.setModel(model);
+            }
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(Notes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaNote;
     private javax.swing.JButton btnSaveNow;

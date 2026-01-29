@@ -85,7 +85,7 @@ public final class BloSalesV2Queries {
     /** notas */
     public static final String INSERT_NOTES = "INSERT INTO notes(note, timestamp, type_note, fk_user) VALUES (?, ?, ?, ?)";
     
-    public static final String GET_NOTES_BY_ID_USER = "SELECT id_note, note, timestamp, type_note FROM notes WHERE notes.fk_user = ?";
+    public static final String GET_NOTES_BY_ID_USER = "SELECT id_note, note, timestamp, type_note, fk_user FROM notes WHERE fk_user = ?";
     
     public static final String DELETE_NOTE = "DELETE FROM notes WHERE notes.id_note = ?";
     
