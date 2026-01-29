@@ -23,7 +23,7 @@ public class LoginFrm extends javax.swing.JFrame {
     public LoginFrm() {
         initComponents();
         GUICommons.setDimensions(this);
-        GUICommons.setTextToLabel(lblVersion, BloSalesV2Utils.VERSION);
+        GUICommons.setTextToField(lblVersion, BloSalesV2Utils.VERSION);
     }
 
     @SuppressWarnings("unchecked")
@@ -118,8 +118,8 @@ public class LoginFrm extends javax.swing.JFrame {
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         try {
             final var userData = new PojoUser(
-                GUICommons.getTextFromJText(txtUserName),
-                GUICommons.getPasswordFromJText(pwdUserpassword)
+                GUICommons.getTextFromField(txtUserName, true),
+                GUICommons.getTextFromField(pwdUserpassword, true)
             );
             final var userDataIn = userMapper.toInner(userData);
             final var userResponse = loggedInUserMapper.toOuter(

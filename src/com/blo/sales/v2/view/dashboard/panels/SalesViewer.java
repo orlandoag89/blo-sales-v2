@@ -147,7 +147,7 @@ public class SalesViewer extends javax.swing.JPanel {
             if (selectedIndex == 0 && !todayLoaded) { // Pestaña "pnlToday"
                 final var salesToday = mapper.toOuter(salesController.retrieveSalesByStatus(SalesStatusIntEnum.CLOSE));
                 final var total = loadData(salesToday, tblSalesToday);
-                GUICommons.setTextToLabel(lblTotalToday, "Total hoy: $" + total);
+                GUICommons.setTextToField(lblTotalToday, "Total hoy: $" + total);
                 todayLoaded = true;
             } else if (selectedIndex == 1 && !allSalesLoaded) { // Pestaña "jPanel2"
                 final var allSales = mapper.toOuter(salesController.retrieveAllSalesDetail());

@@ -144,8 +144,8 @@ public class RegisterProduct extends javax.swing.JPanel {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
-            final var productName = GUICommons.getTextFromJText(txtProductName);
-            final var barCode = GUICommons.getTextFromJText(txtBarCode);
+            final var productName = GUICommons.getTextFromField(txtProductName, true);
+            final var barCode = GUICommons.getTextFromField(txtBarCode, true);
             final var quantity = GUICommons.getNumberFromJText(nmbQuantity);
             final var price = GUICommons.getNumberFromJText(nmbPrice);
             final var costOfSale = GUICommons.getNumberFromJText(nmbSaleCost);

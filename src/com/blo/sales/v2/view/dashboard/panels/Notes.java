@@ -2,10 +2,10 @@ package com.blo.sales.v2.view.dashboard.panels;
 
 import com.blo.sales.v2.controller.IUserController;
 import com.blo.sales.v2.controller.impl.UserControllerImpl;
-import com.blo.sales.v2.controller.pojos.PojoIntNote;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntNotes;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.dialogs.NoteDialog;
 import com.blo.sales.v2.view.mappers.PojoNoteMapper;
@@ -184,7 +184,7 @@ public class Notes extends javax.swing.JPanel {
 
     private void btnSaveNowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveNowActionPerformed
         try {
-            final var txt = GUICommons.getTextFromField(areaNote);
+            final var txt = GUICommons.getTextFromField(areaNote, true);
             final var itemSelected = GUICommons.getValueFromComboBox(cmbxTypeNote).trim();
             BloSalesV2Utils.validateRule(
                     itemSelected.isBlank(),
@@ -201,6 +201,7 @@ public class Notes extends javax.swing.JPanel {
             GUICommons.disabledButton(btnSaveNow);
             retrieveNotes();
         } catch (BloSalesV2Exception ex) {
+            CommonAlerts.openError(ex.getMessage());
             Logger.getLogger(Notes.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSaveNowActionPerformed
@@ -224,6 +225,7 @@ public class Notes extends javax.swing.JPanel {
                 tblNotes.setModel(model);
             }
         } catch (BloSalesV2Exception ex) {
+            CommonAlerts.openError(ex.getMessage());
             Logger.getLogger(Notes.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

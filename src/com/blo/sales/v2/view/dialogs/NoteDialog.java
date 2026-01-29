@@ -113,7 +113,7 @@ public class NoteDialog<T> extends javax.swing.JDialog {
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
         try {
             final var pojoCopy = pojoNote;
-            final var txt = GUICommons.getTextFromField(areaNote);
+            final var txt = GUICommons.getTextFromField(areaNote, true);
             pojoCopy.setNote(txt);
             final var itemSelected = GUICommons.getValueFromComboBox(cmbxTypeNote).trim();
             BloSalesV2Utils.validateRule(

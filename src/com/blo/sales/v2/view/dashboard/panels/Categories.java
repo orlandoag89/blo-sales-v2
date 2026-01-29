@@ -16,11 +16,11 @@ import javax.swing.DefaultListModel;
 
 public class Categories extends javax.swing.JPanel {
     
-    private CategoryMapper categoryMapper = CategoryMapper.getInstance();
+    private static final CategoryMapper categoryMapper = CategoryMapper.getInstance();
     
-    private WrapperPojoCategoriesMapper wrapperPojoCategoriesMapper = WrapperPojoCategoriesMapper.getInstance();
+    private static final WrapperPojoCategoriesMapper wrapperPojoCategoriesMapper = WrapperPojoCategoriesMapper.getInstance();
     
-    private ICategoriesController categoriesController = CategoriesControllerImpl.getInstance();
+    private static final ICategoriesController categoriesController = CategoriesControllerImpl.getInstance();
     
     /** Variable global para almacenar categorias y usarla en cualquer metodo */
     private WrapperPojoCategories categoriesGlobal;
@@ -53,7 +53,7 @@ public class Categories extends javax.swing.JPanel {
         if (itemFound != null) {
             GUICommons.setTextToField(txtEditName, itemFound.getCategory());
             GUICommons.setTextToField(txtEditDescription, itemFound.getDescription());
-            GUICommons.setTextToLabel(lblIdCategory, id);
+            GUICommons.setTextToField(lblIdCategory, id);
         }
         
         
@@ -195,8 +195,8 @@ public class Categories extends javax.swing.JPanel {
     /** guarda una nueva categoria */
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
-            final var categoryName = GUICommons.getTextFromJText(txtName);
-            final var categoryDescription = GUICommons.getTextFromJText(txtDescription);
+            final var categoryName = GUICommons.getTextFromField(txtName, true);
+            final var categoryDescription = GUICommons.getTextFromField(txtDescription, true);
             final var newCategory = new PojoCategory();
             newCategory.setCategory(categoryName);
             newCategory.setDescription(categoryDescription);
@@ -214,19 +214,19 @@ public class Categories extends javax.swing.JPanel {
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         content.setVisible(false);
-        GUICommons.setTextToLabel(lblIdCategory, BloSalesV2Utils.EMPTY_STRING);
+        GUICommons.setTextToField(lblIdCategory, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(txtEditDescription, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(txtEditName, BloSalesV2Utils.EMPTY_STRING);
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void btnSaveChangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveChangesActionPerformed
         try {
-            final var newName = GUICommons.getTextFromJText(txtEditName);
-            final var newDescription = GUICommons.getTextFromJText(txtEditDescription);
+            final var newName = GUICommons.getTextFromField(txtEditName, true);
+            final var newDescription = GUICommons.getTextFromField(txtEditDescription, true);
             final var data = new PojoCategory();
             data.setCategory(newName);
             data.setDescription(newDescription);
-            categoriesController.updateCategory(Long.parseLong(GUICommons.getTextFromLabel(lblIdCategory)), categoryMapper.toInner(data));
+            categoriesController.updateCategory(Long.parseLong(GUICommons.getTextFromField(lblIdCategory, true)), categoryMapper.toInner(data));
             /** actualizar la lista de categorias */
             loadCategories();
             btnCancelActionPerformed(evt);

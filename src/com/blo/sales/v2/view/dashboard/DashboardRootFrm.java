@@ -23,7 +23,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         initComponents();
         GUICommons.allWindow(this);
         GUICommons.showPanel(content, new Sales(userData));
-        GUICommons.setTextToLabel(lblVersion, BloSalesV2Utils.VERSION);
+        GUICommons.setTextToField(lblVersion, BloSalesV2Utils.VERSION);
     }
 
     @SuppressWarnings("unchecked")

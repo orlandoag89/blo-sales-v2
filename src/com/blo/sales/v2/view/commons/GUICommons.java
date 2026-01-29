@@ -99,22 +99,36 @@ public final class GUICommons {
         });
 
     }
-
+    
     /**
-     * Recupera el texto de un text field
-     *
+     * Metodo para recuperar el texto de un campo
      * @param field
+     * @param validate
      * @return
+     * @throws BloSalesV2Exception 
      */
-    public static String getTextFromJText(JTextField field) throws BloSalesV2Exception {
+    public static String getTextFromField(JTextField field, boolean validate) throws BloSalesV2Exception {
         final var text = field.getText().trim();
-        validateRule(text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        validateRule(validate && text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return text;
     }
     
-    public static String getTextFromField(JTextArea area) throws BloSalesV2Exception {
-        final var text = area.getText().trim();
-        validateRule(text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+    public static String getTextFromField(JLabel field, boolean validate) throws BloSalesV2Exception {
+        final var text = field.getText().trim();
+        validateRule(validate && text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        return text;
+    }
+    
+    /**
+     * Metodo para recuperar el texto de un text area
+     * @param field
+     * @param validate
+     * @return
+     * @throws BloSalesV2Exception 
+     */
+    public static String getTextFromField(JTextArea field, boolean validate) throws BloSalesV2Exception {
+        final var text = field.getText().trim();
+        validateRule(validate && text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return text;
     }
 
@@ -122,6 +136,18 @@ public final class GUICommons {
         final var txt = field.getText().trim();
         validateRule(txt.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return new BigDecimal(txt);
+    }
+    
+    public static void setTextToField(JLabel field, String txt) {
+        field.setText(txt);
+    }
+    
+    public static void setTextToField(JTextField field, String txt) {
+        field.setText(txt);
+    }
+    
+    public static void setTextToField(JTextArea field, String txt) {
+        field.setText(txt);
     }
 
     /**
@@ -137,23 +163,7 @@ public final class GUICommons {
         validateRule(pass.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return pass;
     }
-
-    public static void setTextToField(JTextField field, String txt) {
-        field.setText(txt);
-    }
     
-    public static void setTextToField(JTextArea area, String txt) {
-        area.setText(txt);
-    }
-
-    public static void setTextToLabel(JLabel lbl, String txt) {
-        lbl.setText(txt);
-    }
-
-    public static String getTextFromLabel(JLabel lbl) {
-        return lbl.getText();
-    }
-
     /**
      * recupera el valor seleccionado de un combobox
      *
