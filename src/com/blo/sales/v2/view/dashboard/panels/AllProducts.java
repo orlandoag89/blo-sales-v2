@@ -232,15 +232,20 @@ public class AllProducts extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtSearcherKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearcherKeyReleased
-        final var filter = txtSearcher.getText();
-        if (filter.trim().isBlank()) {
-            // Si el buscador está vacío, mostramos todas las filas
-            sorter.setRowFilter(null);
-        } else {
-            // Al no poner un índice después del texto, busca en todas las columnas
-            // "(?i)" sirve para ignorar mayúsculas y minúsculas
-            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + filter));
+        try {
+            final var filter = GUICommons.getTextFromField(txtSearcher, false);
+            if (filter.isBlank()) {
+                // Si el buscador está vacío, mostramos todas las filas
+                sorter.setRowFilter(null);
+            } else {
+                // Al no poner un índice después del texto, busca en todas las columnas
+                // "(?i)" sirve para ignorar mayúsculas y minúsculas
+                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + filter));
+            }
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }//GEN-LAST:event_txtSearcherKeyReleased
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
@@ -250,9 +255,9 @@ public class AllProducts extends javax.swing.JPanel {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
             final var newData = new PojoProduct();
-            newData.setIdProduct(Long.parseLong(GUICommons.getTextFromLabel(lblIdProduct)));
-            newData.setProduct(GUICommons.getTextFromJText(txtName));
-            newData.setBarCode(GUICommons.getTextFromJText(txtBarCode));
+            newData.setIdProduct(Long.parseLong(GUICommons.getTextFromField(lblIdProduct, true)));
+            newData.setProduct(GUICommons.getTextFromField(txtName, true));
+            newData.setBarCode(GUICommons.getTextFromField(txtBarCode, true));
             newData.setCostOfSale(GUICommons.getNumberFromJText(nmbCostOfSale));
             newData.setPrice(GUICommons.getNumberFromJText(nmbPrice));
             var reasonEnum = ReasonsEnum.PRODUCT_NOT_MODIFIED;
@@ -289,16 +294,22 @@ public class AllProducts extends javax.swing.JPanel {
 
     private void nmbQuantityKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nmbQuantityKeyReleased
         /** activa o desactiva el combo de acuerdo a la cantidad de producto */
-        lstReason.setVisible(true);
-        final var tmpQuantity = nmbQuantity.getText();
-        if (tmpQuantity.trim().isBlank()) {
-            return;
+        
+        try {
+            lstReason.setVisible(true);
+            final var tmpQuantity = GUICommons.getTextFromField(nmbQuantity, false);
+            if (tmpQuantity.isBlank()) {
+                return;
+            }
+            final var quantity = new BigDecimal(tmpQuantity.trim());
+            /** desactiva el combo si se modifico pero la cantidad es la misma */
+            if (currentQuantity.compareTo(quantity) == 0) {
+                lstReason.setVisible(false);
+            }
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
         }
-        final var quantity = new BigDecimal(nmbQuantity.getText().trim());
-        /** desactiva el combo si se modifico pero la cantidad es la misma */
-        if (currentQuantity.compareTo(quantity) == 0) {
-            lstReason.setVisible(false);
-        }
+        
     }//GEN-LAST:event_nmbQuantityKeyReleased
 
     /** ajustar filtro de categorias */
@@ -340,7 +351,7 @@ public class AllProducts extends javax.swing.JPanel {
                     GUICommons.setTextToField(nmbCostOfSale, productSelected.getCostOfSale() + "");
                     GUICommons.setTextToField(nmbPrice, productSelected.getPrice() + "");
                     GUICommons.setTextToField(nmbQuantity, productSelected.getQuantity() + "");
-                    GUICommons.setTextToLabel(lblIdProduct, productSelected.getIdProduct() + "");
+                    GUICommons.setTextToField(lblIdProduct, productSelected.getIdProduct() + "");
                 }
             });
         } catch (final BloSalesV2Exception e) {
@@ -361,13 +372,13 @@ public class AllProducts extends javax.swing.JPanel {
         currentQuantity = new BigDecimal(BigInteger.ZERO);
         /** este check estara oculto hasta que se de cambie la propiedad de cantidad */
         lstReason.setVisible(false);
-        GUICommons.setTextToLabel(lblIdProduct, BloSalesV2Utils.EMPTY_STRING);
+        GUICommons.setTextToField(lblIdProduct, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(txtName, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(txtBarCode, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(nmbCostOfSale, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(nmbPrice, BloSalesV2Utils.EMPTY_STRING);
         GUICommons.setTextToField(nmbQuantity, BloSalesV2Utils.EMPTY_STRING);
-        GUICommons.setTextToLabel(lblIdProduct, BloSalesV2Utils.EMPTY_STRING);
+        GUICommons.setTextToField(lblIdProduct, BloSalesV2Utils.EMPTY_STRING);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

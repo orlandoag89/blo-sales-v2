@@ -2,9 +2,7 @@ package com.blo.sales.v2.utils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Minúsculas: á -> \u00e1 é -> \u00e9 í -> \u00ed ó -> \u00f3 ú -> \u00fa ñ ->
@@ -16,6 +14,8 @@ import java.util.stream.Collectors;
  * Símbolos: ¿ -> \u00bf ¡ -> \u00a1
  */
 public final class BloSalesV2Utils {
+    
+    public static final String VERSION = "v2.4.0";
     
     /** cadena vacia */
     public static final String EMPTY_STRING = "";
@@ -50,6 +50,8 @@ public final class BloSalesV2Utils {
     
     public static final String CATEGORY_NO_SELECTED = "Categor\u00eda no seleccionada";
     
+    public static final String NOTE_TYPE_NO_SELECTED = "Selecciona un tipo de nota";
+    
     public static final String CATEGORY_NOT_FOUND = "Categor\u00eda no encontrada";
     
     public static final String PRODUCT_NOT_SELECTED = "El producto no ha sido seleccionado o no existe en el inventario";
@@ -57,6 +59,8 @@ public final class BloSalesV2Utils {
     public static final String BAR_CODE_EXCEPTION = "El c\u00f3digo de barras ya est\u00e1 registrado con otro producto, por favor verifica";
     
     public static final String CATEGORY_PROTECTED = "Esta categor\u00eda est\u00e1 protegida";
+    
+    public static final String NOTES_INSTRUCTIONS = "¡Importante! \nRecuerda que si tu nota se cargar\u00e1 como activo / pasivo \ndebes colocar la cantidad comenzando por $";
     
     public static final long DEBTORS_PAYMENTS = 1;
     

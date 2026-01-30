@@ -1,5 +1,6 @@
 package com.blo.sales.v2.view.dashboard;
 
+import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.dashboard.panels.AllCashboxes;
 import com.blo.sales.v2.view.dashboard.panels.AllProducts;
@@ -7,6 +8,7 @@ import com.blo.sales.v2.view.dashboard.panels.CashboxOpen;
 import com.blo.sales.v2.view.dashboard.panels.Categories;
 import com.blo.sales.v2.view.dashboard.panels.Console;
 import com.blo.sales.v2.view.dashboard.panels.Debtors;
+import com.blo.sales.v2.view.dashboard.panels.Notes;
 import com.blo.sales.v2.view.dashboard.panels.RegisterProduct;
 import com.blo.sales.v2.view.dashboard.panels.Sales;
 import com.blo.sales.v2.view.dashboard.panels.SalesViewer;
@@ -21,6 +23,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         initComponents();
         GUICommons.allWindow(this);
         GUICommons.showPanel(content, new Sales(userData));
+        GUICommons.setTextToField(lblVersion, BloSalesV2Utils.VERSION);
     }
 
     @SuppressWarnings("unchecked")
@@ -28,19 +31,21 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private void initComponents() {
 
         content = new javax.swing.JPanel();
+        lblVersion = new javax.swing.JLabel();
         mnuBar = new javax.swing.JMenuBar();
         itmSales = new javax.swing.JMenu();
-        optViewSales = new javax.swing.JMenuItem();
         optAddSale = new javax.swing.JMenuItem();
+        optViewSales = new javax.swing.JMenuItem();
         itmStock = new javax.swing.JMenu();
-        optStock = new javax.swing.JMenuItem();
         optRegister = new javax.swing.JMenuItem();
+        optStock = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         optCategory = new javax.swing.JMenuItem();
         itmAdmon = new javax.swing.JMenu();
         itmContability = new javax.swing.JMenu();
-        optAllCashboxes = new javax.swing.JMenuItem();
         optOpoenCashbox = new javax.swing.JMenuItem();
+        optAllCashboxes = new javax.swing.JMenuItem();
+        optNotes = new javax.swing.JMenuItem();
         optDebtors = new javax.swing.JMenuItem();
         itmProg = new javax.swing.JMenu();
         optConsole = new javax.swing.JMenuItem();
@@ -55,18 +60,10 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         );
         contentLayout.setVerticalGroup(
             contentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
+            .addGap(0, 493, Short.MAX_VALUE)
         );
 
         itmSales.setText("Ventas");
-
-        optViewSales.setText("Ver");
-        optViewSales.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optViewSalesActionPerformed(evt);
-            }
-        });
-        itmSales.add(optViewSales);
 
         optAddSale.setText("Registrar venta");
         optAddSale.addActionListener(new java.awt.event.ActionListener() {
@@ -76,17 +73,17 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         });
         itmSales.add(optAddSale);
 
+        optViewSales.setText("Ver");
+        optViewSales.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optViewSalesActionPerformed(evt);
+            }
+        });
+        itmSales.add(optViewSales);
+
         mnuBar.add(itmSales);
 
         itmStock.setText("Inventario");
-
-        optStock.setText("Ver");
-        optStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optStockActionPerformed(evt);
-            }
-        });
-        itmStock.add(optStock);
 
         optRegister.setText("Registrar producto");
         optRegister.addActionListener(new java.awt.event.ActionListener() {
@@ -95,6 +92,14 @@ public class DashboardRootFrm extends javax.swing.JFrame {
             }
         });
         itmStock.add(optRegister);
+
+        optStock.setText("Ver");
+        optStock.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optStockActionPerformed(evt);
+            }
+        });
+        itmStock.add(optStock);
         itmStock.add(jSeparator1);
 
         optCategory.setText("Categorias");
@@ -111,14 +116,6 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
         itmContability.setText("Contabilidad");
 
-        optAllCashboxes.setText("Cajas");
-        optAllCashboxes.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                optAllCashboxesActionPerformed(evt);
-            }
-        });
-        itmContability.add(optAllCashboxes);
-
         optOpoenCashbox.setText("Caja");
         optOpoenCashbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -127,7 +124,23 @@ public class DashboardRootFrm extends javax.swing.JFrame {
         });
         itmContability.add(optOpoenCashbox);
 
+        optAllCashboxes.setText("Cajas");
+        optAllCashboxes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optAllCashboxesActionPerformed(evt);
+            }
+        });
+        itmContability.add(optAllCashboxes);
+
         itmAdmon.add(itmContability);
+
+        optNotes.setText("Notas Rápidas");
+        optNotes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                optNotesActionPerformed(evt);
+            }
+        });
+        itmAdmon.add(optNotes);
 
         optDebtors.setText("Deudores");
         optDebtors.addActionListener(new java.awt.event.ActionListener() {
@@ -159,7 +172,11 @@ public class DashboardRootFrm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblVersion, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -167,6 +184,8 @@ public class DashboardRootFrm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblVersion, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -208,6 +227,10 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private void optAllCashboxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optAllCashboxesActionPerformed
         GUICommons.showPanel(content, new AllCashboxes());
     }//GEN-LAST:event_optAllCashboxesActionPerformed
+
+    private void optNotesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optNotesActionPerformed
+        GUICommons.showPanel(content, new Notes(userData));
+    }//GEN-LAST:event_optNotesActionPerformed
     
     private void openAllProducts() {
         GUICommons.showPanel(content, new AllProducts(userData));
@@ -221,12 +244,14 @@ public class DashboardRootFrm extends javax.swing.JFrame {
     private javax.swing.JMenu itmSales;
     private javax.swing.JMenu itmStock;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JLabel lblVersion;
     private javax.swing.JMenuBar mnuBar;
     private javax.swing.JMenuItem optAddSale;
     private javax.swing.JMenuItem optAllCashboxes;
     private javax.swing.JMenuItem optCategory;
     private javax.swing.JMenuItem optConsole;
     private javax.swing.JMenuItem optDebtors;
+    private javax.swing.JMenuItem optNotes;
     private javax.swing.JMenuItem optOpoenCashbox;
     private javax.swing.JMenuItem optRegister;
     private javax.swing.JMenuItem optStock;

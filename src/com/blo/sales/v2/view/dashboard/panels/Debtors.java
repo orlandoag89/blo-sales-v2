@@ -50,7 +50,7 @@ public class Debtors extends javax.swing.JPanel {
                     debtorSelected = debtorDetail.get(0);
                     areaPayments.setText(BloSalesV2Utils.EMPTY_STRING);
                     GUICommons.setTextToField(txtName, debtorSelected.getName());
-                    GUICommons.setTextToLabel(lblDebt, "debe: $" + debtorSelected.getDebt());
+                    GUICommons.setTextToField(lblDebt, "debe: $" + debtorSelected.getDebt());
                     Arrays.stream(debtorSelected.getPayments().split(BloSalesV2Utils.SEPARATOR_PAYMENTS)).forEach(p -> {
                         areaPayments.append(p);
                         areaPayments.append("\n");
@@ -254,8 +254,7 @@ public class Debtors extends javax.swing.JPanel {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         try {
-            final var dbt = GUICommons.getTextFromLabel(lblDebt);
-            System.out.println(dbt);
+            final var dbt = GUICommons.getTextFromField(lblDebt, true);
             final var amount = new BigDecimal(dbt.substring(dbt.lastIndexOf("$") + 1));
             var payment = GUICommons.getNumberFromJText(nmbPay);
             if (payment.compareTo(amount) >= 0) {
@@ -272,26 +271,27 @@ public class Debtors extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void nmbPayKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nmbPayKeyReleased
-        final var partialPay = nmbPay.getText().trim();
-        if (
-                evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
-                evt.getKeyCode() == GUICommons.SUPR_KEY &&
-                partialPay.isBlank()
-            ) {
-            GUICommons.setTextToLabel(lblDebt, "debe: $" + debtorSelected.getDebt());
-        }
-        if (
-                !partialPay.isBlank() &&
-                BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.CURRENCY_REGEX, partialPay)
-            ) {
-            GUICommons.setTextToLabel(lblDebt, "debe: $" + (debtorSelected.getDebt().subtract(new BigDecimal(partialPay))));
+        try {
+            final var partialPay = GUICommons.getTextFromField(nmbPay, false);
+            if (GUICommons.isEmptyFieldByKeyEvt(evt, partialPay.isBlank())) {
+                GUICommons.setTextToField(lblDebt, "debe: $" + debtorSelected.getDebt());
+            }
+            if (
+                    !partialPay.isBlank() &&
+                    BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.CURRENCY_REGEX, partialPay)
+                ) {
+                GUICommons.setTextToField(lblDebt, "debe: $" + (debtorSelected.getDebt().subtract(new BigDecimal(partialPay))));
+            }
+        } catch(BloSalesV2Exception e) {
         }
     }//GEN-LAST:event_nmbPayKeyReleased
 
     private void btnPayallActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayallActionPerformed
         try {
-            debtors.addPayment(debtorSelected.getDebt(), userData.getIdUser(), debtorSelected.getIdDebtor());
-            debtorSelected = null;
+            if (GUICommons.showConfirmDialog("¿Seguro que deseas pagar toda la cuenta?")) {
+                debtors.addPayment(debtorSelected.getDebt(), userData.getIdUser(), debtorSelected.getIdDebtor());
+                debtorSelected = null;
+            }
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Debtors.class.getName()).log(Level.SEVERE, null, ex);
             CommonAlerts.openError(ex.getMessage());

@@ -77,7 +77,7 @@ public class Sales extends javax.swing.JPanel {
                     final var price = model.getValueAt(filaModelo, 4).toString();
                     totalSale = totalSale.subtract(new BigDecimal(price));
                     model.removeRow(indexSelected);
-                    GUICommons.setTextToLabel(lblTotal, "Total: $" + totalSale);
+                    GUICommons.setTextToField(lblTotal, "Total: $" + totalSale);
                     if (totalSale.compareTo(BigDecimal.ZERO) == 0) {
                         disableButtons();
                     }
@@ -126,9 +126,9 @@ public class Sales extends javax.swing.JPanel {
         pnlPayLayout.setHorizontalGroup(
             pnlPayLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPayLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnComplete)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(btnDebtors)
                 .addContainerGap())
         );
@@ -172,8 +172,9 @@ public class Sales extends javax.swing.JPanel {
                 .addGroup(pnlSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlSearchLayout.createSequentialGroup()
                         .addComponent(lblBarCode)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnByName))
+                        .addGap(18, 18, 18)
+                        .addComponent(btnByName)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(txtSearch))
                 .addGap(6, 6, 6))
         );
@@ -238,7 +239,7 @@ public class Sales extends javax.swing.JPanel {
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
         if (evt.getKeyCode() == 10) {
             try {
-                final var termToSearch = GUICommons.getTextFromJText(txtSearch);
+                final var termToSearch = GUICommons.getTextFromField(txtSearch, true);
                 /** busqueda por codigo de barras */
                 if (BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.ONLY_NUMBERS, termToSearch)) {
                     filterProduct(termToSearch, true);
@@ -257,7 +258,7 @@ public class Sales extends javax.swing.JPanel {
         try {
             salesController.registerSale(totalSale, getProductData(), this.userData.getIdUser());
             disableButtons();
-            GUICommons.setTextToLabel(lblTotal, "Total: 0");
+            GUICommons.setTextToField(lblTotal, "Total: 0");
             totalSale = BigDecimal.ZERO;
             resetFields();
         } catch (BloSalesV2Exception ex) {
@@ -341,7 +342,7 @@ public class Sales extends javax.swing.JPanel {
             if (productFound == null) {
                 throw new BloSalesV2Exception(BloSalesV2Utils.PRODUCT_NOT_SELECTED);
             }
-            final var quantity = GUICommons.getTextFromJText(nmbQuantity);
+            final var quantity = GUICommons.getTextFromField(nmbQuantity, true);
             // valida si se puede con pesos solamente si el producto se vende por kg
             var onSaleQuantity = new BigDecimal(BigInteger.ZERO);
             var onSalePrice = new BigDecimal(BigInteger.ZERO);
@@ -373,7 +374,7 @@ public class Sales extends javax.swing.JPanel {
             };
             model.addRow(productInfoData);
             GUICommons.setTextToField(txtSearch, BloSalesV2Utils.EMPTY_STRING);
-            GUICommons.setTextToLabel(lblTotal, "Total: $" + totalSale);
+            GUICommons.setTextToField(lblTotal, "Total: $" + totalSale);
             GUICommons.setTextToField(nmbQuantity, "1");
             productFound = null;
             GUICommons.enabledButton(btnComplete);
@@ -434,7 +435,7 @@ public class Sales extends javax.swing.JPanel {
         final var model = (DefaultTableModel) tblProductsSales.getModel();
         model.setRowCount(0);
         tblProductsSales.repaint();
-        GUICommons.setTextToLabel(lblTotal, "0");
+        GUICommons.setTextToField(lblTotal, "0");
     }
     
     private void disableButtons() {

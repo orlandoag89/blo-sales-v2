@@ -41,7 +41,7 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
         this.callback = callback;
         initComponents();
         loadTitlesAndData();
-        GUICommons.setTextToLabel(lblAmount, "$" + this.totalSale);
+        GUICommons.setTextToField(lblAmount, "$" + this.totalSale);
         GUICommons.disabledButton(btnRegister);
         GUICommons.disabledButton(btnSaveRegister);
         GUICommons.setTextToField(txtPartialPay, BigDecimal.ZERO + "");
@@ -53,8 +53,8 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
                         findFirst().
                         orElse(null);
             if (debtor != null) {
-                GUICommons.setTextToLabel(lblAmount, "$" + debtor.getDebt().add(totalSale));
-                GUICommons.setTextToLabel(lblPartialPay, debtor.getName() + " deja ");
+                GUICommons.setTextToField(lblAmount, "$" + debtor.getDebt().add(totalSale));
+                GUICommons.setTextToField(lblPartialPay, debtor.getName() + " deja ");
                 GUICommons.enabledButton(btnSaveRegister);
                 this.totalSale = this.totalSale.add(debtor.getDebt());
             }
@@ -200,7 +200,7 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
 
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
         try {
-            debtorName = GUICommons.getTextFromJText(this.txtName);
+            debtorName = GUICommons.getTextFromField(this.txtName, true);
             debtor = new PojoDebtor();
             debtor.setName(debtorName);
             debtor.setPayments(BloSalesV2Utils.EMPTY_STRING);
@@ -229,7 +229,7 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
             if (debtor.getIdDebtor() != 0) {
                 logger.log("deudor existente");
                 var payments = debtor.getPayments();
-                final var newDebt = new BigDecimal(GUICommons.getTextFromLabel(lblAmount).substring(1));
+                final var newDebt = new BigDecimal(GUICommons.getTextFromField(lblAmount, true).substring(1));
                 logger.log("se realiza la resta del total acumulado menos el pago " + newDebt);
                 // no se realizo pago
                 debtor.setDebt(newDebt);
@@ -255,7 +255,7 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
             if (partialPayment.compareTo(BigDecimal.ZERO) != 0) {
                 debtor.setPayments(newPay);
             }
-            debtor.setDebt(new BigDecimal(GUICommons.getTextFromLabel(lblAmount).substring(1)));
+            debtor.setDebt(new BigDecimal(GUICommons.getTextFromField(lblAmount, true).substring(1)));
             logger.log("nuevo deudor" + debtor.toString());
             callback.accept((T) debtor);
             this.dispose();
@@ -266,17 +266,17 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
     }//GEN-LAST:event_btnSaveRegisterActionPerformed
 
     private void txtPartialPayKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtPartialPayKeyReleased
-        final var partialPayTmp = txtPartialPay.getText().trim();
-        if (
-                evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
-                evt.getKeyCode() == GUICommons.SUPR_KEY &&
-                partialPayTmp.isBlank()
-            ) {
-            GUICommons.setTextToLabel(lblAmount, "$" + totalSale);
-        }
-        
-        if (!partialPayTmp.isBlank() && BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.CURRENCY_REGEX, partialPayTmp)) {
-            GUICommons.setTextToLabel(lblAmount, "$" + (totalSale.subtract(new BigDecimal(partialPayTmp))));
+        try {
+           final var partialPayTmp = GUICommons.getTextFromField(txtPartialPay, false);
+            if (GUICommons.isEmptyFieldByKeyEvt(evt, partialPayTmp.isBlank())) {
+                GUICommons.setTextToField(lblAmount, "$" + totalSale);
+            }
+
+            if (!partialPayTmp.isBlank() && BloSalesV2Utils.validateTextWithPattern(BloSalesV2Utils.CURRENCY_REGEX, partialPayTmp)) {
+                GUICommons.setTextToField(lblAmount, "$" + (totalSale.subtract(new BigDecimal(partialPayTmp))));
+            }
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(DebtorsDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_txtPartialPayKeyReleased
 

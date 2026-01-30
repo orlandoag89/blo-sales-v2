@@ -4,6 +4,7 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import static com.blo.sales.v2.utils.BloSalesV2Utils.validateRule;
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
@@ -14,9 +15,11 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
@@ -98,16 +101,36 @@ public final class GUICommons {
         });
 
     }
-
+    
     /**
-     * Recupera el texto de un text field
-     *
+     * Metodo para recuperar el texto de un campo
      * @param field
+     * @param validate
      * @return
+     * @throws BloSalesV2Exception 
      */
-    public static String getTextFromJText(JTextField field) throws BloSalesV2Exception {
+    public static String getTextFromField(JTextField field, boolean validate) throws BloSalesV2Exception {
         final var text = field.getText().trim();
-        validateRule(text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        validateRule(validate && text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        return text;
+    }
+    
+    public static String getTextFromField(JLabel field, boolean validate) throws BloSalesV2Exception {
+        final var text = field.getText().trim();
+        validateRule(validate && text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        return text;
+    }
+    
+    /**
+     * Metodo para recuperar el texto de un text area
+     * @param field
+     * @param validate
+     * @return
+     * @throws BloSalesV2Exception 
+     */
+    public static String getTextFromField(JTextArea field, boolean validate) throws BloSalesV2Exception {
+        final var text = field.getText().trim();
+        validateRule(validate && text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return text;
     }
 
@@ -115,6 +138,18 @@ public final class GUICommons {
         final var txt = field.getText().trim();
         validateRule(txt.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return new BigDecimal(txt);
+    }
+    
+    public static void setTextToField(JLabel field, String txt) {
+        field.setText(txt);
+    }
+    
+    public static void setTextToField(JTextField field, String txt) {
+        field.setText(txt);
+    }
+    
+    public static void setTextToField(JTextArea field, String txt) {
+        field.setText(txt);
     }
 
     /**
@@ -130,19 +165,7 @@ public final class GUICommons {
         validateRule(pass.isBlank(), BloSalesV2Utils.INVALID_TEXT);
         return pass;
     }
-
-    public static void setTextToField(JTextField field, String txt) {
-        field.setText(txt);
-    }
-
-    public static void setTextToLabel(JLabel lbl, String txt) {
-        lbl.setText(txt);
-    }
-
-    public static String getTextFromLabel(JLabel lbl) {
-        return lbl.getText();
-    }
-
+    
     /**
      * recupera el valor seleccionado de un combobox
      *
@@ -209,5 +232,16 @@ public final class GUICommons {
     public static void allWindow(JFrame content) {
         content.setExtendedState(JFrame.MAXIMIZED_BOTH);
         content.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+    public static boolean isEmptyFieldByKeyEvt(KeyEvent evt, boolean conditionObligatory) {
+        return evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
+                evt.getKeyCode() == GUICommons.SUPR_KEY &&
+                conditionObligatory;
+    }
+    
+    public static boolean showConfirmDialog(String msg) {
+        final var rsp = JOptionPane.showConfirmDialog(null, msg);
+        return rsp == JOptionPane.YES_OPTION;
     }
 }

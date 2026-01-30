@@ -6,6 +6,7 @@ import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.pojos.PojoActiveCost;
 import com.blo.sales.v2.view.pojos.PojoCashbox;
 import com.blo.sales.v2.view.pojos.PojoDialogCashboxData;
+import com.blo.sales.v2.view.pojos.WrapperPojoNotes;
 import com.blo.sales.v2.view.pojos.enums.ActivesCostsEnum;
 import java.awt.Component;
 import java.math.BigDecimal;
@@ -34,11 +35,24 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
     private Consumer<T> callback;
     
     private PojoDialogCashboxData dataNewCashbox;
+    
+    private WrapperPojoNotes actives;
+    
+    private WrapperPojoNotes pasives;
 
-    public CashboxDialog(Component parent, String title, PojoCashbox cashboxData, Consumer<T> callback) {
+    public CashboxDialog(
+        Component parent,
+        String title,
+        PojoCashbox cashboxData,
+        WrapperPojoNotes actives,
+        WrapperPojoNotes pasives,
+        Consumer<T> callback
+    ) {
         super(SwingUtilities.getWindowAncestor(parent), title, ModalityType.APPLICATION_MODAL);
         initComponents();
         this.callback = callback;
+        this.actives = actives;
+        this.pasives = pasives;
         lstCosts = new ArrayList<>();
         modelActives = new DefaultListModel();
         modelPasives = new DefaultListModel();
@@ -46,7 +60,8 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
         totalActives = BigDecimal.ZERO;
         totalPasives = BigDecimal.ZERO;
         totalActivesCosts = cashboxData.getAmount();
-        GUICommons.setTextToLabel(lblTotalToCashbox, "Total neto: " + cashboxData.getAmount());
+        GUICommons.setTextToField(lblTotalToCashbox, "Total neto: " + cashboxData.getAmount());
+        setInfoFromNotes();
         // lista de activos
         GUICommons.addDoubleClickOnListEvt(lstActives, item -> {
             final var indexSelected = lstActives.getSelectedIndex();
@@ -58,13 +73,13 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
                     final var amount = new BigDecimal(props.get(2).split("=")[1].trim());
                     // resta en la cuenta de activos
                     totalActives = totalActives.subtract(amount);
-                    GUICommons.setTextToLabel(lblActivesTotal, "Total activos: " + totalActives);
+                    GUICommons.setTextToField(lblActivesTotal, "Total activos: " + totalActives);
                     // se elimina del arreglo y de la lista
                     lstCosts.removeIf(i -> i.toString().equals(item));
                     modelActives.remove(indexSelected);
                     // se resta al total de activos a neto
                     totalActivesCosts = totalActivesCosts.subtract(amount);
-                    GUICommons.setTextToLabel(lblTotalToCashbox, "Total neto: " + totalActivesCosts);
+                    GUICommons.setTextToField(lblTotalToCashbox, "Total neto: " + totalActivesCosts);
                 }
         });
         // lista de pasivos
@@ -78,13 +93,13 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
                     final var amount = new BigDecimal(props.get(2).split("=")[1].trim());
                     // resta en la cuenta de activos
                     totalPasives = totalPasives.subtract(amount);
-                    GUICommons.setTextToLabel(lblPasivesTotal, "Total costos: " + totalPasives);
+                    GUICommons.setTextToField(lblPasivesTotal, "Total costos: " + totalPasives);
                     // se elimina del arreglo y de la lista
                     lstCosts.removeIf(i -> i.toString().equals(item));
                     modelPasives.remove(indexSelected);
                     // se resta al total de activos a neto
                     totalActivesCosts = totalActivesCosts.add(amount);
-                    GUICommons.setTextToLabel(lblTotalToCashbox, "Total neto: " + totalActivesCosts);
+                    GUICommons.setTextToField(lblTotalToCashbox, "Total neto: " + totalActivesCosts);
                 }
         });
     }
@@ -196,9 +211,6 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
                             .addComponent(txtCategoryName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
-                                .addComponent(btnContinue))
-                            .addGroup(layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
@@ -206,8 +218,11 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(nmbAmount, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(cmbxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+                                        .addComponent(cmbxType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnContinue))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblDescription)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -245,7 +260,7 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
 
     private void btnContinueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinueActionPerformed
         try {
-            final var concept = GUICommons.getTextFromJText(txtCategoryName);
+            final var concept = GUICommons.getTextFromField(txtCategoryName, true);
             final var amount = GUICommons.getNumberFromJText(nmbAmount);
             final var type = GUICommons.getValueFromComboBox(cmbxType);
             // se agrega concepto a lista de activos pasivos
@@ -253,40 +268,105 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
             if (type.equals("2 Gasto")) {
                 typeConcept = ActivesCostsEnum.PASIVO;
             }
-            final var data = new PojoActiveCost();
-            data.setAmount(amount);
-            data.setConcept(concept);
-            data.setComplete(false);
-            data.setType(typeConcept);
+            final var data = createItem(amount, concept, typeConcept);
             lstCosts.add(data);
             // guardar el concepto en las listas
             if (typeConcept.compareTo(ActivesCostsEnum.ACTIVO) == 0) {
-                modelActives.addElement(data.toString());
-                lstActives.setModel(modelActives);
-                totalActives = totalActives.add(amount);
-                GUICommons.setTextToLabel(lblActivesTotal, "Total activos: " + totalActives);
-                totalActivesCosts = totalActivesCosts.add(amount);
-                //cashboxData.setAmount(amountOnCashbox.add(amount));
+                addActive(data, amount);
             }
             if (typeConcept.compareTo(ActivesCostsEnum.PASIVO) == 0) {
-                modelPasives.addElement(data.toString());
-                lstPasives.setModel(modelPasives);
-                totalPasives = totalPasives.add(amount);
-                GUICommons.setTextToLabel(lblPasivesTotal, "Total pasivos: " + totalPasives);
-                totalActivesCosts = totalActivesCosts.subtract(amount);
-                //cashboxData.setAmount(amountOnCashbox.subtract(amount));
+                addCost(data, amount);
             }
             dataNewCashbox.setTotalActives(totalActives);
             dataNewCashbox.setTotalPasives(totalPasives);
             dataNewCashbox.setTotalAmountInCashbox(totalActivesCosts);
             
-            GUICommons.setTextToLabel(lblTotalToCashbox, "Total neto: " + totalActivesCosts);
+            GUICommons.setTextToField(lblTotalToCashbox, "Total neto: " + totalActivesCosts);
             GUICommons.setTextToField(txtCategoryName, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToField(nmbAmount, BloSalesV2Utils.EMPTY_STRING);
         } catch (BloSalesV2Exception ex) {
         }
     }//GEN-LAST:event_btnContinueActionPerformed
 
+    private void setInfoFromNotes() {
+        if (actives != null) {
+            // hay activos
+            for (final var note: actives.getNotes()) {
+                final var item = createItem(getAmount(note.getNote()), note.getNote(), ActivesCostsEnum.ACTIVO);
+                lstCosts.add(item);
+                addActive(item, getAmount(note.getNote()));
+            }
+        }
+        if (pasives != null) {
+            // hay pasivos
+            for (final var note: pasives.getNotes()) {
+                final var item = createItem(getAmount(note.getNote()), note.getNote(), ActivesCostsEnum.PASIVO);
+                lstCosts.add(item);
+                addCost(item, getAmount(note.getNote()));
+            }
+        }
+        dataNewCashbox.setTotalActives(totalActives);
+        dataNewCashbox.setTotalPasives(totalPasives);
+        dataNewCashbox.setTotalAmountInCashbox(totalActivesCosts);
+        GUICommons.setTextToField(lblTotalToCashbox, "Total neto: " + totalActivesCosts);
+    }
+    
+    /**
+     * agrega un item a activos
+     * @param data
+     * @param amount 
+     */
+    private void addActive(PojoActiveCost data, BigDecimal amount) {
+        modelActives.addElement(data.toString());
+        lstActives.setModel(modelActives);
+        totalActives = totalActives.add(amount);
+        GUICommons.setTextToField(lblActivesTotal, "Total activos: " + totalActives);
+        totalActivesCosts = totalActivesCosts.add(amount);
+    }
+    
+    /**
+     * Agrega un item a costos
+     * @param data
+     * @param amount 
+     */
+    private void addCost(PojoActiveCost data, BigDecimal amount) {
+        modelPasives.addElement(data.toString());
+        lstPasives.setModel(modelPasives);
+        totalPasives = totalPasives.add(amount);
+        GUICommons.setTextToField(lblPasivesTotal, "Total pasivos: " + totalPasives);
+        totalActivesCosts = totalActivesCosts.subtract(amount);
+    }
+    
+    /**
+     * Recupera la cantidad de una nota siempre y cuando esté entre $
+     * @param data
+     * @return 
+     */
+    private BigDecimal getAmount(String data) {
+        final var currency = data.substring(data.lastIndexOf("$") + 1);
+        if (currency.length() == 0) {
+            return BigDecimal.ZERO;
+        }
+        final var lastIndex = currency.lastIndexOf(" ") == -1 ? currency.length() : currency.lastIndexOf(" ");
+        return new BigDecimal(currency.substring(0, lastIndex));
+    }
+    
+    /**
+     * Genera un item para la lista
+     * @param amount
+     * @param concept
+     * @param type
+     * @return 
+     */
+    private PojoActiveCost createItem(BigDecimal amount, String concept, ActivesCostsEnum type) {
+        final var out = new PojoActiveCost();
+        out.setAmount(amount);
+        out.setComplete(false);
+        out.setConcept(concept);
+        out.setType(type);
+        return out;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnContinue;
     private javax.swing.JButton btnSave;
