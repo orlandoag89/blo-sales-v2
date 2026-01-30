@@ -1,39 +1,52 @@
 package com.blo.sales.v2.view.dashboard.panels;
 
 import com.blo.sales.v2.controller.ICashboxController;
+import com.blo.sales.v2.controller.IUserController;
 import com.blo.sales.v2.controller.impl.CashboxControllerImpl;
+import com.blo.sales.v2.controller.impl.UserControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.view.alerts.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.dialogs.CashboxDialog;
 import com.blo.sales.v2.view.mappers.PojoCashboxMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoActivesCostsMapper;
+import com.blo.sales.v2.view.mappers.WrapperPojoNotesMapper;
 import com.blo.sales.v2.view.pojos.PojoCashbox;
 import com.blo.sales.v2.view.pojos.PojoDialogCashboxData;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.WrapperPojoActivesCosts;
+import com.blo.sales.v2.view.pojos.WrapperPojoNotes;
 import com.blo.sales.v2.view.pojos.enums.CashboxStatusEnum;
+import com.blo.sales.v2.view.pojos.enums.TypeNoteEnum;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
 
 public class CashboxOpen extends javax.swing.JPanel {
     
     private static final ICashboxController cashboxController = CashboxControllerImpl.getInstance();
     
+    private static final IUserController userController = UserControllerImpl.getInstance();
+    
     private static final WrapperPojoActivesCostsMapper activesCostMapper = WrapperPojoActivesCostsMapper.getInstance();
     
     private static final PojoCashboxMapper mapper = PojoCashboxMapper.getInstance();
     
+    private static final WrapperPojoNotesMapper mapperNotes = WrapperPojoNotesMapper.getInstance();
+    
     private PojoLoggedInUser userData;
     
     private PojoCashbox openCashbox;
+    
+    private WrapperPojoNotes notes;
     
     public CashboxOpen(PojoLoggedInUser userData) {
         this.userData = userData;
         initComponents();
         try {
             loadDataAndCashbox();
+            this.notes = mapperNotes.toOuter(userController.getNotesByUserId(userData.getIdUser()));
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(CashboxOpen.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -91,14 +104,31 @@ public class CashboxOpen extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private WrapperPojoNotes filterLst(TypeNoteEnum type) {
+        final var out = new WrapperPojoNotes();
+        final var lst = notes.getNotes().stream().filter(n -> n.getTypeNote() == type).collect(Collectors.toList());
+        out.setNotes(lst);
+        return out;
+    }
+    
     private void btnCloseNowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCloseNowActionPerformed
         if (openCashbox == null) {
             return;
         }
+        final var resp = GUICommons.showConfirmDialog("¿Importar desde notas rápidas?");
+        WrapperPojoNotes pasives = null;
+        WrapperPojoNotes actives = null;
+        if (resp) {
+            pasives = filterLst(TypeNoteEnum.PASIVO);
+            actives = filterLst(TypeNoteEnum.ACTIVO);
+        }
+        
         final var cashboxDialog = new CashboxDialog<>(
             this,
             "Cerrando caja de dinero",
             openCashbox,
+            actives,
+            pasives,
             (PojoDialogCashboxData data) -> {
                 try {
                     final var wrapper = new WrapperPojoActivesCosts();

@@ -15,6 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTable;
@@ -235,8 +236,12 @@ public final class GUICommons {
     
     public static boolean isEmptyFieldByKeyEvt(KeyEvent evt, boolean conditionObligatory) {
         return evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
-                    evt.getKeyCode() == GUICommons.SUPR_KEY &&
-                    conditionObligatory;
-        
+                evt.getKeyCode() == GUICommons.SUPR_KEY &&
+                conditionObligatory;
+    }
+    
+    public static boolean showConfirmDialog(String msg) {
+        final var rsp = JOptionPane.showConfirmDialog(null, msg);
+        return rsp == JOptionPane.YES_OPTION;
     }
 }

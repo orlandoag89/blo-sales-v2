@@ -44,6 +44,7 @@ public class Notes extends javax.swing.JPanel {
         GUICommons.addDoubleClickOnTable(tblNotes, item -> {
             openNoteDialog((long) item);
         });
+        GUICommons.setTextToField(areaInstrc, BloSalesV2Utils.NOTES_INSTRUCTIONS);
     }
     
     private void openNoteDialog(long idNote) {
@@ -89,6 +90,8 @@ public class Notes extends javax.swing.JPanel {
         cmbxTypeNote = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblNotes = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        areaInstrc = new javax.swing.JTextArea();
 
         areaNote.setColumns(20);
         areaNote.setRows(5);
@@ -145,6 +148,11 @@ public class Notes extends javax.swing.JPanel {
         ));
         jScrollPane2.setViewportView(tblNotes);
 
+        areaInstrc.setEditable(false);
+        areaInstrc.setColumns(20);
+        areaInstrc.setRows(5);
+        jScrollPane3.setViewportView(areaInstrc);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -154,7 +162,8 @@ public class Notes extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 774, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -162,7 +171,9 @@ public class Notes extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -231,12 +242,14 @@ public class Notes extends javax.swing.JPanel {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea areaInstrc;
     private javax.swing.JTextArea areaNote;
     private javax.swing.JButton btnSaveNow;
     private javax.swing.JComboBox<String> cmbxTypeNote;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable tblNotes;
     // End of variables declaration//GEN-END:variables
 }
