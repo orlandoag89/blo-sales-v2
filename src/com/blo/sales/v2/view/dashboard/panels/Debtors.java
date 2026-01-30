@@ -288,8 +288,10 @@ public class Debtors extends javax.swing.JPanel {
 
     private void btnPayallActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayallActionPerformed
         try {
-            debtors.addPayment(debtorSelected.getDebt(), userData.getIdUser(), debtorSelected.getIdDebtor());
-            debtorSelected = null;
+            if (GUICommons.showConfirmDialog("¿Seguro que deseas pagar toda la cuenta?")) {
+                debtors.addPayment(debtorSelected.getDebt(), userData.getIdUser(), debtorSelected.getIdDebtor());
+                debtorSelected = null;
+            }
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(Debtors.class.getName()).log(Level.SEVERE, null, ex);
             CommonAlerts.openError(ex.getMessage());
