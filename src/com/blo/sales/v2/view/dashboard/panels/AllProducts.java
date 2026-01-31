@@ -284,6 +284,8 @@ public class AllProducts extends javax.swing.JPanel {
                 ReasonsIntEnum.valueOf(reasonEnum.name()),
                 userData.getIdUser(),
                 TypesIntEnum.valueOf(type.name()));
+            sorter.setRowFilter(null);
+            GUICommons.setTextToField(txtSearcher, BloSalesV2Utils.EMPTY_STRING);
             loadTitlesAndData();
             initPanelManagement();
         } catch (BloSalesV2Exception ex) {

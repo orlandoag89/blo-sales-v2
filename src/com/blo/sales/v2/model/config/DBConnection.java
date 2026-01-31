@@ -12,7 +12,7 @@ public class DBConnection {
      * 1000: DEV
      * com.blo.sales.v2.controller.impl.DebtorsControllerImpl.ID_PRODUCT_PAY
      * */
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/blo-sales-v2-pre";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/blo-sales-v2-dev";
     private static final String USER = "root";
     private static final String PASSWORD = "";
     
@@ -27,7 +27,8 @@ public class DBConnection {
                 
                 // Establecer la conexión
                 conexion = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("Conexi\u00f3n establecida con \u00e9xito.");
+                final var env = URL.substring(URL.lastIndexOf("-") + 1);
+                System.out.println("Conexi\u00f3n establecida con \u00e9xito. [" + env + "]");
             }
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("Error al conectar: " + e.getMessage());
