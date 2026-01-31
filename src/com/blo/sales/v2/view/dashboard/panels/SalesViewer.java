@@ -14,7 +14,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.JTable;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 
 public class SalesViewer extends javax.swing.JPanel {
 
@@ -44,6 +46,13 @@ public class SalesViewer extends javax.swing.JPanel {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblSalesDetail = new javax.swing.JTable();
+        pnlFilter = new javax.swing.JPanel();
+        dtChooserInit = new com.toedter.calendar.JDateChooser();
+        lblInitDate = new javax.swing.JLabel();
+        lblEndDate = new javax.swing.JLabel();
+        dtChooserEnd = new com.toedter.calendar.JDateChooser();
+        btnFilterNow = new javax.swing.JButton();
+        lblTotal = new javax.swing.JLabel();
 
         jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -104,20 +113,70 @@ public class SalesViewer extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblSalesDetail);
 
+        lblInitDate.setText("Fecha de inicio");
+
+        lblEndDate.setText("Fecha fin (opcional)");
+
+        btnFilterNow.setText("Filtrar ahora");
+        btnFilterNow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFilterNowActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlFilterLayout = new javax.swing.GroupLayout(pnlFilter);
+        pnlFilter.setLayout(pnlFilterLayout);
+        pnlFilterLayout.setHorizontalGroup(
+            pnlFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFilterLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dtChooserInit, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblInitDate))
+                .addGap(18, 18, 18)
+                .addGroup(pnlFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblEndDate)
+                    .addGroup(pnlFilterLayout.createSequentialGroup()
+                        .addComponent(dtChooserEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnFilterNow)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnlFilterLayout.setVerticalGroup(
+            pnlFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFilterLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblInitDate)
+                    .addComponent(lblEndDate))
+                .addGap(8, 8, 8)
+                .addGroup(pnlFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(dtChooserInit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dtChooserEnd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnFilterNow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 925, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 925, Short.MAX_VALUE)
+                    .addComponent(pnlFilter, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addComponent(pnlFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -159,7 +218,54 @@ public class SalesViewer extends javax.swing.JPanel {
             CommonAlerts.openError(ex.getMessage());
         } 
     }//GEN-LAST:event_jTabbedPane1StateChanged
+
+    private void btnFilterNowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterNowActionPerformed
+        final var initDate = GUICommons.getDateFromDateChooser(dtChooserInit);
+        final var endDate = GUICommons.getDateFromDateChooser(dtChooserEnd);
+        aplicarFiltroFecha(initDate, endDate);
+    }//GEN-LAST:event_btnFilterNowActionPerformed
     
+    public void aplicarFiltroFecha(String initDate, String endDate) {
+        // 1. Validar que al menos la fecha de inicio exista
+        if (initDate.isBlank()) {
+            tblSalesDetail.setRowSorter(null);
+            return;
+        }
+
+        final var model = (DefaultTableModel) tblSalesDetail.getModel();
+        final var sorter = new TableRowSorter<>(model);
+        tblSalesDetail.setRowSorter(sorter);
+
+        sorter.setRowFilter(new RowFilter<DefaultTableModel, Integer>() {
+            @Override
+            public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
+                // Obtenemos el valor de la columna 6 (índice 5) y limpiamos espacios
+                final var dateSelected = entry.getStringValue(5).trim();
+
+                if (dateSelected.isEmpty()) {
+                    return false;
+                }
+
+                try {
+                    // Extraemos "yyyy-MM-dd" del timestamp largo
+                    final var strDate = dateSelected.substring(0, 10);
+
+                    // CASO A: Rango de fechas (Inicio y Fin presentes)
+                    if (!endDate.isBlank()) {
+                        return strDate.compareTo(initDate) >= 0 && 
+                               strDate.compareTo(endDate) <= 0;
+                    }
+                    // CASO B: Fecha única (Solo inicio)
+                    else {
+                        return strDate.equals(initDate);
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+        });
+    }
+
     private BigDecimal loadData(WrapperPojoSalesAndStock wrapper, JTable table) {
         GUICommons.loadTitleOnTable(table, titles, false);
         if (wrapper.getSalesDetail() == null || wrapper.getSalesDetail().isEmpty()) {
@@ -193,11 +299,18 @@ public class SalesViewer extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnFilterNow;
+    private com.toedter.calendar.JDateChooser dtChooserEnd;
+    private com.toedter.calendar.JDateChooser dtChooserInit;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel lblEndDate;
+    private javax.swing.JLabel lblInitDate;
+    private javax.swing.JLabel lblTotal;
     private javax.swing.JLabel lblTotalToday;
+    private javax.swing.JPanel pnlFilter;
     private javax.swing.JPanel pnlToday;
     private javax.swing.JTable tblSalesDetail;
     private javax.swing.JTable tblSalesToday;

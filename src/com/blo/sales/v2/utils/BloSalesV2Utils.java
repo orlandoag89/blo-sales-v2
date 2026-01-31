@@ -101,6 +101,8 @@ public final class BloSalesV2Utils {
     
     public static final String CODE_PRODUCT_NOT_SELECTED = "015";
     
+    public static final String FORMAT_DATE = "yyyy-MM-dd";
+    
     private BloSalesV2Utils() { }
    
     /**

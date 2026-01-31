@@ -3,11 +3,13 @@ package com.blo.sales.v2.view.commons;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import static com.blo.sales.v2.utils.BloSalesV2Utils.validateRule;
+import com.toedter.calendar.JDateChooser;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.function.Consumer;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,6 +23,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -134,16 +137,32 @@ public final class GUICommons {
         return text;
     }
 
+    /**
+     * Recupera el numero de un textfield
+     * @param field
+     * @return
+     * @throws BloSalesV2Exception 
+     */
     public static BigDecimal getNumberFromJText(JTextField field) throws BloSalesV2Exception {
         final var txt = field.getText().trim();
         validateRule(txt.isBlank(), BloSalesV2Utils.COMMON_RULE_CODE, BloSalesV2Utils.INVALID_TEXT);
         return new BigDecimal(txt);
     }
     
+    /**
+     * Envia texto a un label
+     * @param field
+     * @param txt 
+     */
     public static void setTextToField(JLabel field, String txt) {
         field.setText(txt);
     }
     
+    /**
+     * Envia texto a un textField
+     * @param field
+     * @param txt 
+     */
     public static void setTextToField(JTextField field, String txt) {
         field.setText(txt);
     }
@@ -217,31 +236,108 @@ public final class GUICommons {
         table.setRowSorter(sorter);
     }
     
+    /**
+     * Deshabilita un botón
+     * @param btn 
+     */
     public static void disabledButton(JButton btn) {
         btn.setEnabled(false);
     }
     
+    /**
+     * Habilita un boton
+     * @param btn 
+     */
     public static void enabledButton(JButton btn) {
         btn.setEnabled(true);
     }
     
+    /**
+     * Envía dimensiones a un contenedor
+     * @param content 
+     */
     public static void setDimensions(JFrame content) {
         content.setSize(WIDTH, HEIGHT);
     }
     
+    /**
+     * Hace que un contenero se muestre en toda la pantalla
+     * @param content 
+     */
     public static void allWindow(JFrame content) {
         content.setExtendedState(JFrame.MAXIMIZED_BOTH);
         content.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
+    /**
+     * Método que se usa para validar que tecla fue presionada, 
+     * si fue presionada delete o remove y se cumple una condicion regresa true
+     * @param evt
+     * @param conditionObligatory
+     * @return 
+     */
     public static boolean isEmptyFieldByKeyEvt(KeyEvent evt, boolean conditionObligatory) {
         return evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
                 evt.getKeyCode() == GUICommons.SUPR_KEY &&
                 conditionObligatory;
     }
     
+    /**
+     * Muestra un cuadro de dialogo y valida la respuesta true
+     * @param msg
+     * @return 
+     */
     public static boolean showConfirmDialog(String msg) {
         final var rsp = JOptionPane.showConfirmDialog(null, msg);
         return rsp == JOptionPane.YES_OPTION;
+    }
+    
+    /**
+     * Recupera una fecha en formato yyyy-MM-dd
+     * @param chooser
+     * @return 
+     */
+    public static String getDateFromDateChooser(JDateChooser chooser) {
+        final var date = chooser.getDate();
+        if (date == null) {
+            return BloSalesV2Utils.EMPTY_STRING;
+        }
+        final var sdf = new SimpleDateFormat(BloSalesV2Utils.FORMAT_DATE);
+        return sdf.format(date);
+    }
+    
+    /**
+     * Agrega un filtro en una columna
+     * @param tbl
+     * @param filter
+     * @param regex
+     * @param columnFilter 
+     */
+    public static void addFilter(JTable tbl, String filter, String regex, int columnFilter) {
+        if (!filter.isBlank()) {
+            final var model = (DefaultTableModel) tbl.getModel();
+            final var sorter = new TableRowSorter<>(model);
+            tbl.setRowSorter(sorter);
+            sorter.setRowFilter(RowFilter.regexFilter(regex + filter, columnFilter));
+        } else {
+            tbl.setRowSorter(null);
+        }
+    }
+    
+    /**
+     * Agrega un filtro a toda la fila
+     * @param tbl
+     * @param regex
+     * @param filter 
+     */
+    public static void addFilter(JTable tbl, String regex, String filter) {
+        if (!filter.isBlank()) {
+            final var model = (DefaultTableModel) tbl.getModel();
+            final var sorter = new TableRowSorter<>(model);
+            tbl.setRowSorter(sorter);
+            sorter.setRowFilter(RowFilter.regexFilter(regex + filter));
+        } else {
+            tbl.setRowSorter(null);
+        }
     }
 }
