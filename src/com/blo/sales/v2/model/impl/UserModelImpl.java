@@ -9,10 +9,8 @@ import com.blo.sales.v2.model.config.DBConnection;
 import com.blo.sales.v2.model.constants.BloSalesV2Columns;
 import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.entities.NoteEntity;
-import com.blo.sales.v2.model.entities.SaleAndProductEntity;
 import com.blo.sales.v2.model.entities.UserEntity;
 import com.blo.sales.v2.model.entities.WrapperNotesEntity;
-import com.blo.sales.v2.model.entities.WrapperSalesAndStockEntity;
 import com.blo.sales.v2.model.entities.enums.RolesEntityEnum;
 import com.blo.sales.v2.model.entities.enums.TypeNoteEntityEnum;
 import com.blo.sales.v2.model.mapper.NoteEntityMapper;
@@ -62,10 +60,10 @@ public class UserModelImpl implements IUserModel {
             return userEntityMapper.toOuter(userFound);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
     
@@ -74,7 +72,7 @@ public class UserModelImpl implements IUserModel {
         ps.setString(1, username);
         ps.setString(2, password);
         final var rs = ps.executeQuery();
-        BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.USER_NOT_FOUND);
+        BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.CODE_USER_NOT_FOUND, BloSalesV2Utils.USER_NOT_FOUND);
         final var userFound = new UserEntity();
         userFound.setRole(RolesEntityEnum.valueOf(rs.getString(1)));
         userFound.setUsername(rs.getString(2));
@@ -86,7 +84,7 @@ public class UserModelImpl implements IUserModel {
         final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_ONLY_ID_USERS);
         ps.setString(1, username);
         final var rs = ps.executeQuery();
-        BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.USER_NOT_FOUND);
+        BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.CODE_USER_NOT_FOUND, BloSalesV2Utils.USER_NOT_FOUND);
     }
 
     @Override
@@ -95,7 +93,7 @@ public class UserModelImpl implements IUserModel {
             final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_ID_FROM_USER);
             ps.setLong(1, id);
             final var rs = ps.executeQuery();
-            BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.USER_NOT_FOUND);
+            BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.CODE_USER_NOT_FOUND, BloSalesV2Utils.USER_NOT_FOUND);
             final var userFound = new UserEntity();
             userFound.setId_user(rs.getInt(BloSalesV2Columns.ID_USER));
             userFound.setRole(RolesEntityEnum.valueOf(rs.getString(BloSalesV2Columns.ROL)));
@@ -103,7 +101,7 @@ public class UserModelImpl implements IUserModel {
             return userMapper.toOuter(userFound);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
         
     }
@@ -120,9 +118,9 @@ public class UserModelImpl implements IUserModel {
             ps.setString(3, innerNote.getType_note().name());
             ps.setLong(4, innerNote.getFk_user());
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
-            }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_ADD_EXCEPTION_CODE, BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
+            
             final var rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 innerNote.setFk_user(rs.getInt(1));
@@ -132,13 +130,13 @@ public class UserModelImpl implements IUserModel {
             return noteMapper.toOuter(innerNote);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
                 Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-                throw new BloSalesV2Exception(ex.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }
@@ -167,7 +165,7 @@ public class UserModelImpl implements IUserModel {
             return mapperNotes.toOuter(wrapper);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -181,19 +179,19 @@ public class UserModelImpl implements IUserModel {
             ps.setString(1, noteInner.getNote());
             ps.setLong(2, noteInner.getId_note());
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
-            }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_UPDATE_EXCEPTION_CODE, BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
+            
             DBConnection.doCommit();
             logger.log("nota actualizada " + noteInner.toString());
             return noteMapper.toOuter(noteInner);
         } catch (SQLException e) {
-            throw new BloSalesV2Exception(e.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
-                throw new BloSalesV2Exception(e.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }        
     }
@@ -205,19 +203,19 @@ public class UserModelImpl implements IUserModel {
             final var ps = conn.prepareStatement(BloSalesV2Queries.DELETE_NOTE);
             ps.setLong(1, idNote);
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_DELETING_DATA_ON_DATA_BASE);
-            }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_UPDATE_EXCEPTION_CODE, BloSalesV2Utils.ERROR_DELETING_DATA_ON_DATA_BASE);
+            
             DBConnection.doCommit();
         } catch (SQLException e) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-            throw new BloSalesV2Exception(e.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
                 Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-                throw new BloSalesV2Exception(e.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }

@@ -44,7 +44,10 @@ public class Categories extends javax.swing.JPanel {
         content.setVisible(true);
         final var idSep = item.split(" +");
         // valida que exista un id
-        BloSalesV2Utils.validateRule(idSep.length == 0 || idSep[0].trim().isBlank(), "No se ha seleccionado un dato valido");
+        BloSalesV2Utils.validateRule(
+                idSep.length == 0 || idSep[0].trim().isBlank(),
+                BloSalesV2Utils.CODE_CATEGORY_NOT_SELECTED,
+                BloSalesV2Utils.CATEGORY_NOT_SELECTED);
         final var id = idSep[0].trim();
         // filtro de categorias
         final var itemFound = 

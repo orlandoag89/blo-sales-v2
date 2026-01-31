@@ -45,9 +45,9 @@ public class CashboxesActivesCostsModelImpl implements ICashboxesActivesCostsMod
             ps.setLong(2, dataInner.getFk_actives_costs());
             ps.setString(3, dataInner.getTimestamp());
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
-            }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_ADD_EXCEPTION_CODE, BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
+            
             final var rs = ps.getGeneratedKeys();
             if (rs.next()){
                 dataInner.setId_cashboxes_actives_costs(rs.getLong(1));
@@ -57,13 +57,13 @@ public class CashboxesActivesCostsModelImpl implements ICashboxesActivesCostsMod
             return mapper.toOuter(dataInner);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
                 Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-                throw new BloSalesV2Exception(ex.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }

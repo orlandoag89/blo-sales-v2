@@ -43,17 +43,20 @@ public class ProductsControllerImpl implements IProductsController {
         product.setTimestamp(BloSalesV2Utils.getTimestamp());
         BloSalesV2Utils.validateRule(
                 product.getFkCategory() == BloSalesV2Utils.DEBTORS_PAYMENTS,
+                BloSalesV2Utils.CODE_CATEGORY_PROTECTED,
                 BloSalesV2Utils.CATEGORY_PROTECTED
         );
         final var productBarCode = model.getProductByBarCode(product.getBarCode());
         BloSalesV2Utils.validateRule(
                 productBarCode != null,
+                BloSalesV2Utils.CODE_BAR_CODE_REGISTERED,
                 BloSalesV2Utils.BAR_CODE_EXCEPTION
         );
         /** valida la existencia de la categoria */
         final var categoryFound = categoriesController.getCategoryById(product.getFkCategory());
         BloSalesV2Utils.validateRule(
                 categoryFound.getIdCategory() == 0,
+                BloSalesV2Utils.CODE_CATEGORY_NOT_FOUND,
                 BloSalesV2Utils.CATEGORY_NOT_FOUND
         );
         return model.registerProduct(product);

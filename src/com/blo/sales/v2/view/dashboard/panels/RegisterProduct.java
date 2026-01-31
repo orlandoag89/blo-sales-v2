@@ -159,6 +159,7 @@ public class RegisterProduct extends javax.swing.JPanel {
             final var itemSelected = GUICommons.getValueFromComboBox(lstMarks).split("[ ]+");
             BloSalesV2Utils.validateRule(
                     itemSelected.length == 0 || itemSelected[0].trim().isBlank(),
+                    BloSalesV2Utils.CODE_CATEGORY_NOT_SELECTED,
                     BloSalesV2Utils.CATEGORY_NO_SELECTED
             );
             final var idMark = itemSelected[0].trim();

@@ -54,6 +54,8 @@ public final class BloSalesV2Utils {
     
     public static final String CATEGORY_NOT_FOUND = "Categor\u00eda no encontrada";
     
+    public static final String CATEGORY_NOT_SELECTED = "Categor\u00eda no seleccionada";
+    
     public static final String PRODUCT_NOT_SELECTED = "El producto no ha sido seleccionado o no existe en el inventario";
     
     public static final String BAR_CODE_EXCEPTION = "El c\u00f3digo de barras ya est\u00e1 registrado con otro producto, por favor verifica";
@@ -62,7 +64,42 @@ public final class BloSalesV2Utils {
     
     public static final String NOTES_INSTRUCTIONS = "¡Importante! \nRecuerda que si tu nota se cargar\u00e1 como activo / pasivo \ndebes colocar la cantidad comenzando por $";
     
+    public static final String SQL_EXCEPTION_MESSAGE = "¡Ups! Algo sali\u00f3 mal. Por favor, inténtalo de nuevo más tarde.";
+    
     public static final long DEBTORS_PAYMENTS = 1;
+    
+    /** codigos de error */
+    public static final String COMMON_RULE_CODE = "000";
+    
+    public static final String SQL_EXCEPTION_CODE = "001";
+    
+    public static final String SQL_ADD_EXCEPTION_CODE = "002";
+    
+    public static final String SQL_UPDATE_EXCEPTION_CODE = "003";
+    
+    public static final String SQL_DELETE_EXCEPTION_CODE = "004";
+    
+    public static final String CODE_CATEGORY_NOT_FOUND = "005";
+    
+    public static final String CODE_PRODUCT_NOT_FOUND = "006";
+    
+    public static final String CODE_USER_NOT_FOUND = "007";
+    
+    public static final String CODE_DEBTOR_NOT_FOUND = "008";
+    
+    public static final String CODE_CATEGORY_PROTECTED = "009";
+    
+    public static final String CODE_BAR_CODE_REGISTERED = "010";
+    
+    public static final String CODE_PRODUCT_INSUFFICIENT = "011";
+    
+    public static final String CODE_NOTE_TYPE_NOT_SELECTED = "012";
+    
+    public static final String CODE_CATEGORY_NOT_SELECTED = "013";
+    
+    public static final String CODE_NOTE_TYPE_NO_SELECTED = "014";
+    
+    public static final String CODE_PRODUCT_NOT_SELECTED = "015";
     
     private BloSalesV2Utils() { }
    
@@ -72,9 +109,9 @@ public final class BloSalesV2Utils {
      * @param msg
      * @throws BloSalesV2Exception 
      */
-    public static void validateRule(boolean sentence, String msg) throws BloSalesV2Exception {
+    public static void validateRule(boolean sentence, String code, String msg) throws BloSalesV2Exception {
         if (sentence) {
-            throw new BloSalesV2Exception(msg);
+            throw new BloSalesV2Exception(code, msg);
         }
     }
     

@@ -339,9 +339,8 @@ public class Sales extends javax.swing.JPanel {
     
     private void addItemToList() {
         try {
-            if (productFound == null) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.PRODUCT_NOT_SELECTED);
-            }
+            BloSalesV2Utils.validateRule(productFound == null, BloSalesV2Utils.CODE_PRODUCT_NOT_SELECTED, BloSalesV2Utils.PRODUCT_NOT_SELECTED);
+            
             final var quantity = GUICommons.getTextFromField(nmbQuantity, true);
             // valida si se puede con pesos solamente si el producto se vende por kg
             var onSaleQuantity = new BigDecimal(BigInteger.ZERO);

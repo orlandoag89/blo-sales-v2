@@ -66,7 +66,9 @@ public class DebtorsControllerImpl implements IDebtorsController {
     public PojoIntDebtor addPayment(BigDecimal pay, long idUser, long idDebtor) throws BloSalesV2Exception {
         // validar que el deudor existe
         final var debtorFound = getDebtorById(idDebtor);
-        BloSalesV2Utils.validateRule(debtorFound == null, "Deudor no encontrado");
+        
+        BloSalesV2Utils.validateRule(debtorFound == null, BloSalesV2Utils.CODE_DEBTOR_NOT_FOUND, BloSalesV2Utils.DEBTOR_NOT_FOUND);
+        
         logger.log("deudor encontrado " + debtorFound.toString());
         // se registra como venta
         final var productPay = productsController.getProductById(ID_PRODUCT_PAY);

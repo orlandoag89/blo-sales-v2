@@ -111,13 +111,13 @@ public final class GUICommons {
      */
     public static String getTextFromField(JTextField field, boolean validate) throws BloSalesV2Exception {
         final var text = field.getText().trim();
-        validateRule(validate && text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        validateRule(validate && text.isBlank(), BloSalesV2Utils.COMMON_RULE_CODE, BloSalesV2Utils.INVALID_TEXT);
         return text;
     }
     
     public static String getTextFromField(JLabel field, boolean validate) throws BloSalesV2Exception {
         final var text = field.getText().trim();
-        validateRule(validate && text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        validateRule(validate && text.isBlank(), BloSalesV2Utils.COMMON_RULE_CODE, BloSalesV2Utils.INVALID_TEXT);
         return text;
     }
     
@@ -130,13 +130,13 @@ public final class GUICommons {
      */
     public static String getTextFromField(JTextArea field, boolean validate) throws BloSalesV2Exception {
         final var text = field.getText().trim();
-        validateRule(validate && text.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        validateRule(validate && text.isBlank(), BloSalesV2Utils.COMMON_RULE_CODE, BloSalesV2Utils.INVALID_TEXT);
         return text;
     }
 
     public static BigDecimal getNumberFromJText(JTextField field) throws BloSalesV2Exception {
         final var txt = field.getText().trim();
-        validateRule(txt.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        validateRule(txt.isBlank(), BloSalesV2Utils.COMMON_RULE_CODE, BloSalesV2Utils.INVALID_TEXT);
         return new BigDecimal(txt);
     }
     
@@ -162,7 +162,7 @@ public final class GUICommons {
     public static String getPasswordFromJText(JPasswordField field) throws BloSalesV2Exception {
         final var passGet = field.getPassword();
         final var pass = new String(passGet);
-        validateRule(pass.isBlank(), BloSalesV2Utils.INVALID_TEXT);
+        validateRule(pass.isBlank(), BloSalesV2Utils.COMMON_RULE_CODE, BloSalesV2Utils.INVALID_TEXT);
         return pass;
     }
     

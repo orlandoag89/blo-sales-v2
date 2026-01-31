@@ -54,23 +54,24 @@ public class ProductsModelImpl implements IProductsModel {
             ps.setString(7, product.getBarCode());
             ps.setLong(8, product.getFkCategory());
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected > 0) {
-                final var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    innerProduct.setId_product(rs.getInt(1));
-                }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_ADD_EXCEPTION_CODE, BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
+            
+            final var rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                innerProduct.setId_product(rs.getInt(1));
             }
             DBConnection.doCommit();
             return mapper.toOuter(innerProduct);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
                 Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-                throw new BloSalesV2Exception(ex.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }
@@ -99,7 +100,7 @@ public class ProductsModelImpl implements IProductsModel {
             return wrapperMapper.toOuter(productsInn);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -117,20 +118,20 @@ public class ProductsModelImpl implements IProductsModel {
             ps.setBigDecimal(6, innerProduct.getPrice());
             ps.setLong(7, innerProduct.getId_product());
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
-            }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_UPDATE_EXCEPTION_CODE, BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
+            
             DBConnection.doCommit();
             return mapper.toOuter(innerProduct);
         } catch (SQLException e) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-            throw new BloSalesV2Exception(e.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
                 Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-                throw new BloSalesV2Exception(e.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }
@@ -141,7 +142,7 @@ public class ProductsModelImpl implements IProductsModel {
             final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_ONE_PRODUCT);
             ps.setLong(1, idProduct);
             final var rs = ps.executeQuery();
-            BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.ERROR_PRODUCT_NOT_FOUND);
+            BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.CODE_PRODUCT_NOT_FOUND, BloSalesV2Utils.ERROR_PRODUCT_NOT_FOUND);
             final var p = new ProductEntity();
             p.setBar_code(rs.getString(BloSalesV2Columns.BAR_CODE));
             p.setCost_of_sale(rs.getBigDecimal(BloSalesV2Columns.COST_OF_SALE));
@@ -155,7 +156,7 @@ public class ProductsModelImpl implements IProductsModel {
             return mapper.toOuter(p);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -166,9 +167,11 @@ public class ProductsModelImpl implements IProductsModel {
             ps.setString(1, barCode);
             final var rs = ps.executeQuery();
             final var p = new ProductEntity();
-            if (!rs.next()) {
+            
+             if (!rs.next()) {
                 return null;
             }
+            
             p.setBar_code(rs.getString(BloSalesV2Columns.BAR_CODE));
             p.setCost_of_sale(rs.getBigDecimal(BloSalesV2Columns.COST_OF_SALE));
             p.setFk_category(rs.getInt(BloSalesV2Columns.FK_CATEGORY));
@@ -181,7 +184,7 @@ public class ProductsModelImpl implements IProductsModel {
             return mapper.toOuter(p);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
     

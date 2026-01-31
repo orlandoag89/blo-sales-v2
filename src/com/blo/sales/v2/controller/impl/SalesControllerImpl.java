@@ -72,11 +72,13 @@ public class SalesControllerImpl implements ISalesController {
             // validar que el producto de entrada exista en el stock
             BloSalesV2Utils.validateRule(
                     productFound == null,
+                    BloSalesV2Utils.CODE_PRODUCT_NOT_FOUND,
                     productFound.getProduct() + BloSalesV2Utils.PRODUCT_NOT_FOUND
             );
             // valida que el exista suficiente cantidad de producto
             BloSalesV2Utils.validateRule(
                     productFound.getQuantity().compareTo(product.getQuantityOnSale()) < 0,
+                    BloSalesV2Utils.CODE_PRODUCT_INSUFFICIENT,
                     productFound.getProduct() + BloSalesV2Utils.PRODUCT_INSUFFICIENT
             );
         }
@@ -162,7 +164,7 @@ public class SalesControllerImpl implements ISalesController {
         /** validaciones */
         final var debtorFound = debtorsController.getDebtorById(idDebtor);
         // se guarda deuda original
-        BloSalesV2Utils.validateRule(debtorFound == null, BloSalesV2Utils.DEBTOR_NOT_FOUND);
+        BloSalesV2Utils.validateRule(debtorFound == null, BloSalesV2Utils.CODE_DEBTOR_NOT_FOUND, BloSalesV2Utils.DEBTOR_NOT_FOUND);
         debtorFound.setDebt(totalSale);
         /** se actualiza deudor */
         if (partialPay.compareTo(BigDecimal.ZERO) == 0) {

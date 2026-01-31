@@ -49,24 +49,25 @@ public class CategoriesModelImpl implements ICategoriesModel {
             ps.setString(1, data.getCategory());
             ps.setString(2, data.getDescription());
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected > 0) {
-                final var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    data.setId_category(rs.getInt(1));
-                }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_ADD_EXCEPTION_CODE, BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
+            
+            final var rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                data.setId_category(rs.getInt(1));
             }
             // 3. Si todo salió bien, confirmamos los cambios en la DB
             DBConnection.doCommit();
             return categoryMapper.toOuter(data);
         } catch (SQLException e) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-            throw new BloSalesV2Exception(e.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
                 Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-                throw new BloSalesV2Exception(e.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }
@@ -89,7 +90,7 @@ public class CategoriesModelImpl implements ICategoriesModel {
             return wrapperCategoriesEntityMapper.toOuter(wrapper);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -106,20 +107,20 @@ public class CategoriesModelImpl implements ICategoriesModel {
             ps.setString(2, categoryFound.getDescription());
             ps.setLong(3, id);
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
-            }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_UPDATE_EXCEPTION_CODE, BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
+            
             DBConnection.doCommit();
             return categoryMapper.toOuter(categoryFound);
         } catch (SQLException e) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-            throw new BloSalesV2Exception(e.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
                 Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-                throw new BloSalesV2Exception(e.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }
@@ -130,7 +131,7 @@ public class CategoriesModelImpl implements ICategoriesModel {
             final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_CATEGORY);
             ps.setLong(1, id);
             final var rs = ps.executeQuery();
-            BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.ERROR_CATEGORY_NOT_FOUND);
+            BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.CODE_CATEGORY_NOT_FOUND, BloSalesV2Utils.ERROR_CATEGORY_NOT_FOUND);
             final var category = new CategoryEntity();
             category.setId_category(rs.getInt(1));
             category.setCategory(rs.getString(2));
@@ -138,7 +139,7 @@ public class CategoriesModelImpl implements ICategoriesModel {
             return categoryMapper.toOuter(category);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 

@@ -6,6 +6,7 @@ import com.blo.sales.v2.model.config.DBConnection;
 import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.mapper.MovementEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
+import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -42,23 +43,24 @@ public class HistoryModelImpl implements IHistoryModel {
             ps.setString(5, inMovement.getReason().name());
             ps.setString(6, inMovement.getTimestamp());
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected > 0) {
-                final var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    inMovement.setId_movement(rs.getInt(1));
-                }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_ADD_EXCEPTION_CODE, BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
+            
+            final var rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                inMovement.setId_movement(rs.getInt(1));
             }
             DBConnection.doCommit();
             return mapper.toOuter(inMovement);
         } catch (SQLException ex) {
             Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
                 Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-                throw new BloSalesV2Exception(ex.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }
