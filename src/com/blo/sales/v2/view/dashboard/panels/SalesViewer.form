@@ -180,11 +180,13 @@
                                   <Component id="dtChooserEnd" min="-2" pref="171" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="btnFilterNow" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                                  <Component id="lblTotalSale" min="-2" pref="99" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
                                   <Component id="lblTotal" min="-2" pref="90" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="235" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -198,10 +200,13 @@
                           </Group>
                           <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="dtChooserInit" max="32767" attributes="0"/>
-                              <Component id="dtChooserEnd" max="32767" attributes="0"/>
-                              <Component id="btnFilterNow" max="32767" attributes="0"/>
-                              <Component id="lblTotal" alignment="0" max="32767" attributes="0"/>
+                              <Component id="lblTotalSale" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="dtChooserInit" max="32767" attributes="0"/>
+                                  <Component id="dtChooserEnd" max="32767" attributes="0"/>
+                                  <Component id="btnFilterNow" max="32767" attributes="0"/>
+                                  <Component id="lblTotal" alignment="0" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
@@ -232,6 +237,8 @@
                   </Events>
                 </Component>
                 <Component class="javax.swing.JLabel" name="lblTotal">
+                </Component>
+                <Component class="javax.swing.JLabel" name="lblTotalSale">
                 </Component>
               </SubComponents>
             </Container>

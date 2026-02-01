@@ -280,6 +280,7 @@ public class Debtors extends javax.swing.JPanel {
         try {
             if (GUICommons.showConfirmDialog("¿Seguro que deseas pagar toda la cuenta?")) {
                 debtors.addPayment(debtorSelected.getDebt(), userData.getIdUser(), debtorSelected.getIdDebtor());
+                loadDataAndTitles(retrieveDebtorsDetails());
                 debtorSelected = null;
             }
         } catch (BloSalesV2Exception ex) {

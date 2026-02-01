@@ -10,6 +10,7 @@ import com.blo.sales.v2.view.mappers.WrapperPojoSalesAndStockMapper;
 import com.blo.sales.v2.view.pojos.PojoSaleAndProduct;
 import com.blo.sales.v2.view.pojos.WrapperPojoSalesAndStock;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -53,6 +54,7 @@ public class SalesViewer extends javax.swing.JPanel {
         dtChooserEnd = new com.toedter.calendar.JDateChooser();
         btnFilterNow = new javax.swing.JButton();
         lblTotal = new javax.swing.JLabel();
+        lblTotalSale = new javax.swing.JLabel();
 
         jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
@@ -141,8 +143,10 @@ public class SalesViewer extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addComponent(btnFilterNow)
                         .addGap(18, 18, 18)
+                        .addComponent(lblTotalSale, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(235, Short.MAX_VALUE))
         );
         pnlFilterLayout.setVerticalGroup(
             pnlFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -153,10 +157,12 @@ public class SalesViewer extends javax.swing.JPanel {
                     .addComponent(lblEndDate))
                 .addGap(8, 8, 8)
                 .addGroup(pnlFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(dtChooserInit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(dtChooserEnd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnFilterNow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lblTotalSale, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(pnlFilterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(dtChooserInit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(dtChooserEnd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnFilterNow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -235,13 +241,14 @@ public class SalesViewer extends javax.swing.JPanel {
         final var model = (DefaultTableModel) tblSalesDetail.getModel();
         final var sorter = new TableRowSorter<>(model);
         tblSalesDetail.setRowSorter(sorter);
+        final var lst = new WrapperPojoSalesAndStock();
+        final var items = new ArrayList<PojoSaleAndProduct>();
 
         sorter.setRowFilter(new RowFilter<DefaultTableModel, Integer>() {
             @Override
             public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
                 // Obtenemos el valor de la columna 6 (índice 5) y limpiamos espacios
                 final var dateSelected = entry.getStringValue(5).trim();
-
                 if (dateSelected.isEmpty()) {
                     return false;
                 }
@@ -249,21 +256,37 @@ public class SalesViewer extends javax.swing.JPanel {
                 try {
                     // Extraemos "yyyy-MM-dd" del timestamp largo
                     final var strDate = dateSelected.substring(0, 10);
-
                     // CASO A: Rango de fechas (Inicio y Fin presentes)
                     if (!endDate.isBlank()) {
-                        return strDate.compareTo(initDate) >= 0 && 
+                        final var isRange = strDate.compareTo(initDate) >= 0 && 
                                strDate.compareTo(endDate) <= 0;
+                        if (isRange) {
+                            final var item = new PojoSaleAndProduct();
+                            item.setIdSale(Long.parseLong(entry.getStringValue(0)));
+                            item.setTotalOnSale(new BigDecimal(entry.getStringValue(4)));
+                            items.add(item);
+                        }
+                        return isRange;
                     }
                     // CASO B: Fecha única (Solo inicio)
                     else {
-                        return strDate.equals(initDate);
+                        final var isDate = strDate.equals(initDate);
+                        if (isDate) {
+                            final var item = new PojoSaleAndProduct();
+                            item.setIdSale(Long.parseLong(entry.getStringValue(0)));
+                            item.setTotalOnSale(new BigDecimal(entry.getStringValue(4)));
+                            items.add(item);
+                        }
+                        return isDate;
                     }
                 } catch (Exception e) {
                     return false;
                 }
             }
         });
+        lst.setSalesDetail(items);
+        final var totalSale = getTotalFromLst(lst);
+        GUICommons.setTextToField(lblTotalSale, "Total: $" + totalSale);
     }
 
     private BigDecimal loadData(WrapperPojoSalesAndStock wrapper, JTable table) {
@@ -287,6 +310,14 @@ public class SalesViewer extends javax.swing.JPanel {
         model.fireTableDataChanged(); 
         table.repaint();
         table.revalidate();
+        return getTotalFromLst(wrapper);
+    }
+
+    /**
+     * Metodo que regresa el total de una lista, filtra repetidos (idSale / totalOnSale)
+     * @return 
+     */
+    private BigDecimal getTotalFromLst(WrapperPojoSalesAndStock wrapper) {
         return wrapper.getSalesDetail().stream().collect(Collectors.toMap(
                         PojoSaleAndProduct::getIdSale,
                         obj -> obj,
@@ -297,7 +328,7 @@ public class SalesViewer extends javax.swing.JPanel {
                         map(PojoSaleAndProduct::getTotalOnSale).
                         reduce(BigDecimal.ZERO, (acc, curr) -> acc.add(curr));
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFilterNow;
     private com.toedter.calendar.JDateChooser dtChooserEnd;
@@ -309,6 +340,7 @@ public class SalesViewer extends javax.swing.JPanel {
     private javax.swing.JLabel lblEndDate;
     private javax.swing.JLabel lblInitDate;
     private javax.swing.JLabel lblTotal;
+    private javax.swing.JLabel lblTotalSale;
     private javax.swing.JLabel lblTotalToday;
     private javax.swing.JPanel pnlFilter;
     private javax.swing.JPanel pnlToday;
