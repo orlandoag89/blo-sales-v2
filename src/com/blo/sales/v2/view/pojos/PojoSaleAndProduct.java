@@ -12,9 +12,15 @@ public class PojoSaleAndProduct {
     
     private BigDecimal quantityOnSale;
     
+    private BigDecimal price;
+    
+    private BigDecimal costOfSale;
+    
     private BigDecimal totalOnSale;
     
     private String timestamp;
+    
+    private boolean kg;
 
     public long getIdSale() {
         return idSale;
@@ -64,8 +70,33 @@ public class PojoSaleAndProduct {
         this.timestamp = timestamp;
     }
 
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public BigDecimal getCostOfSale() {
+        return costOfSale;
+    }
+
+    public void setCostOfSale(BigDecimal costOfSale) {
+        this.costOfSale = costOfSale;
+    }
+
+    public boolean isKg() {
+        return kg;
+    }
+
+    public void setKg(boolean kg) {
+        this.kg = kg;
+    }
+
     @Override
     public String toString() {
-        return "PojoIntSaleAndProduct{" + "idSale=" + idSale + ", idProduct=" + idProduct + ", product=" + product + ", quantityOnSale=" + quantityOnSale + ", totalOnSale=" + totalOnSale + ", timestamp=" + timestamp + '}';
+        return "PojoSaleAndProduct{" + "idSale=" + idSale + ", idProduct=" + idProduct + ", product=" + product + ", quantityOnSale=" + quantityOnSale + ", price=" + price + ", costOfSale=" + costOfSale + ", totalOnSale=" + totalOnSale + ", timestamp=" + timestamp + ", kg=" + kg + '}';
     }
+
 }

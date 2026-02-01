@@ -1,10 +1,8 @@
-package com.blo.sales.v2.controller.pojos;
+package com.blo.sales.v2.view.commons.plugins.sales.report;
 
 import java.math.BigDecimal;
 
-public class PojoIntSaleAndProduct {
-    
-    private long idSale;
+public class RowSaleReportData {
     
     private long idProduct;
     
@@ -19,16 +17,6 @@ public class PojoIntSaleAndProduct {
     private BigDecimal totalOnSale;
     
     private String timestamp;
-    
-    private boolean kg;
-
-    public long getIdSale() {
-        return idSale;
-    }
-
-    public void setIdSale(long idSale) {
-        this.idSale = idSale;
-    }
 
     public long getIdProduct() {
         return idProduct;
@@ -54,22 +42,6 @@ public class PojoIntSaleAndProduct {
         this.quantityOnSale = quantityOnSale;
     }
 
-    public BigDecimal getTotalOnSale() {
-        return totalOnSale;
-    }
-
-    public void setTotalOnSale(BigDecimal totalOnSale) {
-        this.totalOnSale = totalOnSale;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
     public BigDecimal getPrice() {
         return price;
     }
@@ -86,17 +58,25 @@ public class PojoIntSaleAndProduct {
         this.costOfSale = costOfSale;
     }
 
-    public boolean isKg() {
-        return kg;
+    public BigDecimal getTotalOnSale() {
+        return totalOnSale;
     }
 
-    public void setKg(boolean kg) {
-        this.kg = kg;
+    public void setTotalOnSale(BigDecimal totalOnSale) {
+        this.totalOnSale = totalOnSale;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
     public String toString() {
-        return "PojoIntSaleAndProduct{" + "idSale=" + idSale + ", idProduct=" + idProduct + ", product=" + product + ", quantityOnSale=" + quantityOnSale + ", price=" + price + ", costOfSale=" + costOfSale + ", totalOnSale=" + totalOnSale + ", timestamp=" + timestamp + ", kg=" + kg + '}';
+        return String.format("Producto: %s | Cantidad: %s | Precio: $%s | Costo: $%s", 
+                         product, quantityOnSale, price, costOfSale);
     }
-
 }
