@@ -10,8 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import com.blo.sales.v2.model.IActivesCostsModel;
 import com.blo.sales.v2.model.mapper.WrapperActivesCostsEntityMapper;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.blo.sales.v2.utils.BloSalesV2Utils;
 
 public class ActivesCostsModelImpl implements IActivesCostsModel {
 
@@ -60,14 +59,14 @@ public class ActivesCostsModelImpl implements IActivesCostsModel {
             }
             return mapper.toOuter(activesCostsInner);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-                throw new BloSalesV2Exception(ex.getMessage());
+                logger.error(ex.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }

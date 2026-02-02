@@ -3,20 +3,21 @@ package com.blo.sales.v2.view.dashboard.panels;
 import com.blo.sales.v2.controller.ICashboxController;
 import com.blo.sales.v2.controller.impl.CashboxControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.WrapperPojoCashboxesDetailsMapper;
 import com.blo.sales.v2.view.pojos.PojoCashboxDetail;
 import com.blo.sales.v2.view.pojos.WrapperPojoCashboxesDetails;
 import com.blo.sales.v2.view.pojos.enums.ActivesCostsEnum;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
 
 public class AllCashboxes extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(AllCashboxes.class.getName());
     
     private static final ICashboxController controller = CashboxControllerImpl.getInstance();
     
@@ -43,7 +44,8 @@ public class AllCashboxes extends javax.swing.JPanel {
                 });
             }
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(AllCashboxes.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
+            CommonAlerts.openError(ex.getMessage());
         }
         
     }

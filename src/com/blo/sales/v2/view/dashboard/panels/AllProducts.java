@@ -8,7 +8,7 @@ import com.blo.sales.v2.controller.pojos.enums.ReasonsIntEnum;
 import com.blo.sales.v2.controller.pojos.enums.TypesIntEnum;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.ProductMapper;
@@ -21,11 +21,7 @@ import com.blo.sales.v2.view.pojos.enums.RolesEnum;
 import com.blo.sales.v2.view.pojos.enums.TypesEnum;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 
 public class AllProducts extends javax.swing.JPanel {
     
@@ -41,8 +37,6 @@ public class AllProducts extends javax.swing.JPanel {
     
     private static final WrapperPojoCategoriesMapper categoriesMapper = WrapperPojoCategoriesMapper.getInstance();
     
-    private TableRowSorter<DefaultTableModel> sorter;
-    
     private BigDecimal currentQuantity;
     
     private PojoLoggedInUser userData;
@@ -53,7 +47,6 @@ public class AllProducts extends javax.swing.JPanel {
         lblIdProduct.setVisible(false);
 
         loadTitlesAndData();
-        initFilter();
         initPanelManagement();
     }
     
@@ -234,16 +227,10 @@ public class AllProducts extends javax.swing.JPanel {
     private void txtSearcherKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearcherKeyReleased
         try {
             final var filter = GUICommons.getTextFromField(txtSearcher, false);
-            if (filter.isBlank()) {
-                // Si el buscador está vacío, mostramos todas las filas
-                sorter.setRowFilter(null);
-            } else {
-                // Al no poner un índice después del texto, busca en todas las columnas
-                // "(?i)" sirve para ignorar mayúsculas y minúsculas
-                sorter.setRowFilter(RowFilter.regexFilter("(?i)" + filter));
-            }
+            GUICommons.addFilter(tblProducts, "(?i)", filter);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
+            CommonAlerts.openError(ex.getMessage());
         }
         
     }//GEN-LAST:event_txtSearcherKeyReleased
@@ -284,10 +271,12 @@ public class AllProducts extends javax.swing.JPanel {
                 ReasonsIntEnum.valueOf(reasonEnum.name()),
                 userData.getIdUser(),
                 TypesIntEnum.valueOf(type.name()));
+            GUICommons.addFilter(tblProducts, "", "");
+            GUICommons.setTextToField(txtSearcher, BloSalesV2Utils.EMPTY_STRING);
             loadTitlesAndData();
             initPanelManagement();
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -307,7 +296,8 @@ public class AllProducts extends javax.swing.JPanel {
                 lstReason.setVisible(false);
             }
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
+            CommonAlerts.openError(ex.getMessage());
         }
         
     }//GEN-LAST:event_nmbQuantityKeyReleased
@@ -355,15 +345,9 @@ public class AllProducts extends javax.swing.JPanel {
                 }
             });
         } catch (final BloSalesV2Exception e) {
+            logger.error(e.getMessage());
             CommonAlerts.openError(e.getMessage());
         }
-    }
-    
-    /** inicializa el filtro en la tabla */
-    private void initFilter() {
-        final var model = (DefaultTableModel) tblProducts.getModel();
-        sorter = new TableRowSorter<>(model);
-        tblProducts.setRowSorter(sorter);
     }
     
     /** reinicia los campos */

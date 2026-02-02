@@ -5,7 +5,7 @@ import com.blo.sales.v2.controller.IUserController;
 import com.blo.sales.v2.controller.impl.UserControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.pojos.PojoUser;
 import com.blo.sales.v2.view.mappers.LoggedInUserMapper;

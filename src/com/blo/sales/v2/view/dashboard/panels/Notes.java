@@ -5,20 +5,21 @@ import com.blo.sales.v2.controller.impl.UserControllerImpl;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntNotes;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.dialogs.NoteDialog;
 import com.blo.sales.v2.view.mappers.PojoNoteMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoNotesMapper;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.PojoNote;
 import com.blo.sales.v2.view.pojos.enums.TypeNoteEnum;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
 
 public class Notes extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(Notes.class.getName());
     
     private static final IUserController controller = UserControllerImpl.getInstance();
     
@@ -65,6 +66,8 @@ public class Notes extends javax.swing.JPanel {
                     }
                     retrieveNotes();
                 } catch(BloSalesV2Exception e) {
+                    logger.error(e.getMessage());
+                    CommonAlerts.openError(e.getMessage());
                 }
             }
         );
@@ -189,7 +192,8 @@ public class Notes extends javax.swing.JPanel {
             }
             GUICommons.enabledButton(btnSaveNow);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Notes.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
+            CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_areaNoteKeyReleased
 
@@ -199,6 +203,7 @@ public class Notes extends javax.swing.JPanel {
             final var itemSelected = GUICommons.getValueFromComboBox(cmbxTypeNote).trim();
             BloSalesV2Utils.validateRule(
                     itemSelected.isBlank(),
+                    BloSalesV2Utils.CODE_NOTE_TYPE_NO_SELECTED,
                     BloSalesV2Utils.NOTE_TYPE_NO_SELECTED
             );
             final var noteType = TypeNoteEnum.valueOf(itemSelected);
@@ -212,8 +217,8 @@ public class Notes extends javax.swing.JPanel {
             GUICommons.disabledButton(btnSaveNow);
             retrieveNotes();
         } catch (BloSalesV2Exception ex) {
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
-            Logger.getLogger(Notes.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnSaveNowActionPerformed
 
@@ -236,8 +241,8 @@ public class Notes extends javax.swing.JPanel {
                 tblNotes.setModel(model);
             }
         } catch (BloSalesV2Exception ex) {
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
-            Logger.getLogger(Notes.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

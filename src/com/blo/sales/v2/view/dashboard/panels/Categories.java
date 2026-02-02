@@ -4,17 +4,18 @@ import com.blo.sales.v2.controller.ICategoriesController;
 import com.blo.sales.v2.controller.impl.CategoriesControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.CategoryMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoCategoriesMapper;
 import com.blo.sales.v2.view.pojos.PojoCategory;
 import com.blo.sales.v2.view.pojos.WrapperPojoCategories;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 
 public class Categories extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(Categories.class.getName());
     
     private static final CategoryMapper categoryMapper = CategoryMapper.getInstance();
     
@@ -34,7 +35,7 @@ public class Categories extends javax.swing.JPanel {
             try {
                 setData(item);
             } catch (BloSalesV2Exception ex) {
-                Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(ex.getMessage());
                 CommonAlerts.openError(ex.getMessage());
             }
         });
@@ -44,7 +45,10 @@ public class Categories extends javax.swing.JPanel {
         content.setVisible(true);
         final var idSep = item.split(" +");
         // valida que exista un id
-        BloSalesV2Utils.validateRule(idSep.length == 0 || idSep[0].trim().isBlank(), "No se ha seleccionado un dato valido");
+        BloSalesV2Utils.validateRule(
+                idSep.length == 0 || idSep[0].trim().isBlank(),
+                BloSalesV2Utils.CODE_CATEGORY_NOT_SELECTED,
+                BloSalesV2Utils.CATEGORY_NOT_SELECTED);
         final var id = idSep[0].trim();
         // filtro de categorias
         final var itemFound = 
@@ -207,7 +211,7 @@ public class Categories extends javax.swing.JPanel {
             GUICommons.setTextToField(txtName, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToField(txtDescription, BloSalesV2Utils.EMPTY_STRING);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -231,7 +235,7 @@ public class Categories extends javax.swing.JPanel {
             loadCategories();
             btnCancelActionPerformed(evt);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveChangesActionPerformed
@@ -249,7 +253,7 @@ public class Categories extends javax.swing.JPanel {
             }
             lstCategories.setModel(model);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Categories.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
         

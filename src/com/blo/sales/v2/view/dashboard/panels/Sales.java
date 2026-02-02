@@ -10,7 +10,7 @@ import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.utils.BloSalesV2UtilsEnum;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.dialogs.DebtorsDialog;
@@ -27,8 +27,6 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
 
@@ -84,7 +82,7 @@ public class Sales extends javax.swing.JPanel {
                 }
             });
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
         txtSearch.requestFocusInWindow();
@@ -246,7 +244,7 @@ public class Sales extends javax.swing.JPanel {
                     addItemToList();
                 }
             } catch (BloSalesV2Exception ex) {
-                Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(ex.getMessage());
                 CommonAlerts.openError(ex.getMessage());
             }
             
@@ -262,7 +260,7 @@ public class Sales extends javax.swing.JPanel {
             totalSale = BigDecimal.ZERO;
             resetFields();
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnCompleteActionPerformed
@@ -295,10 +293,10 @@ public class Sales extends javax.swing.JPanel {
                 totalSale,
                 item -> {
                     try {
-                        /** formato de pagos amountTIMESTAMPtimestamp, */
+                        // formato de pagos amountTIMESTAMPtimestamp, 
                         logger.log("deudor " + item.toString());
                         var pay = BloSalesV2Utils.getFirstLastPayment(item.getPayments(), BloSalesV2UtilsEnum.LAST);
-                        /** es nuevo deudor  */
+                        // es nuevo deudor  
                         if (item.getIdDebtor() == 0) {
                             salesController.registerSaleWithNewDebtor(
                                 pay,
@@ -326,22 +324,21 @@ public class Sales extends javax.swing.JPanel {
                         resetFields();
                         totalSale = BigDecimal.ZERO;
                     } catch (BloSalesV2Exception ex) {
-                        Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+                        logger.error(ex.getMessage());
                         CommonAlerts.openError(ex.getMessage());
                     }
                 });
             debtorsDialog.setVisible(true);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnDebtorsActionPerformed
     
     private void addItemToList() {
         try {
-            if (productFound == null) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.PRODUCT_NOT_SELECTED);
-            }
+            BloSalesV2Utils.validateRule(productFound == null, BloSalesV2Utils.CODE_PRODUCT_NOT_SELECTED, BloSalesV2Utils.PRODUCT_NOT_SELECTED);
+            
             final var quantity = GUICommons.getTextFromField(nmbQuantity, true);
             // valida si se puede con pesos solamente si el producto se vende por kg
             var onSaleQuantity = new BigDecimal(BigInteger.ZERO);
@@ -380,7 +377,7 @@ public class Sales extends javax.swing.JPanel {
             GUICommons.enabledButton(btnComplete);
             GUICommons.enabledButton(btnDebtors);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }

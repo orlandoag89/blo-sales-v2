@@ -118,6 +118,7 @@ public class NoteDialog<T> extends javax.swing.JDialog {
             final var itemSelected = GUICommons.getValueFromComboBox(cmbxTypeNote).trim();
             BloSalesV2Utils.validateRule(
                     itemSelected.isBlank(),
+                    BloSalesV2Utils.CODE_NOTE_TYPE_NOT_SELECTED,
                     BloSalesV2Utils.NOTE_TYPE_NO_SELECTED
             );
             final var noteType = TypeNoteEnum.valueOf(itemSelected);

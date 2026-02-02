@@ -21,8 +21,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DebtorsModelImpl implements IDebtorsModel {
     
@@ -59,24 +57,25 @@ public class DebtorsModelImpl implements IDebtorsModel {
             ps.setBigDecimal(2, data.getDebt());
             ps.setString(3, data.getPayments());
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected > 0) {
-                final var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    data.setId_debtor(rs.getLong(1));
-                }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_ADD_EXCEPTION_CODE, BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
+            
+            final var rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                data.setId_debtor(rs.getLong(1));
             }
             // 3. Si todo salió bien, confirmamos los cambios en la DB
             DBConnection.doCommit();
             return mapper.toOuter(data);
-        } catch (SQLException e) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-            throw new BloSalesV2Exception(e.getMessage());
+        } catch (SQLException ex) {
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-                throw new BloSalesV2Exception(e.getMessage());
+                logger.error(e.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }
@@ -88,7 +87,9 @@ public class DebtorsModelImpl implements IDebtorsModel {
             final var ps = conn.prepareStatement(BloSalesV2Queries.SELECT_DEBTOR_BY_ID);
             ps.setLong(1, idDebtor);
             final var rs = ps.executeQuery();
-            BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.ERROR_PRODUCT_NOT_FOUND);
+            
+            BloSalesV2Utils.validateRule(!rs.next(), BloSalesV2Utils.CODE_PRODUCT_NOT_FOUND, BloSalesV2Utils.ERROR_PRODUCT_NOT_FOUND);
+            
             final var d = new DebtorEntity();
             d.setId_debtor(rs.getLong(BloSalesV2Columns.ID_DEBTOR));
             d.setName(rs.getString(BloSalesV2Columns.NAME));
@@ -96,8 +97,8 @@ public class DebtorsModelImpl implements IDebtorsModel {
             d.setDebt(rs.getBigDecimal(BloSalesV2Columns.DEBT));
             return mapper.toOuter(d);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -117,19 +118,19 @@ public class DebtorsModelImpl implements IDebtorsModel {
             ps.setLong(4, idDebtor);
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
             DBConnection.doCommit();
             return mapper.toOuter(debtorMapped);
-        } catch (SQLException e) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-            throw new BloSalesV2Exception(e.getMessage());
+        } catch (SQLException ex) {
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
-            } catch (SQLException e) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-                throw new BloSalesV2Exception(e.getMessage());
+            } catch (SQLException ex) {
+                logger.error(ex.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }
@@ -153,8 +154,8 @@ public class DebtorsModelImpl implements IDebtorsModel {
             debtorsWrapper.setDebtors(debtors);
             return wrapperMapper.toOuter(debtorsWrapper);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -181,8 +182,8 @@ public class DebtorsModelImpl implements IDebtorsModel {
             debtorsDetails.setDebtors(details);
             return debtorsDetailsMapper.toOuter(debtorsDetails);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -194,18 +195,18 @@ public class DebtorsModelImpl implements IDebtorsModel {
             ps.setLong(1, idDebtor);
             final var rowsAffected = ps.executeUpdate();
             if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_DELETING_DATA_ON_DATA_BASE);
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_DELETE_EXCEPTION_CODE, BloSalesV2Utils.ERROR_DELETING_DATA_ON_DATA_BASE);
             }
             DBConnection.doCommit();
-        } catch (SQLException e) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-            throw new BloSalesV2Exception(e.getMessage());
+        } catch (SQLException ex) {
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
-            } catch (SQLException e) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
-                throw new BloSalesV2Exception(e.getMessage());
+            } catch (SQLException ex) {
+                logger.error(ex.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }

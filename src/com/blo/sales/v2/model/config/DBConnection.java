@@ -27,7 +27,8 @@ public class DBConnection {
                 
                 // Establecer la conexión
                 conexion = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("Conexi\u00f3n establecida con \u00e9xito.");
+                final var env = URL.substring(URL.lastIndexOf("-") + 1);
+                System.out.println("Conexi\u00f3n establecida con \u00e9xito. [" + env + "]");
             }
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("Error al conectar: " + e.getMessage());

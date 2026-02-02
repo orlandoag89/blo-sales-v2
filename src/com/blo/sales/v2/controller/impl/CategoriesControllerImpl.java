@@ -6,17 +6,14 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.controller.ICategoriesController;
 import com.blo.sales.v2.controller.pojos.WrapperIntPojoCategories;
 import com.blo.sales.v2.model.impl.CategoriesModelImpl;
-import java.sql.SQLException;
 
 public class CategoriesControllerImpl implements ICategoriesController {
     
-    private ICategoriesModel categoriesModel;
+    private static final ICategoriesModel categoriesModel = CategoriesModelImpl.getInstance();
     
     private static CategoriesControllerImpl instance;
     
-    private CategoriesControllerImpl() {
-        categoriesModel = CategoriesModelImpl.getInstance();
-    }
+    private CategoriesControllerImpl() { }
     
     public static CategoriesControllerImpl getInstance() {
         if (instance == null) {
@@ -27,11 +24,7 @@ public class CategoriesControllerImpl implements ICategoriesController {
     
     @Override
     public PojoIntCategory registerCategory(PojoIntCategory category) throws BloSalesV2Exception {
-        try {
-            return categoriesModel.registerCategory(category);
-        } catch (SQLException ex) {
-            throw new BloSalesV2Exception(ex.getMessage());
-        }
+        return categoriesModel.registerCategory(category);
     }
 
     @Override

@@ -4,31 +4,28 @@ import com.blo.sales.v2.controller.IDebtorsController;
 import com.blo.sales.v2.controller.impl.DebtorsControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.WrapperPojoDebtorsDetailsMapper;
 import com.blo.sales.v2.view.pojos.PojoDebtorDetail;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.WrapperPojoDebtorsDetails;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
-import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableRowSorter;
 
 public class Debtors extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(Debtors.class.getName());
     
     private static final IDebtorsController debtors = DebtorsControllerImpl.getInstance();
     
     private static final WrapperPojoDebtorsDetailsMapper debtorsDetailsMapper = WrapperPojoDebtorsDetailsMapper.getInstance();
     
     private PojoLoggedInUser userData;
-    
-    private TableRowSorter<DefaultTableModel> sorter;
     
     /** deudor seleccionado para hacer operaciones */
     private PojoDebtorDetail debtorSelected;
@@ -39,7 +36,7 @@ public class Debtors extends javax.swing.JPanel {
         try {
             final var debtorsFromDB = retrieveDebtorsDetails();
             loadDataAndTitles(debtorsFromDB);
-            initFilter();
+            //initFilter();
             GUICommons.addDoubleClickOnTable(tblDebtors, item -> {
                 final var debtorDetail = 
                         debtorsFromDB.getDebtors().stream().
@@ -61,7 +58,7 @@ public class Debtors extends javax.swing.JPanel {
                 }
             });
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Debtors.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }
@@ -243,13 +240,7 @@ public class Debtors extends javax.swing.JPanel {
 
     private void txtSearchDebtorKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchDebtorKeyReleased
         final var filter = txtSearchDebtor.getText();
-        if (filter.trim().isBlank()) {
-            sorter.setRowFilter(null);
-        } else {
-            // Al no poner un índice después del texto, busca en todas las columnas
-            // "(?i)" sirve para ignorar mayúsculas y minúsculas
-            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + filter));
-        }
+        GUICommons.addFilter(tblDebtors, "(?i)", filter);
     }//GEN-LAST:event_txtSearchDebtorKeyReleased
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
@@ -265,7 +256,7 @@ public class Debtors extends javax.swing.JPanel {
             loadDataAndTitles(retrieveDebtorsDetails());
             debtorSelected = null;
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Debtors.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -290,20 +281,14 @@ public class Debtors extends javax.swing.JPanel {
         try {
             if (GUICommons.showConfirmDialog("¿Seguro que deseas pagar toda la cuenta?")) {
                 debtors.addPayment(debtorSelected.getDebt(), userData.getIdUser(), debtorSelected.getIdDebtor());
+                loadDataAndTitles(retrieveDebtorsDetails());
                 debtorSelected = null;
             }
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Debtors.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnPayallActionPerformed
-
-    /** inicializa el filtro en la tabla */
-    private void initFilter() {
-        final var model = (DefaultTableModel) tblDebtors.getModel();
-        sorter = new TableRowSorter<>(model);
-        tblDebtors.setRowSorter(sorter);
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaPayments;

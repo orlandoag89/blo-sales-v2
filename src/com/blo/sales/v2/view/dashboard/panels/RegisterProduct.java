@@ -6,16 +6,17 @@ import com.blo.sales.v2.controller.impl.CategoriesControllerImpl;
 import com.blo.sales.v2.controller.impl.ProductsControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.ProductMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoCategoriesMapper;
 import com.blo.sales.v2.view.pojos.PojoProduct;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 
 public class RegisterProduct extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(RegisterProduct.class.getName());
     
     private static final ICategoriesController categories = CategoriesControllerImpl.getInstance();
     
@@ -31,7 +32,7 @@ public class RegisterProduct extends javax.swing.JPanel {
         try {
             loadCategories();
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }
@@ -159,6 +160,7 @@ public class RegisterProduct extends javax.swing.JPanel {
             final var itemSelected = GUICommons.getValueFromComboBox(lstMarks).split("[ ]+");
             BloSalesV2Utils.validateRule(
                     itemSelected.length == 0 || itemSelected[0].trim().isBlank(),
+                    BloSalesV2Utils.CODE_CATEGORY_NOT_SELECTED,
                     BloSalesV2Utils.CATEGORY_NO_SELECTED
             );
             final var idMark = itemSelected[0].trim();
@@ -171,7 +173,7 @@ public class RegisterProduct extends javax.swing.JPanel {
             GUICommons.setTextToField(nmbPrice, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToField(nmbSaleCost, BloSalesV2Utils.EMPTY_STRING);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed

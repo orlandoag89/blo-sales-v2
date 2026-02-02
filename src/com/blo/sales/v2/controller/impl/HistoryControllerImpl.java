@@ -8,13 +8,11 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 
 public class HistoryControllerImpl implements IHistoryController {
     
-    private IHistoryModel model;
+    private static final IHistoryModel model = HistoryModelImpl.getInstance();
     
     private static HistoryControllerImpl instance;
     
-    private HistoryControllerImpl() { 
-        model = HistoryModelImpl.getInstance();
-    }
+    private HistoryControllerImpl() { }
     
     public static HistoryControllerImpl getInstance() {
         if (instance == null) {

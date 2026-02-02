@@ -23,8 +23,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class SalesModelImpl implements ISalesModel {
     
@@ -60,9 +58,9 @@ public class SalesModelImpl implements ISalesModel {
             ps.setString(2, innerSale.getSale_status().name());
             ps.setString(3, innerSale.getTimestamp());
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
-            }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_ADD_EXCEPTION_CODE, BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
+            
             final var rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 innerSale.setId_sale(rs.getLong(1));
@@ -71,14 +69,14 @@ public class SalesModelImpl implements ISalesModel {
             logger.log("venta registrada " + innerSale.toString());
             return saleMapper.toOuter(innerSale);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-                throw new BloSalesV2Exception(ex.getMessage());
+                logger.error(ex.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
         
@@ -101,14 +99,17 @@ public class SalesModelImpl implements ISalesModel {
                 saleDetail.setQuantity_on_sale(data.getBigDecimal(BloSalesV2Columns.QUANTITY_ON_SALE));
                 saleDetail.setTotal_on_sale(data.getBigDecimal(BloSalesV2Columns.TOTAL_ON_SALE));
                 saleDetail.setTimestamp(data.getString(BloSalesV2Columns.TIMESTAMP));
+                saleDetail.setPrice(data.getBigDecimal(BloSalesV2Columns.PRICE));
+                saleDetail.setCost_of_sale(data.getBigDecimal(BloSalesV2Columns.COST_OF_SALE));
+                saleDetail.setKg(data.getBoolean(BloSalesV2Columns.IS_KG));
                 details.add(saleDetail);
             }
             wrapper.setSalesDetail(details);
             logger.log("registros encontrados " + details.size());
             return salesAndStockMapper.toOuter(wrapper);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -128,6 +129,8 @@ public class SalesModelImpl implements ISalesModel {
                 saleDetail.setId_sale(data.getLong(BloSalesV2Columns.ID_SALE));
                 saleDetail.setProduct(data.getString(BloSalesV2Columns.PRODUCT));
                 saleDetail.setQuantity_on_sale(data.getBigDecimal(BloSalesV2Columns.QUANTITY_ON_SALE));
+                saleDetail.setPrice(data.getBigDecimal(BloSalesV2Columns.PRICE));
+                saleDetail.setCost_of_sale(data.getBigDecimal(BloSalesV2Columns.COST_OF_SALE));
                 saleDetail.setTotal_on_sale(data.getBigDecimal(BloSalesV2Columns.TOTAL_ON_SALE));
                 saleDetail.setTimestamp(data.getString(BloSalesV2Columns.TIMESTAMP));
                 details.add(saleDetail);
@@ -136,8 +139,8 @@ public class SalesModelImpl implements ISalesModel {
             logger.log("registros encontrados " + details.size());
             return salesAndStockMapper.toOuter(wrapper);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -163,8 +166,8 @@ public class SalesModelImpl implements ISalesModel {
             logger.log("registros encontrados " + details.size());
             return salesEntityMapper.toOuter(wrapper);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -176,14 +179,14 @@ public class SalesModelImpl implements ISalesModel {
             final var ps = conn.prepareStatement(BloSalesV2Queries.SET_ON_CASHBOX);
             ps.setLong(1, idSale);
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
-            }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_UPDATE_EXCEPTION_CODE, BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
+            
             DBConnection.doCommit();
             return true;
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
     

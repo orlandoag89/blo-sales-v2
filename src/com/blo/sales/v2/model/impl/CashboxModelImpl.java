@@ -23,8 +23,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CashboxModelImpl implements ICashboxModel {
     
@@ -61,9 +59,9 @@ public class CashboxModelImpl implements ICashboxModel {
             ps.setString(3, cashboxInner.getStatus().name());
             ps.setBigDecimal(4, cashboxInner.getAmount());
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
-            }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_ADD_EXCEPTION_CODE, BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);
+            
             final var rs = ps.getGeneratedKeys();
             if (rs.next()){
                 cashboxInner.setId_cashbox(rs.getLong(1));
@@ -72,14 +70,14 @@ public class CashboxModelImpl implements ICashboxModel {
             logger.log("cashbox gardada " + cashboxInner.toString());
             return mapper.toOuter(cashboxInner);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
-                throw new BloSalesV2Exception(ex.getMessage());
+                logger.error(ex.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }
@@ -105,7 +103,8 @@ public class CashboxModelImpl implements ICashboxModel {
             logger.log("cashbox data " + cashboxIsFound);
             return mapper.toOuter(cashbox);
         } catch (SQLException ex) {
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -121,19 +120,21 @@ public class CashboxModelImpl implements ICashboxModel {
             ps.setBigDecimal(3, cashboxInner.getAmount());
             ps.setLong(4, idCashbox);
             final var rowsAffected = ps.executeUpdate();
-            if (rowsAffected == 0) {
-                throw new BloSalesV2Exception(BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
-            }
+            
+            BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_UPDATE_EXCEPTION_CODE, BloSalesV2Utils.ERROR_UPDATING_ON_DATA_BASE);
+            
             DBConnection.doCommit();
             logger.log("cashbox actualizada " + cashbox.toString());
             return mapper.toOuter(cashboxInner);
         } catch (SQLException e) {
-            throw new BloSalesV2Exception(e.getMessage());
+            logger.error(e.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
-                throw new BloSalesV2Exception(e.getMessage());
+                logger.error(e.getMessage());
+                throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
     }
@@ -161,7 +162,8 @@ public class CashboxModelImpl implements ICashboxModel {
             logger.log("cashbox encontradas " + lst.size());
             return wrapperMapper.toOuter(out);
         } catch (SQLException ex) {
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
 
@@ -189,7 +191,8 @@ public class CashboxModelImpl implements ICashboxModel {
             out.setCashbocesInfo(lst);
             return cashboxesDetailsMapper.toOuter(out);
         } catch (SQLException ex) {
-            throw new BloSalesV2Exception(ex.getMessage());
+            logger.error(ex.getMessage());
+            throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
     
