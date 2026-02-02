@@ -3,23 +3,23 @@ package com.blo.sales.v2.view.dashboard.panels;
 import com.blo.sales.v2.controller.ISalesController;
 import com.blo.sales.v2.controller.impl.SalesControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
-import com.blo.sales.v2.view.commons.plugins.sales.report.BloSalesV2SalesReportPlugin;
+import com.blo.sales.v2.plugins.sales.report.BloSalesV2SalesReportPlugin;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.WrapperPojoSalesAndStockMapper;
 import com.blo.sales.v2.view.pojos.PojoSaleAndProduct;
 import com.blo.sales.v2.view.pojos.WrapperPojoSalesAndStock;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 public class SalesReport extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(SalesReport.class.getName());
     
     private static final ISalesController salesController = SalesControllerImpl.getInstance();
     
@@ -37,7 +37,8 @@ public class SalesReport extends javax.swing.JPanel {
             final var allSales = mapper.toOuter(salesController.retrieveAllSalesDetail());
             getTotal(allSales);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(SalesReport.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
+            CommonAlerts.openError(ex.getMessage());
         }
     }
 
@@ -166,7 +167,7 @@ public class SalesReport extends javax.swing.JPanel {
             final var tmp = parserTableToLst(model);
             BloSalesV2SalesReportPlugin.createReport(tmp, getBrutalTotalFromLst(parserTableToLst(model)));
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(SalesReport.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnReportGeneratorActionPerformed
@@ -189,7 +190,10 @@ public class SalesReport extends javax.swing.JPanel {
                     } else {
                         return strDate.equals(initDate);
                     }
-                } catch (Exception e) { return false; }
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
+                    return false;
+                }
             }
         });
         
@@ -256,14 +260,14 @@ public class SalesReport extends javax.swing.JPanel {
      */
     private BigDecimal getBrutalTotalFromLst(WrapperPojoSalesAndStock wrapper) {
         return wrapper.getSalesDetail().stream().collect(Collectors.toMap(
-                        PojoSaleAndProduct::getIdSale,
-                        obj -> obj,
-                        (existente, reemplazo) -> existente // Si hay duplicado, se queda con el primero
-                    )).
-                        values().
-                        stream().
-                        map(PojoSaleAndProduct::getTotalOnSale).
-                        reduce(BigDecimal.ZERO, (acc, curr) -> acc.add(curr));
+                PojoSaleAndProduct::getIdSale,
+                obj -> obj,
+                (existente, reemplazo) -> existente // Si hay duplicado, se queda con el primero
+            )).
+                values().
+                stream().
+                map(PojoSaleAndProduct::getTotalOnSale).
+                reduce(BigDecimal.ZERO, (acc, curr) -> acc.add(curr));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

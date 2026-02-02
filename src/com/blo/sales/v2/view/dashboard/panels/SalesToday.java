@@ -4,19 +4,19 @@ import com.blo.sales.v2.controller.ISalesController;
 import com.blo.sales.v2.controller.impl.SalesControllerImpl;
 import com.blo.sales.v2.controller.pojos.enums.SalesStatusIntEnum;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.WrapperPojoSalesAndStockMapper;
 import com.blo.sales.v2.view.pojos.PojoSaleAndProduct;
 import com.blo.sales.v2.view.pojos.WrapperPojoSalesAndStock;
 import java.math.BigDecimal;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 public class SalesToday extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(SalesToday.class.getName());
     
     private static final ISalesController salesController = SalesControllerImpl.getInstance();
     
@@ -35,7 +35,7 @@ public class SalesToday extends javax.swing.JPanel {
             final var total = getTotal(salesToday);
             GUICommons.setTextToField(lblTotal, "Total: $" + total);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(SalesToday.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }

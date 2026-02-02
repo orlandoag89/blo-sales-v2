@@ -13,7 +13,6 @@ import com.blo.sales.v2.view.dashboard.panels.RegisterProduct;
 import com.blo.sales.v2.view.dashboard.panels.Sales;
 import com.blo.sales.v2.view.dashboard.panels.SalesReport;
 import com.blo.sales.v2.view.dashboard.panels.SalesToday;
-import com.blo.sales.v2.view.dashboard.panels.SalesViewer;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 
 public class DashboardRootFrm extends javax.swing.JFrame {

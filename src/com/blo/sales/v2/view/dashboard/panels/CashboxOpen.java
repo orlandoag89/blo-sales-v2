@@ -5,8 +5,9 @@ import com.blo.sales.v2.controller.IUserController;
 import com.blo.sales.v2.controller.impl.CashboxControllerImpl;
 import com.blo.sales.v2.controller.impl.UserControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.dialogs.CashboxDialog;
 import com.blo.sales.v2.view.mappers.PojoCashboxMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoActivesCostsMapper;
@@ -18,12 +19,12 @@ import com.blo.sales.v2.view.pojos.WrapperPojoActivesCosts;
 import com.blo.sales.v2.view.pojos.WrapperPojoNotes;
 import com.blo.sales.v2.view.pojos.enums.CashboxStatusEnum;
 import com.blo.sales.v2.view.pojos.enums.TypeNoteEnum;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
 
 public class CashboxOpen extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(CashboxOpen.class.getName());
     
     private static final ICashboxController cashboxController = CashboxControllerImpl.getInstance();
     
@@ -48,7 +49,8 @@ public class CashboxOpen extends javax.swing.JPanel {
             loadDataAndCashbox();
             this.notes = mapperNotes.toOuter(userController.getNotesByUserId(userData.getIdUser()));
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(CashboxOpen.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
+            CommonAlerts.openError(ex.getMessage());
         }
     }
         
@@ -139,7 +141,7 @@ public class CashboxOpen extends javax.swing.JPanel {
                          loadDataAndCashbox();
                     }
                 } catch (BloSalesV2Exception ex) {
-                    Logger.getLogger(CashboxOpen.class.getName()).log(Level.SEVERE, null, ex);
+                    logger.error(ex.getMessage());
                     CommonAlerts.openError(ex.getMessage());
                 }
             }

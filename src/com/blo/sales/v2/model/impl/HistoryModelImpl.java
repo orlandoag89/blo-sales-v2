@@ -7,13 +7,14 @@ import com.blo.sales.v2.model.constants.BloSalesV2Queries;
 import com.blo.sales.v2.model.mapper.MovementEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.view.commons.GUILogger;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class HistoryModelImpl implements IHistoryModel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(DebtorsSalesModelImpl.class.getName());
     
     private static final Connection conn = DBConnection.getConnection();
     
@@ -53,13 +54,13 @@ public class HistoryModelImpl implements IHistoryModel {
             DBConnection.doCommit();
             return mapper.toOuter(inMovement);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(ex.getMessage());
                 throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }

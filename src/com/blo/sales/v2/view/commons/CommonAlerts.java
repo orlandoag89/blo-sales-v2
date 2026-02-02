@@ -1,4 +1,4 @@
-package com.blo.sales.v2.view.alerts;
+package com.blo.sales.v2.view.commons;
 
 import javax.swing.JOptionPane;
 

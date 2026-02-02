@@ -1,4 +1,4 @@
-package com.blo.sales.v2.view.commons.plugins.sales.report;
+package com.blo.sales.v2.plugins.sales.report;
 
 import java.math.BigDecimal;
 

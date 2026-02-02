@@ -24,8 +24,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class UserModelImpl implements IUserModel {
     
@@ -59,10 +57,10 @@ public class UserModelImpl implements IUserModel {
             final var userFound = selectUserEntity(userData.getUserName(), userData.getPassword());
             return userEntityMapper.toOuter(userFound);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
@@ -100,7 +98,7 @@ public class UserModelImpl implements IUserModel {
             userFound.setUsername(rs.getString(BloSalesV2Columns.USER_NAME));
             return userMapper.toOuter(userFound);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
         
@@ -129,13 +127,13 @@ public class UserModelImpl implements IUserModel {
             logger.log("nota registrada " + innerNote.toString());
             return noteMapper.toOuter(innerNote);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(ex.getMessage());
                 throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
@@ -164,7 +162,7 @@ public class UserModelImpl implements IUserModel {
             logger.log("registros encontrados " + notes.size());
             return mapperNotes.toOuter(wrapper);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
@@ -208,13 +206,13 @@ public class UserModelImpl implements IUserModel {
             
             DBConnection.doCommit();
         } catch (SQLException e) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
+            logger.error(e.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
+                logger.error(e.getMessage());
                 throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }

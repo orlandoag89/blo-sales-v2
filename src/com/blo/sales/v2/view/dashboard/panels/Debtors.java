@@ -4,21 +4,22 @@ import com.blo.sales.v2.controller.IDebtorsController;
 import com.blo.sales.v2.controller.impl.DebtorsControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
+import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.WrapperPojoDebtorsDetailsMapper;
 import com.blo.sales.v2.view.pojos.PojoDebtorDetail;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.WrapperPojoDebtorsDetails;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
 
 public class Debtors extends javax.swing.JPanel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(Debtors.class.getName());
     
     private static final IDebtorsController debtors = DebtorsControllerImpl.getInstance();
     
@@ -57,7 +58,7 @@ public class Debtors extends javax.swing.JPanel {
                 }
             });
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Debtors.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }
@@ -255,7 +256,7 @@ public class Debtors extends javax.swing.JPanel {
             loadDataAndTitles(retrieveDebtorsDetails());
             debtorSelected = null;
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Debtors.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -284,7 +285,7 @@ public class Debtors extends javax.swing.JPanel {
                 debtorSelected = null;
             }
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(Debtors.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnPayallActionPerformed

@@ -8,7 +8,7 @@ import com.blo.sales.v2.controller.pojos.enums.ReasonsIntEnum;
 import com.blo.sales.v2.controller.pojos.enums.TypesIntEnum;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
-import com.blo.sales.v2.view.alerts.CommonAlerts;
+import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.ProductMapper;
@@ -21,8 +21,6 @@ import com.blo.sales.v2.view.pojos.enums.RolesEnum;
 import com.blo.sales.v2.view.pojos.enums.TypesEnum;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 public class AllProducts extends javax.swing.JPanel {
@@ -231,7 +229,8 @@ public class AllProducts extends javax.swing.JPanel {
             final var filter = GUICommons.getTextFromField(txtSearcher, false);
             GUICommons.addFilter(tblProducts, "(?i)", filter);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
+            CommonAlerts.openError(ex.getMessage());
         }
         
     }//GEN-LAST:event_txtSearcherKeyReleased
@@ -277,7 +276,7 @@ public class AllProducts extends javax.swing.JPanel {
             loadTitlesAndData();
             initPanelManagement();
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
@@ -297,7 +296,8 @@ public class AllProducts extends javax.swing.JPanel {
                 lstReason.setVisible(false);
             }
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
+            CommonAlerts.openError(ex.getMessage());
         }
         
     }//GEN-LAST:event_nmbQuantityKeyReleased
@@ -345,6 +345,7 @@ public class AllProducts extends javax.swing.JPanel {
                 }
             });
         } catch (final BloSalesV2Exception e) {
+            logger.error(e.getMessage());
             CommonAlerts.openError(e.getMessage());
         }
     }

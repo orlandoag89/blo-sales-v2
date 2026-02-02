@@ -1,6 +1,9 @@
 package com.blo.sales.v2.view.commons;
 
+import com.blo.sales.v2.model.impl.ProductsModelImpl;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GUILogger {
 
@@ -24,6 +27,19 @@ public class GUILogger {
         return instance;
     }
     
+    public void error(String str) {
+        row.append(BloSalesV2Utils.getTimestamp());
+        row.append("[");
+        row.append(className);
+        row.append("]");
+        row.append(" ERROR ");
+        row.append("-");
+        row.append(" ");
+        row.append(str);
+        row.append("\n");
+        Logger.getLogger(className).log(Level.SEVERE, null, str);
+    }
+    
     public void log(String str) {
         row.append(BloSalesV2Utils.getTimestamp());
         row.append("[");
@@ -34,7 +50,7 @@ public class GUILogger {
         row.append(" ");
         row.append(str);
         row.append("\n");
-        System.out.println(str);
+        Logger.getLogger(className).log(Level.INFO, null, str);
     }
     
     public String getLogs() {

@@ -15,11 +15,12 @@ import com.blo.sales.v2.model.entities.ProductEntity;
 import com.blo.sales.v2.model.entities.WrapperProductsEntity;
 import com.blo.sales.v2.model.mapper.WrapperProductsEntityMapper;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.view.commons.GUILogger;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ProductsModelImpl implements IProductsModel {
+    
+    private static final GUILogger logger = GUILogger.getLogger(ProductsModelImpl.class.getName());
     
     private static final Connection conn = DBConnection.getConnection();
     
@@ -64,13 +65,13 @@ public class ProductsModelImpl implements IProductsModel {
             DBConnection.doCommit();
             return mapper.toOuter(innerProduct);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException ex) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+                logger.error(ex.getMessage());
                 throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
@@ -99,7 +100,7 @@ public class ProductsModelImpl implements IProductsModel {
             productsInn.setProducts(innerProducts);
             return wrapperMapper.toOuter(productsInn);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
@@ -124,13 +125,13 @@ public class ProductsModelImpl implements IProductsModel {
             DBConnection.doCommit();
             return mapper.toOuter(innerProduct);
         } catch (SQLException e) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
+            logger.error(e.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         } finally {
             try {
                 DBConnection.enableAutocommit();
             } catch (SQLException e) {
-                Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, e);
+                logger.error(e.getMessage());
                 throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
             }
         }
@@ -155,7 +156,7 @@ public class ProductsModelImpl implements IProductsModel {
             p.setProduct(rs.getString(BloSalesV2Columns.PRODUCT));
             return mapper.toOuter(p);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }
@@ -183,7 +184,7 @@ public class ProductsModelImpl implements IProductsModel {
             p.setProduct(rs.getString(BloSalesV2Columns.PRODUCT));
             return mapper.toOuter(p);
         } catch (SQLException ex) {
-            Logger.getLogger(ProductsModelImpl.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
             throw new BloSalesV2Exception(BloSalesV2Utils.SQL_EXCEPTION_CODE, BloSalesV2Utils.SQL_EXCEPTION_MESSAGE);
         }
     }

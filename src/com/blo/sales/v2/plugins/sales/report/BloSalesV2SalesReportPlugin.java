@@ -1,4 +1,4 @@
-package com.blo.sales.v2.view.commons.plugins.sales.report;
+package com.blo.sales.v2.plugins.sales.report;
 
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
