@@ -43,7 +43,8 @@ public class SaleProductModelImpl implements ISaleProductModel {
             ps.setLong(2, saleProduct.getFk_product());
             ps.setBigDecimal(3, saleProduct.getQunatity_sale());
             ps.setBigDecimal(4, saleProduct.getTotal_on_sale());
-            ps.setString(5, saleProduct.getTimestamp());
+            ps.setBigDecimal(5, saleProduct.getProduct_total_on_sale());
+            ps.setString(6, saleProduct.getTimestamp());
             final var rowsAffected = ps.executeUpdate();
             
             BloSalesV2Utils.validateRule(rowsAffected == 0, BloSalesV2Utils.SQL_ADD_EXCEPTION_CODE, BloSalesV2Utils.ERROR_SAVED_ON_DATA_BASE);

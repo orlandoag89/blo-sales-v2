@@ -10,6 +10,8 @@ public class PojoSaleProductData {
     
     private BigDecimal price;
     
+    private BigDecimal productBuyTotal;
+    
     private String timestamp;
 
     public long getIdProduct() {
@@ -42,6 +44,14 @@ public class PojoSaleProductData {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public BigDecimal getProductBuyTotal() {
+        return productBuyTotal;
+    }
+
+    public void setProductBuyTotal(BigDecimal productBuyTotal) {
+        this.productBuyTotal = productBuyTotal;
     }
     
 }

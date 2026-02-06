@@ -16,6 +16,8 @@ public class RowSaleReportData {
     
     private BigDecimal totalOnSale;
     
+    private BigDecimal profit;
+    
     private String timestamp;
 
     public long getIdProduct() {
@@ -66,6 +68,14 @@ public class RowSaleReportData {
         this.totalOnSale = totalOnSale;
     }
 
+    public BigDecimal getProfit() {
+        return profit;
+    }
+
+    public void setProfit(BigDecimal profit) {
+        this.profit = profit;
+    }
+
     public String getTimestamp() {
         return timestamp;
     }
@@ -76,7 +86,7 @@ public class RowSaleReportData {
 
     @Override
     public String toString() {
-        return String.format("Producto: %s | Cantidad: %s | Precio: $%s | Costo: $%s", 
-                         product, quantityOnSale, price, costOfSale);
+        return String.format("Producto: %s | Cantidad: %s | Precio: $%s | Costo: $%s | Ganancia: $%s", 
+                         product, quantityOnSale, price, costOfSale, profit);
     }
 }

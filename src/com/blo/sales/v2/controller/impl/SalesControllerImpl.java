@@ -107,6 +107,7 @@ public class SalesControllerImpl implements ISalesController {
             saleProduct.setFkSale(saleSaved.getIdSale());
             saleProduct.setQuantityOnSale(p.getQuantityOnSale());
             saleProduct.setTimestap(timestamp);
+            saleProduct.setProductTotalOnSale(p.getProductBuyTotal());
             saleProduct.setTotalOnSale(totalSale);
             // guardar relacion venta-product
             salesProductsController.addSalesProduct(saleProduct);

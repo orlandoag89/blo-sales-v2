@@ -32,6 +32,7 @@ public class PojoSaleAndProductMapper implements IToOuter<PojoIntSaleAndProduct,
         outer.setCostOfSale(inner.getCostOfSale());
         outer.setPrice(inner.getPrice());
         outer.setKg(inner.isKg());
+        outer.setProductTotalOnSale(inner.getProductTotalOnSale());
         return outer;
     }
 }
