@@ -53,7 +53,7 @@ public class Debtors extends javax.swing.JPanel {
                         areaPayments.append("\n");
                     });
                     final var model = new DefaultListModel<String>();
-                    debtorDetail.forEach(d -> model.addElement(d.getProduct()));
+                    debtorDetail.forEach(d -> model.addElement(d.getProduct() + " [" + BloSalesV2Utils.parserTimeStamp(d.getTimestamp()) + "]"));
                     lstProducts.setModel(model);
                 }
             });

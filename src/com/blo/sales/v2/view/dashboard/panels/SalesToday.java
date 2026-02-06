@@ -22,7 +22,7 @@ public class SalesToday extends javax.swing.JPanel {
     
     private static final WrapperPojoSalesAndStockMapper mapper = WrapperPojoSalesAndStockMapper.getInstance();
 
-    private static final String[] titles = {"ID de venta", "ID producto", "Producto", "Cantidad en venta", "Total", "Timestamp"};
+    private static final String[] titles = {"ID de venta", "ID producto", "Producto", "Precio o comprado", "Cantidad en venta", "Total de venta", "Timestamp"};
     
     public SalesToday() {
         initComponents();
@@ -52,6 +52,7 @@ public class SalesToday extends javax.swing.JPanel {
                     d.getIdSale(),
                     d.getIdProduct(),
                     d.getProduct(),
+                    d.getProductTotalOnSale(),
                     d.getQuantityOnSale(),
                     d.getTotalOnSale(),
                     d.getTimestamp()

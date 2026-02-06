@@ -102,6 +102,7 @@ public class SalesModelImpl implements ISalesModel {
                 saleDetail.setPrice(data.getBigDecimal(BloSalesV2Columns.PRICE));
                 saleDetail.setCost_of_sale(data.getBigDecimal(BloSalesV2Columns.COST_OF_SALE));
                 saleDetail.setKg(data.getBoolean(BloSalesV2Columns.IS_KG));
+                saleDetail.setProduct_total_on_sale(data.getBigDecimal(BloSalesV2Columns.PRODUCT_TOTAL_ON_SALE));
                 details.add(saleDetail);
             }
             wrapper.setSalesDetail(details);
@@ -133,6 +134,7 @@ public class SalesModelImpl implements ISalesModel {
                 saleDetail.setCost_of_sale(data.getBigDecimal(BloSalesV2Columns.COST_OF_SALE));
                 saleDetail.setTotal_on_sale(data.getBigDecimal(BloSalesV2Columns.TOTAL_ON_SALE));
                 saleDetail.setTimestamp(data.getString(BloSalesV2Columns.TIMESTAMP));
+                saleDetail.setProduct_total_on_sale(data.getBigDecimal(BloSalesV2Columns.PRODUCT_TOTAL_ON_SALE));
                 details.add(saleDetail);
             }
             wrapper.setSalesDetail(details);

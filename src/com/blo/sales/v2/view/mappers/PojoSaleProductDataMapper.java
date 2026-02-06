@@ -26,6 +26,7 @@ public class PojoSaleProductDataMapper implements IToInner<PojoIntSaleProductDat
         inner.setIdProduct(outer.getIdProduct());
         inner.setPrice(outer.getPrice());
         inner.setQuantityOnSale(outer.getQuantityOnSale());
+        inner.setProductBuyTotal(outer.getProductBuyTotal());
         return inner;
     }
     

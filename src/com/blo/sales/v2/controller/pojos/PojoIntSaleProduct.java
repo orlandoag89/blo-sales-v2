@@ -14,6 +14,8 @@ public class PojoIntSaleProduct {
     
     private BigDecimal totalOnSale;
     
+    private BigDecimal productTotalOnSale;
+    
     private String timestap;
 
     public long getIdSaleProduct() {
@@ -62,6 +64,19 @@ public class PojoIntSaleProduct {
 
     public void setTimestap(String timestap) {
         this.timestap = timestap;
+    }
+
+    public BigDecimal getProductTotalOnSale() {
+        return productTotalOnSale;
+    }
+
+    public void setProductTotalOnSale(BigDecimal productTotalOnSale) {
+        this.productTotalOnSale = productTotalOnSale;
+    }
+
+    @Override
+    public String toString() {
+        return "PojoIntSaleProduct{" + "idSaleProduct=" + idSaleProduct + ", fkSale=" + fkSale + ", fkProduct=" + fkProduct + ", quantityOnSale=" + quantityOnSale + ", totalOnSale=" + totalOnSale + ", productoTotalOnSale=" + productTotalOnSale + ", timestap=" + timestap + '}';
     }
     
 }

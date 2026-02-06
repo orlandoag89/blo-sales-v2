@@ -18,6 +18,8 @@ public class SaleAndProductEntity {
     
     private BigDecimal total_on_sale;
     
+    private BigDecimal product_total_on_sale;
+    
     private String timestamp;
     
     private boolean kg;
@@ -94,10 +96,16 @@ public class SaleAndProductEntity {
         this.kg = kg;
     }
 
+    public BigDecimal getProduct_total_on_sale() {
+        return product_total_on_sale;
+    }
+
+    public void setProduct_total_on_sale(BigDecimal product_total_on_sale) {
+        this.product_total_on_sale = product_total_on_sale;
+    }
+
     @Override
     public String toString() {
-        return "SaleAndProductEntity{" + "id_sale=" + id_sale + ", id_product=" + id_product + ", product=" + product + ", quantity_on_sale=" + quantity_on_sale + ", price=" + price + ", cost_of_sale=" + cost_of_sale + ", total_on_sale=" + total_on_sale + ", timestamp=" + timestamp + ", kg=" + kg + '}';
+        return "SaleAndProductEntity{" + "id_sale=" + id_sale + ", id_product=" + id_product + ", product=" + product + ", quantity_on_sale=" + quantity_on_sale + ", price=" + price + ", cost_of_sale=" + cost_of_sale + ", total_on_sale=" + total_on_sale + ", product_total_on_sale=" + product_total_on_sale + ", timestamp=" + timestamp + ", kg=" + kg + '}';
     }
-    
-    
 }

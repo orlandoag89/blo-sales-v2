@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public final class BloSalesV2Utils {
     
-    public static final String VERSION = "v2.5.0";
+    public static final String VERSION = "v2.5.1";
     
     /** cadena vacia */
     public static final String EMPTY_STRING = "";
@@ -156,5 +156,10 @@ public final class BloSalesV2Utils {
         final var payFound = partialPayments[indexSearch].split("TIMESTAMP")[0].trim();
         return new BigDecimal(payFound);
     }
+    
+    public static String parserTimeStamp(String date) {
+        final var fullDateTime = LocalDateTime.parse(date);
+        final var onlyDate = fullDateTime.toLocalDate();
+        return onlyDate.toString();
+    }
 }
-

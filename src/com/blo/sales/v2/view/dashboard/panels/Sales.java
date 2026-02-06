@@ -352,7 +352,7 @@ public class Sales extends javax.swing.JPanel {
                 // 3. Redondeamos al final a 2 decimales
                 onSaleQuantity = cash.divide(price, 6, RoundingMode.HALF_UP)
                     //.multiply(new BigDecimal("1000"))
-                    .setScale(4, RoundingMode.HALF_UP);
+                    .setScale(3, RoundingMode.HALF_UP);
                 totalSale = totalSale.add(cash);
                 onSalePrice = cash;
             } else {
@@ -408,10 +408,13 @@ public class Sales extends javax.swing.JPanel {
             // y quitamos cualquier caracter que no sea número o punto
             final var cleanValue = rawValue.replace(",", ".");
             final var price = new BigDecimal(cleanValue);
+            
+            final var quantityBuy = tblProductsSales.getValueAt(i, 4).toString().trim();
             productInfo = new PojoSaleProductData();
             productInfo.setIdProduct((long) tblProductsSales.getValueAt(i, 0));
             productInfo.setQuantityOnSale(new BigDecimal(tblProductsSales.getValueAt(i, 2).toString()));
             productInfo.setPrice(price);
+            productInfo.setProductBuyTotal(new BigDecimal(quantityBuy));
             products.add(productInfo);
         }
         final var productsInner = new ArrayList<PojoIntSaleProductData>();

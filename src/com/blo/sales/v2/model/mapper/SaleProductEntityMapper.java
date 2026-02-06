@@ -30,6 +30,7 @@ public class SaleProductEntityMapper implements IToInner<SaleProductEntity, Pojo
         inner.setTotal_on_sale(outer.getTotalOnSale());
         inner.setQunatity_sale(outer.getQuantityOnSale());
         inner.setTimestamp(outer.getTimestap());
+        inner.setProduct_total_on_sale(outer.getProductTotalOnSale());
         return inner;
     }
 
@@ -45,6 +46,7 @@ public class SaleProductEntityMapper implements IToInner<SaleProductEntity, Pojo
         outer.setQuantityOnSale(inner.getQunatity_sale());
         outer.setTotalOnSale(inner.getTotal_on_sale());
         outer.setTimestap(inner.getTimestamp());
+        outer.setProductTotalOnSale(inner.getProduct_total_on_sale());
         return outer;
     }
     

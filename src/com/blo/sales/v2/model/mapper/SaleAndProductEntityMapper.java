@@ -32,6 +32,7 @@ public class SaleAndProductEntityMapper implements IToOuter<SaleAndProductEntity
         outer.setPrice(inner.getPrice());
         outer.setCostOfSale(inner.getCost_of_sale());
         outer.setKg(inner.isKg());
+        outer.setProductTotalOnSale(inner.getProduct_total_on_sale());
         return outer;
     }
     

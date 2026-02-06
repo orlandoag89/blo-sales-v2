@@ -1,11 +1,10 @@
 package com.blo.sales.v2.view.commons;
 
-import com.blo.sales.v2.model.impl.ProductsModelImpl;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GUILogger {
+public final class GUILogger {
 
     private static StringBuilder row;
     

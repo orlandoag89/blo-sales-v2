@@ -10,6 +10,8 @@ public class PojoIntSaleProductData {
     private BigDecimal quantityOnSale;
     
     private BigDecimal price;
+    
+    private BigDecimal productBuyTotal;
 
     public long getIdProduct() {
         return idProduct;
@@ -33,6 +35,14 @@ public class PojoIntSaleProductData {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public BigDecimal getProductBuyTotal() {
+        return productBuyTotal;
+    }
+
+    public void setProductBuyTotal(BigDecimal productBuyTotal) {
+        this.productBuyTotal = productBuyTotal;
     }
     
 }

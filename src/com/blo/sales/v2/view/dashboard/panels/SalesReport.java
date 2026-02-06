@@ -30,6 +30,7 @@ public class SalesReport extends javax.swing.JPanel {
     public SalesReport() {
         initComponents();
         retrieveData();
+        GUICommons.disabledButton(btnReportGenerator);
     }
     
     private void retrieveData() {

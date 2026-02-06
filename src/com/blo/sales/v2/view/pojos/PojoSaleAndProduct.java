@@ -18,6 +18,8 @@ public class PojoSaleAndProduct {
     
     private BigDecimal totalOnSale;
     
+    private BigDecimal productTotalOnSale;
+    
     private String timestamp;
     
     private boolean kg;
@@ -94,9 +96,17 @@ public class PojoSaleAndProduct {
         this.kg = kg;
     }
 
+    public BigDecimal getProductTotalOnSale() {
+        return productTotalOnSale;
+    }
+
+    public void setProductTotalOnSale(BigDecimal productTotalOnSale) {
+        this.productTotalOnSale = productTotalOnSale;
+    }
+
     @Override
     public String toString() {
-        return "PojoSaleAndProduct{" + "idSale=" + idSale + ", idProduct=" + idProduct + ", product=" + product + ", quantityOnSale=" + quantityOnSale + ", price=" + price + ", costOfSale=" + costOfSale + ", totalOnSale=" + totalOnSale + ", timestamp=" + timestamp + ", kg=" + kg + '}';
+        return "PojoSaleAndProduct{" + "idSale=" + idSale + ", idProduct=" + idProduct + ", product=" + product + ", quantityOnSale=" + quantityOnSale + ", price=" + price + ", costOfSale=" + costOfSale + ", totalOnSale=" + totalOnSale + ", productTotalOnSale=" + productTotalOnSale + ", timestamp=" + timestamp + ", kg=" + kg + '}';
     }
 
 }
