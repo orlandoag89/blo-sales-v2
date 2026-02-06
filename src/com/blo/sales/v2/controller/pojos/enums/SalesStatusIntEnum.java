@@ -1,0 +1,7 @@
+package com.blo.sales.v2.controller.pojos.enums;
+
+public enum SalesStatusIntEnum {
+    
+    OPEN, CLOSE, ON_CASHBOX
+    
+}
