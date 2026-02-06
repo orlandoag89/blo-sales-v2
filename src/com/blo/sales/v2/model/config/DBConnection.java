@@ -1,5 +1,6 @@
 package com.blo.sales.v2.model.config;
 
+import com.blo.sales.v2.utils.BloSalesV2Utils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -12,7 +13,8 @@ public class DBConnection {
      * 1000: DEV
      * com.blo.sales.v2.controller.impl.DebtorsControllerImpl.ID_PRODUCT_PAY
      * */
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/blo-sales-v2-pre";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/blo-sales-v2";
+    private static final String RELEASE = "RELEASE";
     private static final String USER = "root";
     private static final String PASSWORD = "";
     
@@ -26,14 +28,22 @@ public class DBConnection {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 
                 // Establecer la conexión
-                conexion = DriverManager.getConnection(URL, USER, PASSWORD);
-                final var env = URL.substring(URL.lastIndexOf("-") + 1);
+                conexion = DriverManager.getConnection(getUrl(), USER, PASSWORD);
+                final var env = getUrl().substring(getUrl().lastIndexOf("-") + 1);
                 System.out.println("Conexi\u00f3n establecida con \u00e9xito. [" + env + "]");
             }
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("Error al conectar: " + e.getMessage());
         }
         return conexion;
+    }
+    
+    private static String getUrl() {
+        var subfijo = "-dev";
+        if (BloSalesV2Utils.VERSION.lastIndexOf(RELEASE) == 7) {
+            subfijo = "-pre";
+        }
+        return URL.concat(subfijo);
     }
     
     /**
