@@ -359,6 +359,10 @@ public class Sales extends javax.swing.JPanel {
                 // Si no empieza con P, se asume que la cantidad ya es numérica (gramos o piezas)
                 onSaleQuantity = new BigDecimal(quantity);
                 onSalePrice = productFound.getPrice().multiply(onSaleQuantity);
+                
+                if (productFound.isKg()) {
+                    onSalePrice = onSalePrice.setScale(2, RoundingMode.HALF_UP);
+                }
                 totalSale = totalSale.add(onSalePrice);
             }
             final var model = (DefaultTableModel) tblProductsSales.getModel();
