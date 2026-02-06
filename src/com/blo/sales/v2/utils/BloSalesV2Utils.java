@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public final class BloSalesV2Utils {
     
-    public static final String VERSION = "v2.5.2";
+    public static final String VERSION = "v2.5.2-RELEASE";
     
     /** cadena vacia */
     public static final String EMPTY_STRING = "";
@@ -163,3 +163,4 @@ public final class BloSalesV2Utils {
         return onlyDate.toString();
     }
 }
+
