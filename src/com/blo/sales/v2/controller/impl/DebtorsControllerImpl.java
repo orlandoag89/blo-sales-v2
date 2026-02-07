@@ -77,6 +77,7 @@ public class DebtorsControllerImpl implements IDebtorsController {
         item.setIdProduct(productPay.getIdProduct());
         item.setPrice(productPay.getPrice());
         item.setQuantityOnSale(BigDecimal.ZERO);
+        item.setProductBuyTotal(pay);
         productsLst.add(item);
         salesController.registerSale(pay, productsLst, idUser);
         // validar que el pago no cubre toda la deuda

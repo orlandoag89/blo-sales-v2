@@ -77,6 +77,9 @@ public class SelectorDialog<T> extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtSearchTermKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchTermKeyReleased
+        if (evt.getKeyCode() == GUICommons.ESCAPE_KEY) {
+            this.dispose();
+        }
         final var txtSearch = txtSearchTerm.getText().trim();
         // 1. Limpiamos el modelo actual
         modeloLista.clear();
