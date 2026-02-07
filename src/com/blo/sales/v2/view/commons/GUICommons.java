@@ -38,6 +38,8 @@ public final class GUICommons {
     /** tecla enter */
     public static final int ENTER_KEY_CODE = 10;
     
+    public static final int F3_SEARCH = 114;
+    
     private static final int WIDTH = 700;
     
     private static final int HEIGHT = 500;

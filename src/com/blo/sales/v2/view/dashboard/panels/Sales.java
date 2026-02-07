@@ -101,7 +101,6 @@ public class Sales extends javax.swing.JPanel {
         nmbQuantity = new javax.swing.JTextField();
         txtSearch = new javax.swing.JTextField();
         lblBarCode = new javax.swing.JLabel();
-        btnByName = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblProductsSales = new javax.swing.JTable();
 
@@ -148,14 +147,7 @@ public class Sales extends javax.swing.JPanel {
             }
         });
 
-        lblBarCode.setText("Código de barras / nombre");
-
-        btnByName.setText("Por nombre");
-        btnByName.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnByNameActionPerformed(evt);
-            }
-        });
+        lblBarCode.setText("Código de barras / nombre (F3)");
 
         javax.swing.GroupLayout pnlSearchLayout = new javax.swing.GroupLayout(pnlSearch);
         pnlSearch.setLayout(pnlSearchLayout);
@@ -170,8 +162,6 @@ public class Sales extends javax.swing.JPanel {
                 .addGroup(pnlSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlSearchLayout.createSequentialGroup()
                         .addComponent(lblBarCode)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnByName)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(txtSearch))
                 .addGap(6, 6, 6))
@@ -181,7 +171,6 @@ public class Sales extends javax.swing.JPanel {
             .addGroup(pnlSearchLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnlSearchLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnByName)
                     .addComponent(lblBarCode)
                     .addComponent(lblQuantity))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -225,7 +214,7 @@ public class Sales extends javax.swing.JPanel {
                 .addGap(4, 4, 4)
                 .addComponent(pnlSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 314, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -235,7 +224,7 @@ public class Sales extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
-        if (evt.getKeyCode() == 10) {
+        if (evt.getKeyCode() == GUICommons.ENTER_KEY_CODE) {
             try {
                 final var termToSearch = GUICommons.getTextFromField(txtSearch, true);
                 /** busqueda por codigo de barras */
@@ -248,6 +237,22 @@ public class Sales extends javax.swing.JPanel {
                 CommonAlerts.openError(ex.getMessage());
             }
             
+        }
+        if (evt.getKeyCode() == GUICommons.F3_SEARCH) {
+            final var productsString = products.stream()
+                .map(item -> item.toString())
+                .collect(Collectors.toList());
+               /** abre un cuadro de dialogo */
+               final var dialog = new SelectorDialog<>(
+                    this,
+                    "Selecciona un busqueda manual de producto",
+                    productsString,
+                    item -> {
+                        filterProduct(item, false);
+                        GUICommons.setTextToField(txtSearch, productFound.getProduct());
+                        addItemToList();
+                    });
+               dialog.setVisible(true);
         }
     }//GEN-LAST:event_txtSearchKeyReleased
 
@@ -264,23 +269,6 @@ public class Sales extends javax.swing.JPanel {
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnCompleteActionPerformed
-
-    private void btnByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnByNameActionPerformed
-       final var productsString = products.stream()
-        .map(item -> item.toString())
-        .collect(Collectors.toList());
-       /** abre un cuadro de dialogo */
-       final var dialog = new SelectorDialog<>(
-            this,
-            "Selecciona un busqueda manual de producto",
-            productsString,
-            item -> {
-                filterProduct(item, false);
-                GUICommons.setTextToField(txtSearch, productFound.getProduct());
-                addItemToList();
-            });
-       dialog.setVisible(true);
-    }//GEN-LAST:event_btnByNameActionPerformed
 
     private void btnDebtorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDebtorsActionPerformed
         try {
@@ -448,7 +436,6 @@ public class Sales extends javax.swing.JPanel {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnByName;
     private javax.swing.JButton btnComplete;
     private javax.swing.JButton btnDebtors;
     private javax.swing.JScrollPane jScrollPane2;
