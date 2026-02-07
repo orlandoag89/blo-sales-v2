@@ -5,7 +5,6 @@ import com.blo.sales.v2.controller.impl.SalesControllerImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
-import com.blo.sales.v2.plugins.sales.report.BloSalesV2SalesReportPlugin;
 import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.WrapperPojoSalesAndStockMapper;
 import com.blo.sales.v2.view.pojos.PojoSaleAndProduct;
@@ -30,7 +29,6 @@ public class SalesReport extends javax.swing.JPanel {
     public SalesReport() {
         initComponents();
         retrieveData();
-        GUICommons.disabledButton(btnReportGenerator);
     }
     
     private void retrieveData() {
@@ -56,7 +54,6 @@ public class SalesReport extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblSales = new javax.swing.JTable();
         lblTotalBruto = new javax.swing.JLabel();
-        btnReportGenerator = new javax.swing.JButton();
 
         lblInit.setText("Fecha inicio");
 
@@ -82,13 +79,6 @@ public class SalesReport extends javax.swing.JPanel {
         ));
         jScrollPane1.setViewportView(tblSales);
 
-        btnReportGenerator.setText("Descargar info");
-        btnReportGenerator.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnReportGeneratorActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -106,13 +96,8 @@ public class SalesReport extends javax.swing.JPanel {
                         .addComponent(btnFilterNow))
                     .addComponent(lblEnd, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(lblTotalBruto, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
-                        .addGap(508, 508, 508))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnReportGenerator)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addComponent(lblTotalBruto, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                .addGap(508, 508, 508))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
@@ -130,9 +115,7 @@ public class SalesReport extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(dtChooserInit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(dtChooserEnd, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnFilterNow)
-                        .addComponent(btnReportGenerator)))
+                    .addComponent(btnFilterNow))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -161,17 +144,6 @@ public class SalesReport extends javax.swing.JPanel {
         final var endDate = GUICommons.getDateFromDateChooser(dtChooserEnd);
         applyFilter(initDate, endDate);
     }//GEN-LAST:event_btnFilterNowActionPerformed
-
-    private void btnReportGeneratorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportGeneratorActionPerformed
-        try {
-            final var model = (DefaultTableModel) tblSales.getModel();
-            final var tmp = parserTableToLst(model);
-            BloSalesV2SalesReportPlugin.createReport(tmp, getBrutalTotalFromLst(parserTableToLst(model)));
-        } catch (BloSalesV2Exception ex) {
-            logger.error(ex.getMessage());
-            CommonAlerts.openError(ex.getMessage());
-        }
-    }//GEN-LAST:event_btnReportGeneratorActionPerformed
 
     public void applyFilter(String initDate, String endDate) {
         final var model = (DefaultTableModel) tblSales.getModel();
@@ -218,8 +190,8 @@ public class SalesReport extends javax.swing.JPanel {
             item.setQuantityOnSale(new BigDecimal(model.getValueAt(modelIndex, 3).toString()));
             item.setPrice(new BigDecimal(model.getValueAt(modelIndex, 4).toString()));
             item.setCostOfSale(new BigDecimal(model.getValueAt(modelIndex, 5).toString()));
-            item.setTotalOnSale(new BigDecimal(model.getValueAt(modelIndex, 6).toString()));
-            item.setProductTotalOnSale(new BigDecimal(model.getValueAt(modelIndex, 7).toString()));
+            item.setProductTotalOnSale(new BigDecimal(model.getValueAt(modelIndex, 6).toString()));
+            item.setTotalOnSale(new BigDecimal(model.getValueAt(modelIndex, 7).toString()));
             item.setTimestamp(model.getValueAt(modelIndex, 8).toString());
             item.setKg((boolean) model.getValueAt(modelIndex, 9));
 
@@ -275,7 +247,6 @@ public class SalesReport extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFilterNow;
-    private javax.swing.JButton btnReportGenerator;
     private com.toedter.calendar.JDateChooser dtChooserEnd;
     private com.toedter.calendar.JDateChooser dtChooserInit;
     private javax.swing.JPanel jPanel1;

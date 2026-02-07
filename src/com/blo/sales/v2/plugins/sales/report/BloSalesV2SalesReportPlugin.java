@@ -22,7 +22,7 @@ public final class BloSalesV2SalesReportPlugin {
     private BloSalesV2SalesReportPlugin() { }
     
     public static void createReport(WrapperPojoSalesAndStock lst, BigDecimal total) throws BloSalesV2Exception {
-        final var rows = new ArrayList<RowSaleReportData>();
+        /*final var rows = new ArrayList<RowSaleReportData>();
         RowSaleReportData r = null;
         for (final var item: lst.getSalesDetail()) {
             r = new RowSaleReportData();
@@ -38,10 +38,10 @@ public final class BloSalesV2SalesReportPlugin {
             }
             r.setProfit(profit);
             rows.add(r);
-        }
+        }*/
         
         
-        /*System.out.println(lst);
+        System.out.println(lst);
         //crear una lista con los ids no duplicados
         final var idsUniques = lst.getSalesDetail().stream().collect(Collectors.toMap(
                 PojoSaleAndProduct::getIdSale, // Clave para identificar duplicados
@@ -63,8 +63,9 @@ public final class BloSalesV2SalesReportPlugin {
         final var rows = new ArrayList<RowSaleReportData>();
         RowSaleReportData r = null;
         for (List<PojoSaleAndProduct> entry: salesDetail.values()) {
+            System.out.println(entry);
             // validar si hay ventas que tienen productos por kg
-            final var totalOnSale = entry.get(0).getTotalOnSale();
+            /*final var totalOnSale = entry.get(0).getTotalOnSale();
             final var saleWithProductKg = entry.stream().filter(s -> s.isKg()).collect(Collectors.toList());
             // caso A: no hay productos por kg en la venta
             if (saleWithProductKg.isEmpty()) {
@@ -73,7 +74,7 @@ public final class BloSalesV2SalesReportPlugin {
                     rows.add(r);
                 }
             }
-            System.out.println("");
+            System.out.println("");*/
         }
         /*final var rows = new ArrayList<RowSaleReportData>();
         var totalCostOfSale = BigDecimal.ZERO;
