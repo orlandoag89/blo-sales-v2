@@ -36,9 +36,11 @@ public final class GUICommons {
     public static final int SUPR_KEY = 127;
     
     /** tecla enter */
-    public static final int ENTER_KEY_CODE = 10;
+    public static final int ENTER_KEY = 10;
     
-    public static final int F3_SEARCH = 114;
+    public static final int F3_SEARCH_KEY = 114;
+    
+    public static final int ESCAPE_KEY = 27;
     
     private static final int WIDTH = 700;
     

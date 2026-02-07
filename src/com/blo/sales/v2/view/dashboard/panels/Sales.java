@@ -224,7 +224,7 @@ public class Sales extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
-        if (evt.getKeyCode() == GUICommons.ENTER_KEY_CODE) {
+        if (evt.getKeyCode() == GUICommons.ENTER_KEY) {
             try {
                 final var termToSearch = GUICommons.getTextFromField(txtSearch, true);
                 /** busqueda por codigo de barras */
@@ -238,7 +238,7 @@ public class Sales extends javax.swing.JPanel {
             }
             
         }
-        if (evt.getKeyCode() == GUICommons.F3_SEARCH) {
+        if (evt.getKeyCode() == GUICommons.F3_SEARCH_KEY) {
             final var productsString = products.stream()
                 .map(item -> item.toString())
                 .collect(Collectors.toList());

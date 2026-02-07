@@ -25,7 +25,7 @@ public class SalesReport extends javax.swing.JPanel {
     
     private static final WrapperPojoSalesAndStockMapper mapper = WrapperPojoSalesAndStockMapper.getInstance();
     
-    private static final String[] titles = {"ID de venta", "ID producto", "Producto", "Cantidad en venta", "Precio", "Costo de venta", "Total", "Timestamp", "¿Por kg?"};
+    private static final String[] titles = {"ID venta", "ID producto", "Producto", "Cantidad vendida", "Precio x uni", "Costo de venta", "Precio en venta", "Total", "Timestamp", "¿Por kg?"};
 
     public SalesReport() {
         initComponents();
@@ -182,7 +182,7 @@ public class SalesReport extends javax.swing.JPanel {
         sorter.setRowFilter(new RowFilter<DefaultTableModel, Integer>() {
             @Override
             public boolean include(Entry<? extends DefaultTableModel, ? extends Integer> entry) {
-                final var dateSelected = entry.getStringValue(7).trim();
+                final var dateSelected = entry.getStringValue(8).trim();
                 if (dateSelected.isEmpty()) return false;
                 try {
                     final var strDate = dateSelected.substring(0, 10);
@@ -219,8 +219,9 @@ public class SalesReport extends javax.swing.JPanel {
             item.setPrice(new BigDecimal(model.getValueAt(modelIndex, 4).toString()));
             item.setCostOfSale(new BigDecimal(model.getValueAt(modelIndex, 5).toString()));
             item.setTotalOnSale(new BigDecimal(model.getValueAt(modelIndex, 6).toString()));
-            item.setTimestamp(model.getValueAt(modelIndex, 7).toString());
-            item.setKg((boolean) model.getValueAt(modelIndex, 8));
+            item.setProductTotalOnSale(new BigDecimal(model.getValueAt(modelIndex, 7).toString()));
+            item.setTimestamp(model.getValueAt(modelIndex, 8).toString());
+            item.setKg((boolean) model.getValueAt(modelIndex, 9));
 
             items.add(item);
         }
@@ -243,6 +244,7 @@ public class SalesReport extends javax.swing.JPanel {
                     d.getQuantityOnSale(),
                     d.getPrice(),
                     d.getCostOfSale(),
+                    d.getProductTotalOnSale(),
                     d.getTotalOnSale(),
                     d.getTimestamp(),
                     d.isKg()
