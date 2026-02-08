@@ -4,6 +4,7 @@ import com.blo.sales.v2.controller.IPricesHistoryController;
 import com.blo.sales.v2.controller.IStockPricesHistoryController;
 import com.blo.sales.v2.controller.pojos.PojoIntPriceHistory;
 import com.blo.sales.v2.controller.pojos.PojoIntStockPricesHistory;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntStockPriceHistory;
 import com.blo.sales.v2.model.IStockPricesHistoryModel;
 import com.blo.sales.v2.model.impl.StockPricesHistoryModelImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
@@ -41,6 +42,12 @@ public class StockPricesHistoryControllerImpl implements IStockPricesHistoryCont
         final var relationSaved = model.addPriceOnHistory(item);
         logger.log("item guardod [relacion precio stock] " + relationSaved.toString());
         return relationSaved;
+    }
+
+    @Override
+    public WrapperPojoIntStockPriceHistory getPriceFromProduct(long idProduct) throws BloSalesV2Exception {
+        logger.log("recuperando historial de precios " + idProduct);
+        return model.getPriceFromProduct(idProduct);
     }
 
 }

@@ -13,10 +13,12 @@ import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.commons.GUILogger;
+import com.blo.sales.v2.view.dialogs.PricesEvolutionDialog;
 import com.blo.sales.v2.view.mappers.PojoPriceHistoryMapper;
 import com.blo.sales.v2.view.mappers.ProductMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoCategoriesMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoProductsMapper;
+import com.blo.sales.v2.view.mappers.WrapperPojoStockPriceHistoryMapper;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.PojoPriceHistory;
 import com.blo.sales.v2.view.pojos.PojoProduct;
@@ -24,6 +26,8 @@ import com.blo.sales.v2.view.pojos.enums.ReasonsEnum;
 import com.blo.sales.v2.view.pojos.enums.RolesEnum;
 import com.blo.sales.v2.view.pojos.enums.TypesEnum;
 import java.math.BigDecimal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 
 public class AllProducts extends javax.swing.JPanel {
@@ -31,6 +35,8 @@ public class AllProducts extends javax.swing.JPanel {
     private static final GUILogger logger = GUILogger.getLogger(AllProducts.class.getName());
 
     private static final IProductsController productsController = ProductsControllerImpl.getInstance();
+    
+    private static IStockPricesHistoryController stockPricesHistoryController = StockPricesHistoryControllerImpl.getInstance();
     
     private static final ICategoriesController categories = CategoriesControllerImpl.getInstance();
     
@@ -42,15 +48,11 @@ public class AllProducts extends javax.swing.JPanel {
     
     private static final PojoPriceHistoryMapper priceHistoryMapper = PojoPriceHistoryMapper.getInstance();
     
-    private static IStockPricesHistoryController stockPricesHistory = StockPricesHistoryControllerImpl.getInstance();
+    private static final WrapperPojoStockPriceHistoryMapper pricesEvolutionPriceMapper = WrapperPojoStockPriceHistoryMapper.getInstance();
     
     private BigDecimal currentQuantity;
     
     private PojoLoggedInUser userData;
-    
-    private BigDecimal currentPrice;
-    
-    private BigDecimal currentCostOfSale;
     
     public AllProducts(PojoLoggedInUser userData) {
         this.userData = userData;
@@ -83,7 +85,7 @@ public class AllProducts extends javax.swing.JPanel {
         lblCostOfSale = new javax.swing.JLabel();
         lblBarCode = new javax.swing.JLabel();
         lblPrice = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnGetEvolution = new javax.swing.JButton();
 
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -136,7 +138,12 @@ public class AllProducts extends javax.swing.JPanel {
 
         lblPrice.setText("Precio");
 
-        jButton1.setText("Evolucion de costos");
+        btnGetEvolution.setText("Evolucion de costos");
+        btnGetEvolution.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGetEvolutionActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlManageProductLayout = new javax.swing.GroupLayout(pnlManageProduct);
         pnlManageProduct.setLayout(pnlManageProductLayout);
@@ -159,7 +166,7 @@ public class AllProducts extends javax.swing.JPanel {
                             .addGroup(pnlManageProductLayout.createSequentialGroup()
                                 .addComponent(btnSave)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton1)))
+                                .addComponent(btnGetEvolution)))
                         .addGap(18, 18, 18)
                         .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblBarCode)
@@ -210,7 +217,7 @@ public class AllProducts extends javax.swing.JPanel {
                 .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnSave)
-                        .addComponent(jButton1))
+                        .addComponent(btnGetEvolution))
                     .addComponent(btnCancel))
                 .addGap(32, 32, 32))
         );
@@ -295,7 +302,7 @@ public class AllProducts extends javax.swing.JPanel {
             final var itemHistory = new PojoPriceHistory();
             itemHistory.setCostOfSale(newData.getCostOfSale());
             itemHistory.setPrice(newData.getPrice());
-            stockPricesHistory.addPriceOnHistory(priceHistoryMapper.toInner(itemHistory), newData.getIdProduct());
+            stockPricesHistoryController.addPriceOnHistory(priceHistoryMapper.toInner(itemHistory), newData.getIdProduct());
             loadTitlesAndData();
             initPanelManagement();
         } catch (BloSalesV2Exception ex) {
@@ -323,6 +330,17 @@ public class AllProducts extends javax.swing.JPanel {
         }
         
     }//GEN-LAST:event_nmbQuantityKeyReleased
+
+    private void btnGetEvolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGetEvolutionActionPerformed
+        try {
+            final var idProduct = Long.parseLong(GUICommons.getTextFromField(lblIdProduct, true));
+            final var evolution = pricesEvolutionPriceMapper.toOuter(stockPricesHistoryController.getPriceFromProduct(idProduct));
+            final var dialog = new PricesEvolutionDialog(this, true, evolution);
+            dialog.setVisible(true);
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnGetEvolutionActionPerformed
 
     /** ajustar filtro de categorias */
     private void loadTitlesAndData() {
@@ -358,8 +376,6 @@ public class AllProducts extends javax.swing.JPanel {
                         productsData.getProducts().stream().filter(p -> p.getIdProduct() == id).findFirst().orElse(null);
                 if (productSelected != null) {
                     currentQuantity = productSelected.getQuantity();
-                    currentCostOfSale = productSelected.getCostOfSale();
-                    currentPrice = productSelected.getPrice();
                     GUICommons.setTextToField(txtName, productSelected.getProduct());
                     GUICommons.setTextToField(txtBarCode, productSelected.getBarCode());
                     GUICommons.setTextToField(nmbCostOfSale, productSelected.getCostOfSale() + "");
@@ -378,8 +394,6 @@ public class AllProducts extends javax.swing.JPanel {
     private void initPanelManagement() {
         pnlManageProduct.setVisible(false);
         currentQuantity = BigDecimal.ZERO;
-        currentCostOfSale = BigDecimal.ZERO;
-        currentPrice = BigDecimal.ZERO;
         /** este check estara oculto hasta que se de cambie la propiedad de cantidad */
         lstReason.setVisible(false);
         GUICommons.setTextToField(lblIdProduct, BloSalesV2Utils.EMPTY_STRING);
@@ -393,8 +407,8 @@ public class AllProducts extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnGetEvolution;
     private javax.swing.JButton btnSave;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblBarCode;
     private javax.swing.JLabel lblCostOfSale;
