@@ -90,4 +90,11 @@ public final class BloSalesV2Queries {
     public static final String DELETE_NOTE = "DELETE FROM notes WHERE notes.id_note = ?";
     
     public static final String UPDATE_NOTE = "UPDATE notes SET notes.note = ? wHERE notes.id_note = ?";
+    
+    /** hsitorial de precios */
+    public static final String INSERT_PRICE_HISTORY_ITEM = "INSERT INTO prices_history(price, cost_of_sale) VALUES (?, ?)";
+    
+    public static final String INSERT_PRICE_HISTORY_RELATIONSHIP = "INSERT INTO stock_prices_history(fk_product, fk_price_history, timestamp) VALUES(?, ?, ?)";
+    
+    public static final String RETRIEVE_STOCK_PRICE_HISTORY = "SELECT sph.id_stock_price_history, sph.timestamp, s.product, ph.price, ph.cost_of_sale FROM stock_prices_history sph INNER JOIN stock s ON sph.fk_product = s.id_product INNER JOIN prices_history ph ON ph.id_price_history = sph.fk_price_history WHERE s.id_product = ?";
 }
