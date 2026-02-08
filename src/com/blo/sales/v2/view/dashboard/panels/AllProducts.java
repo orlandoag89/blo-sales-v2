@@ -335,8 +335,12 @@ public class AllProducts extends javax.swing.JPanel {
         try {
             final var idProduct = Long.parseLong(GUICommons.getTextFromField(lblIdProduct, true));
             final var evolution = pricesEvolutionPriceMapper.toOuter(stockPricesHistoryController.getPriceFromProduct(idProduct));
-            final var dialog = new PricesEvolutionDialog(this, true, evolution);
-            dialog.setVisible(true);
+            if (evolution.getHistory() != null && !evolution.getHistory().isEmpty()) {
+                final var dialog = new PricesEvolutionDialog(this, true, evolution);
+                dialog.setVisible(true);
+            } else {
+                CommonAlerts.openError(BloSalesV2Utils.NOT_PRICES_HISTORY);
+            }
         } catch (BloSalesV2Exception ex) {
             Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
         }

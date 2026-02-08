@@ -68,6 +68,8 @@ public final class BloSalesV2Utils {
     
     public static final String REPORT_EXCEPTIONS = "¡Ups! Algo sali\u00f3 mal guardando archivo de reporte";
     
+    public static final String NOT_PRICES_HISTORY = "No hay historial a\u00fan";
+    
     public static final long DEBTORS_PAYMENTS = 1;
     
     /** codigos de error */
