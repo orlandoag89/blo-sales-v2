@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public final class BloSalesV2Utils {
     
-    public static final String VERSION = "v2.5.4-RELEASE";
+    public static final String VERSION = "v2.5.5-SNAPSHOT";
     
     /** cadena vacia */
     public static final String EMPTY_STRING = "";
@@ -67,6 +67,8 @@ public final class BloSalesV2Utils {
     public static final String SQL_EXCEPTION_MESSAGE = "¡Ups! Algo sali\u00f3 mal. Por favor, inténtalo de nuevo más tarde.";
     
     public static final String REPORT_EXCEPTIONS = "¡Ups! Algo sali\u00f3 mal guardando archivo de reporte";
+    
+    public static final String NOT_PRICES_HISTORY = "No hay historial a\u00fan";
     
     public static final long DEBTORS_PAYMENTS = 1;
     

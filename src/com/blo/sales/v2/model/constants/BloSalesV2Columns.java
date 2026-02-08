@@ -89,4 +89,7 @@ public final class BloSalesV2Columns {
     public static final String TYPE_NOTE = "type_note";
     
     public static final String PRODUCT_TOTAL_ON_SALE = "product_total_on_sale";
+    
+    public static final String ID_STOCK_PRICE_HISTORY = "id_stock_price_history";
+    
 }
