@@ -93,4 +93,9 @@ public class PojoIntProduct {
     public void setFkCategory(long fkCategory) {
         this.fkCategory = fkCategory;
     }
+
+    @Override
+    public String toString() {
+        return "PojoIntProduct{" + "idProduct=" + idProduct + ", product=" + product + ", quantity=" + quantity + ", costOfSale=" + costOfSale + ", price=" + price + ", timestamp=" + timestamp + ", kg=" + kg + ", barCode=" + barCode + ", fkCategory=" + fkCategory + '}';
+    }
 }
