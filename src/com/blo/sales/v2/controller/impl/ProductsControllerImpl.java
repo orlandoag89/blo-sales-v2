@@ -3,8 +3,10 @@ package com.blo.sales.v2.controller.impl;
 import com.blo.sales.v2.controller.ICategoriesController;
 import com.blo.sales.v2.controller.IHistoryController;
 import com.blo.sales.v2.controller.IProductsController;
+import com.blo.sales.v2.controller.IStockPricesHistoryController;
 import com.blo.sales.v2.controller.IUserController;
 import com.blo.sales.v2.controller.pojos.PojoIntMovement;
+import com.blo.sales.v2.controller.pojos.PojoIntPriceHistory;
 import com.blo.sales.v2.controller.pojos.PojoIntProduct;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntProducts;
 import com.blo.sales.v2.controller.pojos.enums.ReasonsIntEnum;
@@ -15,8 +17,11 @@ import com.blo.sales.v2.model.entities.enums.TypesEntityEnum;
 import com.blo.sales.v2.model.impl.ProductsModelImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.utils.BloSalesV2Utils;
+import com.blo.sales.v2.view.commons.GUILogger;
 
 public class ProductsControllerImpl implements IProductsController {
+    
+    private static final GUILogger logger = GUILogger.getLogger(ProductsControllerImpl.class.getName());
     
     private static final ICategoriesController categoriesController = CategoriesControllerImpl.getInstance();
     
@@ -25,6 +30,8 @@ public class ProductsControllerImpl implements IProductsController {
     private static final IUserController user = UserControllerImpl.getInstance();
     
     private static final IHistoryController historyController = HistoryControllerImpl.getInstance();
+    
+    private static final IStockPricesHistoryController historyPrices = StockPricesHistoryControllerImpl.getInstance();
     
     private static ProductsControllerImpl instance;
     
@@ -59,7 +66,13 @@ public class ProductsControllerImpl implements IProductsController {
                 BloSalesV2Utils.CODE_CATEGORY_NOT_FOUND,
                 BloSalesV2Utils.CATEGORY_NOT_FOUND
         );
-        return model.registerProduct(product);
+        final var productSaved = model.registerProduct(product);
+        logger.log("producto guardado: " + productSaved.toString());
+        final var itemPrice = new PojoIntPriceHistory();
+        itemPrice.setCostOfSale(product.getCostOfSale());
+        itemPrice.setPrice(product.getPrice());
+        historyPrices.addPriceOnHistory(itemPrice, productSaved.getIdProduct());
+        return productSaved;
     }
 
     @Override
