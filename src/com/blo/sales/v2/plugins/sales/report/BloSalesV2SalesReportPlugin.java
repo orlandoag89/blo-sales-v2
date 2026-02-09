@@ -68,21 +68,19 @@ public final class BloSalesV2SalesReportPlugin {
                 r.setPrice(item.getPrice());
                 r.setCostOfSale(item.getCostOfSale());
                 // precio total del producto en la venta
-                final var productTotalPrice = item.getProductTotalOnSale();
-                priceSum = productTotalPrice.add(priceSum);
+                //final var productTotalPrice = item.getProductTotalOnSale();
+                //priceSum = productTotalPrice.add(priceSum);
                 // recuperar ganancia
                 // multiplicar cantidad vendida X costo de venta
                 final var costOfSaleQuantitySold = item.getQuantityOnSale().multiply(item.getCostOfSale());
                 // multiplicar cantidad vendida X precio
                 final var quantitySoldPrice = item.getQuantityOnSale().multiply(item.getPrice());
+                // se recupera ganancia
                 final var ganancia = quantitySoldPrice.subtract(costOfSaleQuantitySold);
                 r.setProfit(ganancia.setScale(2, RoundingMode.HALF_UP));
                 ganan = ganan.add(ganancia).setScale(2, RoundingMode.HALF_UP);
                 if (r.getIdProduct() == PAYMENTS) {
                     ganan = item.getTotalOnSale();
-                }
-                if (item.isKg()) {
-                    ganan = ganancia;
                 }
                 rows.add(r);
             }
