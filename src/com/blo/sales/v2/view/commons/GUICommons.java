@@ -176,6 +176,10 @@ public final class GUICommons {
     public static void setTextToField(JTextArea field, String txt) {
         field.setText(txt);
     }
+    
+    public static void setTextToField(JList field) {
+        field.clearSelection();
+    }
 
     /**
      * Recupera el valor de una password
@@ -286,22 +290,6 @@ public final class GUICommons {
         return evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
                 evt.getKeyCode() == GUICommons.SUPR_KEY &&
                 conditionObligatory;
-    }
-    
-    /**
-     * Muestra un cuadro de dialogo y valida la respuesta true
-     * @param msg
-     * @return 
-     */
-    public static boolean showConfirmDialog(String msg) {
-        final var rsp = JOptionPane.showConfirmDialog(null, msg);
-        return rsp == JOptionPane.YES_OPTION;
-    }
-    
-    public static String showMessageDialog(String msg) throws BloSalesV2Exception {
-        final var mess = JOptionPane.showInputDialog(null, msg);
-        BloSalesV2Utils.validateRule(mess.trim().isBlank(), BloSalesV2Utils.COMMON_RULE_CODE, BloSalesV2Utils.INVALID_TEXT);
-        return mess.trim();
     }
     
     /**

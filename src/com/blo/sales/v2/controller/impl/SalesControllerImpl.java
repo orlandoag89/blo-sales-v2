@@ -33,6 +33,7 @@ import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUILogger;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SalesControllerImpl implements ISalesController {
     
@@ -230,6 +231,13 @@ public class SalesControllerImpl implements ISalesController {
     @Override
     public PojoIntSaleDeletedDetail deleteSaleProduct(long idUser, long idSale, long idProduct, String reason) throws BloSalesV2Exception {
         final var output = new PojoIntSaleDeletedDetail();
+        // recuperar todas las ventas
+        final var salesLives = salesProductsController.getSalesStockLiveByIdSale(idSale);
+        BloSalesV2Utils.validateRule(
+            salesLives.getSalesStock().size() - 1 < 0,
+            BloSalesV2Utils.CODE_SALES_STOCK_EMPTY,
+            BloSalesV2Utils.ERROR_SALES_STOCK_EMPTY
+        );        
         // validar que existe la relacion
         final var relationFound = salesProductsController.getRelationship(idSale, idProduct);
         BloSalesV2Utils.validateRule(
@@ -282,18 +290,18 @@ public class SalesControllerImpl implements ISalesController {
         output.setReason(reason);
         output.setTimestamp(timestamp);
         
-        // recuperar todas las ventas
-        final var salesLives = salesProductsController.getSalesStockLiveByIdSale(idSale);
-        BloSalesV2Utils.validateRule(
-            salesLives.getSalesStock() == null ||salesLives.getSalesStock().isEmpty(),
-            BloSalesV2Utils.CODE_SALES_STOCK_EMPTY,
-            BloSalesV2Utils.ERROR_SALES_STOCK_EMPTY
-        );
+        final var reduced = salesLives.getSalesStock().stream().
+                filter(s -> s.getFkProduct() != idProduct).
+                collect(Collectors.toList());
+        
+        logger.log(String.format("elementos restantes para actualizar %s", reduced.size()));
         
         // actualizar cantidades en todas las ventas
-        for (final var item: salesLives.getSalesStock()) {
-            item.setTotalOnSale(totalOnSale);
-            salesProductsController.updateRelationship(item);
+        if (reduced != null && !reduced.isEmpty()) {
+            for (final var item: reduced) {
+                item.setTotalOnSale(totalOnSale);
+                salesProductsController.updateRelationship(item);
+            }
         }
         return salesDeletedController.addSaleDeletedDetail(output);
     }

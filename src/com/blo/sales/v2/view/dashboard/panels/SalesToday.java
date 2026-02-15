@@ -12,8 +12,6 @@ import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.PojoSaleAndProduct;
 import com.blo.sales.v2.view.pojos.WrapperPojoSalesAndStock;
 import java.math.BigDecimal;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
 
@@ -31,7 +29,7 @@ public class SalesToday extends javax.swing.JPanel {
         initComponents();
         loadData();
         GUICommons.addDoubleClickOnTable(tblSummary, id -> {
-            final var deletedAccept = GUICommons.showConfirmDialog("Está por cancelar esta venta. \n ¿Continuar?");
+            final var deletedAccept = CommonAlerts.showConfirmDialog("Está por cancelar esta venta. \n ¿Continuar?");
             if (deletedAccept) {
                 final var rowSelected = tblSummary.getSelectedRow();
                 if (rowSelected != -1) {
@@ -39,10 +37,11 @@ public class SalesToday extends javax.swing.JPanel {
                         final var model = tblSummary.getModel();
                         final var idSale = Long.parseLong(model.getValueAt(rowSelected, 0).toString());
                         final var idProduct = Long.parseLong(model.getValueAt(rowSelected, 1).toString());
-                        final var message = GUICommons.showMessageDialog("Por favor escribe el motivo de la baja");
+                        final var message = CommonAlerts.showMessageDialog("Por favor escribe el motivo de la baja");
                         salesController.deleteSaleProduct(userData.getIdUser(), idSale, idProduct, message);
+                        loadData();
                     } catch (BloSalesV2Exception ex) {
-                        Logger.getLogger(SalesToday.class.getName()).log(Level.SEVERE, null, ex);
+                        CommonAlerts.openError(ex.getMessage());
                     }
                 }
             }
