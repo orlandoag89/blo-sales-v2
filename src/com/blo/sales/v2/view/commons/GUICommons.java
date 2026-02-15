@@ -178,7 +178,7 @@ public final class GUICommons {
     }
     
     public static void setTextToField(JList field) {
-        field.clearSelection();
+        field.setListData(new String[0]);
     }
 
     /**
