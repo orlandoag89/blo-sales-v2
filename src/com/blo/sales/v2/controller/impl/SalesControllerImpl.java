@@ -265,7 +265,7 @@ public class SalesControllerImpl implements ISalesController {
         // restar el precio del producto a la venta
         var totalOnSale = relationFound.getTotalOnSale();
         totalOnSale = totalOnSale.subtract(productFound.getPrice());
-        relationFound.setTotalOnSale(totalOnSale);
+        relationFound.setTotalOnSale(BigDecimal.ZERO);
         relationFound.setIsLive(false);
         relationFound.setTimestap(timestamp);
         relationFound.setProductTotalOnSale(BigDecimal.ZERO);
@@ -285,19 +285,22 @@ public class SalesControllerImpl implements ISalesController {
         currentCashbox.setTimestamp(timestamp);
         logger.log(String.format("datos de la caja actualizar %s", currentCashbox.toString()));
         cashboxController.updateCAshbox(currentCashbox, currentCashbox.getIdCashbox());
+    
         output.setFkSaleProduct(relationFound.getIdSaleProduct());
         output.setFkUser(idUser);
         output.setReason(reason);
         output.setTimestamp(timestamp);
         
+        // lista de elementos que no seran actualizados
         final var reduced = salesLives.getSalesStock().stream().
                 filter(s -> s.getFkProduct() != idProduct).
                 collect(Collectors.toList());
         
         logger.log(String.format("elementos restantes para actualizar %s", reduced.size()));
         
-        // actualizar cantidades en todas las ventas
-        if (reduced != null && !reduced.isEmpty()) {
+        // evita borrar actualizaciones
+        if (!reduced.isEmpty()) {
+            // actualizar cantidades en todas las ventas
             for (final var item: reduced) {
                 item.setTotalOnSale(totalOnSale);
                 salesProductsController.updateRelationship(item);
