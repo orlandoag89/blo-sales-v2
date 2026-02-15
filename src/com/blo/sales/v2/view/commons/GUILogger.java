@@ -27,29 +27,15 @@ public final class GUILogger {
     }
     
     public void error(String str) {
-        row.append(BloSalesV2Utils.getTimestamp());
-        row.append("[");
-        row.append(className);
-        row.append("]");
-        row.append(" ERROR ");
-        row.append("-");
-        row.append(" ");
-        row.append(str);
-        row.append("\n");
-        Logger.getLogger(className).log(Level.SEVERE, null, str);
+        final var _str = String.format("%s [%s] ERROR - %s \n", BloSalesV2Utils.getTimestamp(), className, str);
+        row.append(_str);
+        Logger.getLogger(className).log(Level.SEVERE, _str);
     }
     
     public void log(String str) {
-        row.append(BloSalesV2Utils.getTimestamp());
-        row.append("[");
-        row.append(className);
-        row.append("]");
-        row.append(" INFO ");
-        row.append("-");
-        row.append(" ");
-        row.append(str);
-        row.append("\n");
-        Logger.getLogger(className).log(Level.INFO, null, str);
+        final var _str = String.format("%s [%s] INFO - %s \n", BloSalesV2Utils.getTimestamp(), className, str);
+        row.append(_str);
+        Logger.getLogger(className).log(Level.INFO, _str);
     }
     
     public String getLogs() {

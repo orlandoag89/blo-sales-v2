@@ -46,9 +46,11 @@ public final class BloSalesV2Queries {
     
     public static final String SELECT_SALES_DETAIL = "SELECT s.id_sale, st.id_product, st.product, ps.quantity_sale, st.price, st.cost_of_sale, ps.total_on_sale, ps.timestamp, st.is_kg, ps.product_total_on_sale FROM sales s INNER JOIN sale_product ps ON s.id_sale = ps.fk_sale INNER JOIN stock st ON ps.fk_product = st.id_product";
     
-    public static final String SELECT_SALE_CLOSED = "SELECT s.id_sale, st.id_product, st.product, ps.quantity_sale, st.price, st.cost_of_sale, ps.total_on_sale, ps.timestamp, ps.product_total_on_sale FROM sales s INNER JOIN sale_product ps ON s.id_sale = ps.fk_sale INNER JOIN stock st ON ps.fk_product = st.id_product WHERE s.sale_status = ? AND ps.is_live = true";
+    public static final String SELECT_SALE_CLOSED = "SELECT s.id_sale, st.id_product, st.product, ps.quantity_sale, st.price, st.cost_of_sale, ps.total_on_sale, ps.timestamp, ps.product_total_on_sale FROM sales s INNER JOIN sale_product ps ON s.id_sale = ps.fk_sale INNER JOIN stock st ON ps.fk_product = st.id_product WHERE s.sale_status = ? AND ps.is_live = 1";
     
     public static final String SELECT_SALES_PRODUCT = "SELECT sp.id_sale_product, sp.fk_sale, sp.fk_product, sp.quantity_sale, sp.total_on_sale, sp.product_total_on_sale, sp.timestamp, sp.is_live FROM sale_product sp WHERE sp.fk_sale = ? AND sp.fk_product = ?";
+    
+    public static final String SELECT_SALES_PRODUCT_BY_FK_SALE = "SELECT sp.id_sale_product, sp.fk_sale, sp.fk_product, sp.quantity_sale, sp.total_on_sale, sp.product_total_on_sale, sp.timestamp, sp.is_live FROM sale_product sp WHERE sp.fk_sale = ? AND sp.is_live = true";
     
     public static final String UPDATE_SALE_PRODUCT_RELATIONSHIP = "UPDATE sale_product SET quantity_sale = ?, total_on_sale = ?, product_total_on_sale = ?, timestamp = ?, is_live = ? WHERE id_sale_product = ?";
     

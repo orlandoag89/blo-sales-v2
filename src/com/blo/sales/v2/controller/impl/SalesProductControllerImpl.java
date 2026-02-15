@@ -2,6 +2,7 @@ package com.blo.sales.v2.controller.impl;
 
 import com.blo.sales.v2.controller.ISalesProductController;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProduct;
+import com.blo.sales.v2.controller.pojos.WrapperPojoIntSaleStock;
 import com.blo.sales.v2.model.ISaleProductModel;
 import com.blo.sales.v2.model.impl.SaleProductModelImpl;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
@@ -40,6 +41,12 @@ public class SalesProductControllerImpl implements ISalesProductController {
     public PojoIntSaleProduct updateRelationship(PojoIntSaleProduct data) throws BloSalesV2Exception {
         logger.log("Actualizando relacion");
         return model.updateRelationship(data);
+    }
+
+    @Override
+    public WrapperPojoIntSaleStock getSalesStockLiveByIdSale(long idSale) throws BloSalesV2Exception {
+        logger.log(String.format("recuperando todas las ventas de %s", idSale));
+        return model.getSalesStockLiveByIdSale(idSale);
     }
     
 }

@@ -96,4 +96,6 @@ public final class BloSalesV2Columns {
     
     public static final String FK_PRODUCT = "fk_product";
     
+    public static final String IS_LIVE = "is_live";
+    
 }

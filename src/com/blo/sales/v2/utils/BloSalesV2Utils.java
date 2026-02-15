@@ -74,6 +74,8 @@ public final class BloSalesV2Utils {
     
     public static final String NOT_PRICES_HISTORY = "No hay historial a\u00fan";
     
+    public static final String ERROR_SALES_STOCK_EMPTY = "No hay relaci\u00f3n entre venta y producto";
+    
     public static final long DEBTORS_PAYMENTS = 1;
     
     /** codigos de error */
@@ -112,6 +114,8 @@ public final class BloSalesV2Utils {
     public static final String CODE_SALES_PRODUCT_NOT_FOUND = "016";
     
     public static final String CODE_CASHBOX_NOT_DEVOLUTION = "017";
+    
+    public static final String CODE_SALES_STOCK_EMPTY = "016";
     
     public static final String FORMAT_DATE = "yyyy-MM-dd";
     

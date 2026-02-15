@@ -232,17 +232,28 @@ public class SalesControllerImpl implements ISalesController {
         final var output = new PojoIntSaleDeletedDetail();
         // validar que existe la relacion
         final var relationFound = salesProductsController.getRelationship(idSale, idProduct);
-        BloSalesV2Utils.validateRule(relationFound == null, BloSalesV2Utils.CODE_SALES_PRODUCT_NOT_FOUND, BloSalesV2Utils.SALES_PRODUCT_NOT_FOUND);
+        BloSalesV2Utils.validateRule(
+                relationFound == null,
+                BloSalesV2Utils.CODE_SALES_PRODUCT_NOT_FOUND,
+                BloSalesV2Utils.SALES_PRODUCT_NOT_FOUND
+        );
+        
         // validar producto
         final var productFound = productsController.getProductById(relationFound.getFkProduct());
-        BloSalesV2Utils.validateRule(productFound == null, BloSalesV2Utils.CODE_PRODUCT_NOT_FOUND, BloSalesV2Utils.ERROR_PRODUCT_NOT_FOUND);
+        BloSalesV2Utils.validateRule(
+                productFound == null,
+                BloSalesV2Utils.CODE_PRODUCT_NOT_FOUND,
+                BloSalesV2Utils.ERROR_PRODUCT_NOT_FOUND
+        );
         final var timestamp = BloSalesV2Utils.getTimestamp();
+        
         // agregar el producto al stock
         var productQuantityOnSale = relationFound.getQuantityOnSale();
         productQuantityOnSale = productFound.getQuantity().add(productQuantityOnSale);
         productFound.setQuantity(productQuantityOnSale);
         logger.log(String.format("Product data [%s]", productFound.toString()));
         productsController.updateProductInfo(productFound, ReasonsIntEnum.DEVOLUTION, idUser, TypesIntEnum.INPUT);
+        
         // restar el precio del producto a la venta
         var totalOnSale = relationFound.getTotalOnSale();
         totalOnSale = totalOnSale.subtract(productFound.getPrice());
@@ -253,9 +264,14 @@ public class SalesControllerImpl implements ISalesController {
         relationFound.setQuantityOnSale(BigDecimal.ZERO);
         logger.log(String.format("guardando datos [%s]", relationFound.toString()));
         salesProductsController.updateRelationship(relationFound);
+        
         // restar el dinero de la venta a la caja
         final var currentCashbox = cashboxController.getOpenCashbox();
-        BloSalesV2Utils.validateRule(currentCashbox == null, BloSalesV2Utils.CODE_CASHBOX_NOT_DEVOLUTION, BloSalesV2Utils.ERROR_CASHBOX_NOT_DEVOLUTION);
+        BloSalesV2Utils.validateRule(
+                currentCashbox == null,
+                BloSalesV2Utils.CODE_CASHBOX_NOT_DEVOLUTION,
+                BloSalesV2Utils.ERROR_CASHBOX_NOT_DEVOLUTION
+        );
         var currentTotal = currentCashbox.getAmount().subtract(productFound.getPrice());
         currentCashbox.setAmount(currentTotal);
         currentCashbox.setTimestamp(timestamp);
@@ -265,6 +281,20 @@ public class SalesControllerImpl implements ISalesController {
         output.setFkUser(idUser);
         output.setReason(reason);
         output.setTimestamp(timestamp);
+        
+        // recuperar todas las ventas
+        final var salesLives = salesProductsController.getSalesStockLiveByIdSale(idSale);
+        BloSalesV2Utils.validateRule(
+            salesLives.getSalesStock() == null ||salesLives.getSalesStock().isEmpty(),
+            BloSalesV2Utils.CODE_SALES_STOCK_EMPTY,
+            BloSalesV2Utils.ERROR_SALES_STOCK_EMPTY
+        );
+        
+        // actualizar cantidades en todas las ventas
+        for (final var item: salesLives.getSalesStock()) {
+            item.setTotalOnSale(totalOnSale);
+            salesProductsController.updateRelationship(item);
+        }
         return salesDeletedController.addSaleDeletedDetail(output);
     }
     
