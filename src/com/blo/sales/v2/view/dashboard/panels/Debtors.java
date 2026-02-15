@@ -279,10 +279,14 @@ public class Debtors extends javax.swing.JPanel {
 
     private void btnPayallActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPayallActionPerformed
         try {
-            if (GUICommons.showConfirmDialog("¿Seguro que deseas pagar toda la cuenta?")) {
+            if (CommonAlerts.showConfirmDialog("¿Seguro que deseas pagar toda la cuenta?")) {
                 debtors.addPayment(debtorSelected.getDebt(), userData.getIdUser(), debtorSelected.getIdDebtor());
                 loadDataAndTitles(retrieveDebtorsDetails());
                 debtorSelected = null;
+                GUICommons.setTextToField(txtName, BloSalesV2Utils.EMPTY_STRING);
+                GUICommons.setTextToField(nmbPay, BloSalesV2Utils.EMPTY_STRING);
+                GUICommons.setTextToField(areaPayments, BloSalesV2Utils.EMPTY_STRING);
+                GUICommons.setTextToField(lstProducts);
             }
         } catch (BloSalesV2Exception ex) {
             logger.error(ex.getMessage());

@@ -2,6 +2,7 @@ package com.blo.sales.v2.controller;
 
 import com.blo.sales.v2.controller.pojos.PojoIntDebtor;
 import com.blo.sales.v2.controller.pojos.PojoIntSale;
+import com.blo.sales.v2.controller.pojos.PojoIntSaleDeletedDetail;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntSales;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntSalesAndStock;
@@ -25,4 +26,6 @@ public interface ISalesController {
     WrapperPojoIntSales retrieveSalesDataByStatus(SalesStatusIntEnum saleStatus) throws BloSalesV2Exception;
     
     boolean setCashboxSale(long idSale) throws BloSalesV2Exception;
+    
+    PojoIntSaleDeletedDetail deleteSaleProduct(long idUser, long idSale, long idProduct, String reason) throws BloSalesV2Exception;
 }

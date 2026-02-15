@@ -96,13 +96,15 @@ public final class GUICommons {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                final var fila = table.getSelectedRow();
-                if (fila != -1) {
-                    // ¡Importante! Convertir el índice por si la tabla está filtrada
-                    final var filaModelo = table.convertRowIndexToModel(fila);
-                    // Recuperar el ID (suponiendo que está en la columna 0)
-                    T id = (T) table.getModel().getValueAt(filaModelo, 0);
-                    action.accept(id);
+                if (evt.getClickCount() == 2) {
+                    final var fila = table.getSelectedRow();
+                    if (fila != -1) {
+                        // ¡Importante! Convertir el índice por si la tabla está filtrada
+                        final var filaModelo = table.convertRowIndexToModel(fila);
+                        // Recuperar el ID (suponiendo que está en la columna 0)
+                        T id = (T) table.getModel().getValueAt(filaModelo, 0);
+                        action.accept(id);
+                    }
                 }
             }
         });
@@ -173,6 +175,10 @@ public final class GUICommons {
     
     public static void setTextToField(JTextArea field, String txt) {
         field.setText(txt);
+    }
+    
+    public static void setTextToField(JList field) {
+        field.setListData(new String[0]);
     }
 
     /**
@@ -284,16 +290,6 @@ public final class GUICommons {
         return evt.getKeyCode() == GUICommons.REMVOE_KEY_CODE ||
                 evt.getKeyCode() == GUICommons.SUPR_KEY &&
                 conditionObligatory;
-    }
-    
-    /**
-     * Muestra un cuadro de dialogo y valida la respuesta true
-     * @param msg
-     * @return 
-     */
-    public static boolean showConfirmDialog(String msg) {
-        final var rsp = JOptionPane.showConfirmDialog(null, msg);
-        return rsp == JOptionPane.YES_OPTION;
     }
     
     /**

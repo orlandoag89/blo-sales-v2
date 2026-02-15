@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public final class BloSalesV2Utils {
     
-    public static final String VERSION = "v2.5.6-RELEASE";
+    public static final String VERSION = "v2.5.7-SNAPSHOT";
     
     /** cadena vacia */
     public static final String EMPTY_STRING = "";
@@ -39,6 +39,10 @@ public final class BloSalesV2Utils {
     public static final String ERROR_CATEGORY_NOT_FOUND = "Categor\u00eda no encontrada";
     
     public static final String ERROR_PRODUCT_NOT_FOUND = "Producto no encontrado";
+    
+    public static final String SALES_PRODUCT_NOT_FOUND = "Relaci\u00f3n venta - producto no encontrada";
+    
+    public static final String ERROR_CASHBOX_NOT_DEVOLUTION = "Actualmente no hay una caja abierta.\nNo se permite hacer devoluci\u00f3n sin caja abierta.";
     
     public static final String USER_NOT_FOUND = "Usuario no encontrado";
     
@@ -69,6 +73,8 @@ public final class BloSalesV2Utils {
     public static final String REPORT_EXCEPTIONS = "¡Ups! Algo sali\u00f3 mal guardando archivo de reporte";
     
     public static final String NOT_PRICES_HISTORY = "No hay historial a\u00fan";
+    
+    public static final String ERROR_SALES_STOCK_EMPTY = "No hay relaci\u00f3n entre venta y producto";
     
     public static final long DEBTORS_PAYMENTS = 1;
     
@@ -104,6 +110,12 @@ public final class BloSalesV2Utils {
     public static final String CODE_NOTE_TYPE_NO_SELECTED = "014";
     
     public static final String CODE_PRODUCT_NOT_SELECTED = "015";
+    
+    public static final String CODE_SALES_PRODUCT_NOT_FOUND = "016";
+    
+    public static final String CODE_CASHBOX_NOT_DEVOLUTION = "017";
+    
+    public static final String CODE_SALES_STOCK_EMPTY = "016";
     
     public static final String FORMAT_DATE = "yyyy-MM-dd";
     
