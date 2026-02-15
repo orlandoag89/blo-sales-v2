@@ -5,6 +5,7 @@ import com.blo.sales.v2.controller.IDebtorsController;
 import com.blo.sales.v2.controller.IDebtorsSalesController;
 import com.blo.sales.v2.controller.IHistoryController;
 import com.blo.sales.v2.controller.IProductsController;
+import com.blo.sales.v2.controller.ISaleDeletedDetailController;
 import com.blo.sales.v2.controller.ISalesController;
 import com.blo.sales.v2.controller.ISalesProductController;
 import com.blo.sales.v2.controller.IUserController;
@@ -14,6 +15,7 @@ import com.blo.sales.v2.controller.pojos.PojoIntDebtorSale;
 import com.blo.sales.v2.controller.pojos.PojoIntMovement;
 import com.blo.sales.v2.controller.pojos.PojoIntProduct;
 import com.blo.sales.v2.controller.pojos.PojoIntSale;
+import com.blo.sales.v2.controller.pojos.PojoIntSaleDeletedDetail;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProduct;
 import com.blo.sales.v2.controller.pojos.PojoIntSaleProductData;
 import com.blo.sales.v2.controller.pojos.WrapperPojoIntSales;
@@ -31,6 +33,7 @@ import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.GUILogger;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SalesControllerImpl implements ISalesController {
     
@@ -53,6 +56,8 @@ public class SalesControllerImpl implements ISalesController {
     private static final IDebtorsController debtorsController = DebtorsControllerImpl.getInstance();
     
     private static final IDebtorsSalesController debtorsSalesController = DebtorsSalesControllerImpl.getInstance();
+    
+    private static final ISaleDeletedDetailController salesDeletedController = SaleDeletedDetailControllerImpl.getInstance();
     
     private SalesControllerImpl() { }
     
@@ -223,6 +228,87 @@ public class SalesControllerImpl implements ISalesController {
         return saleModel.setCashboxSale(idSale);
     }
     
+    @Override
+    public PojoIntSaleDeletedDetail deleteSaleProduct(long idUser, long idSale, long idProduct, String reason) throws BloSalesV2Exception {
+        final var output = new PojoIntSaleDeletedDetail();
+        // recuperar todas las ventas
+        final var salesLives = salesProductsController.getSalesStockLiveByIdSale(idSale);
+        BloSalesV2Utils.validateRule(
+            salesLives.getSalesStock().size() - 1 < 0,
+            BloSalesV2Utils.CODE_SALES_STOCK_EMPTY,
+            BloSalesV2Utils.ERROR_SALES_STOCK_EMPTY
+        );        
+        // validar que existe la relacion
+        final var relationFound = salesProductsController.getRelationship(idSale, idProduct);
+        BloSalesV2Utils.validateRule(
+                relationFound == null,
+                BloSalesV2Utils.CODE_SALES_PRODUCT_NOT_FOUND,
+                BloSalesV2Utils.SALES_PRODUCT_NOT_FOUND
+        );
+        
+        // validar producto
+        final var productFound = productsController.getProductById(relationFound.getFkProduct());
+        BloSalesV2Utils.validateRule(
+                productFound == null,
+                BloSalesV2Utils.CODE_PRODUCT_NOT_FOUND,
+                BloSalesV2Utils.ERROR_PRODUCT_NOT_FOUND
+        );
+        final var timestamp = BloSalesV2Utils.getTimestamp();
+        
+        // agregar el producto al stock
+        var productQuantityOnSale = relationFound.getQuantityOnSale();
+        productQuantityOnSale = productFound.getQuantity().add(productQuantityOnSale);
+        productFound.setQuantity(productQuantityOnSale);
+        logger.log(String.format("Product data [%s]", productFound.toString()));
+        productsController.updateProductInfo(productFound, ReasonsIntEnum.DEVOLUTION, idUser, TypesIntEnum.INPUT);
+        
+        // restar el precio del producto a la venta
+        var totalOnSale = relationFound.getTotalOnSale();
+        totalOnSale = totalOnSale.subtract(productFound.getPrice());
+        relationFound.setTotalOnSale(BigDecimal.ZERO);
+        relationFound.setIsLive(false);
+        relationFound.setTimestap(timestamp);
+        relationFound.setProductTotalOnSale(BigDecimal.ZERO);
+        relationFound.setQuantityOnSale(BigDecimal.ZERO);
+        logger.log(String.format("guardando datos [%s]", relationFound.toString()));
+        salesProductsController.updateRelationship(relationFound);
+        
+        // restar el dinero de la venta a la caja
+        final var currentCashbox = cashboxController.getOpenCashbox();
+        BloSalesV2Utils.validateRule(
+                currentCashbox == null,
+                BloSalesV2Utils.CODE_CASHBOX_NOT_DEVOLUTION,
+                BloSalesV2Utils.ERROR_CASHBOX_NOT_DEVOLUTION
+        );
+        var currentTotal = currentCashbox.getAmount().subtract(productFound.getPrice());
+        currentCashbox.setAmount(currentTotal);
+        currentCashbox.setTimestamp(timestamp);
+        logger.log(String.format("datos de la caja actualizar %s", currentCashbox.toString()));
+        cashboxController.updateCAshbox(currentCashbox, currentCashbox.getIdCashbox());
+    
+        output.setFkSaleProduct(relationFound.getIdSaleProduct());
+        output.setFkUser(idUser);
+        output.setReason(reason);
+        output.setTimestamp(timestamp);
+        
+        // lista de elementos que no seran actualizados
+        final var reduced = salesLives.getSalesStock().stream().
+                filter(s -> s.getFkProduct() != idProduct).
+                collect(Collectors.toList());
+        
+        logger.log(String.format("elementos restantes para actualizar %s", reduced.size()));
+        
+        // evita borrar actualizaciones
+        if (!reduced.isEmpty()) {
+            // actualizar cantidades en todas las ventas
+            for (final var item: reduced) {
+                item.setTotalOnSale(totalOnSale);
+                salesProductsController.updateRelationship(item);
+            }
+        }
+        return salesDeletedController.addSaleDeletedDetail(output);
+    }
+    
     /**
      * filtra un producto o regresa null
      * @param products registros de la base de datos
@@ -249,4 +335,5 @@ public class SalesControllerImpl implements ISalesController {
         debtorSale.setTimestamp(timestamp);
         return debtorsSalesController.addRelationship(debtorSale);
     }
+
 }

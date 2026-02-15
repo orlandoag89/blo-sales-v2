@@ -234,7 +234,7 @@ public class DashboardRootFrm extends javax.swing.JFrame {
 
     private void optViewSalesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optViewSalesActionPerformed
         //GUICommons.showPanel(content, new SalesViewer());
-        GUICommons.showPanel(content, new SalesToday());
+        GUICommons.showPanel(content, new SalesToday(userData));
     }//GEN-LAST:event_optViewSalesActionPerformed
 
     private void optAllCashboxesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_optAllCashboxesActionPerformed

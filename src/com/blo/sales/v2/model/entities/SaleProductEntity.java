@@ -17,6 +17,8 @@ public class SaleProductEntity {
     private BigDecimal product_total_on_sale;
     
     private String timestamp;
+    
+    private boolean is_live;
 
     public BigDecimal getTotal_on_sale() {
         return total_on_sale;
@@ -74,10 +76,17 @@ public class SaleProductEntity {
         this.timestamp = timestamp;
     }
 
-    @Override
-    public String toString() {
-        return "SaleProductEntity{" + "id_sale_product=" + id_sale_product + ", fk_sale=" + fk_sale + ", fk_product=" + fk_product + ", qunatity_sale=" + qunatity_sale + ", total_on_sale=" + total_on_sale + ", producto_total_on_sale=" + product_total_on_sale + ", timestamp=" + timestamp + '}';
+    public boolean is_live() {
+        return is_live;
     }
 
-    
+    public void setIs_live(boolean is_live) {
+        this.is_live = is_live;
+    }
+
+    @Override
+    public String toString() {
+        return "SaleProductEntity{" + "id_sale_product=" + id_sale_product + ", fk_sale=" + fk_sale + ", fk_product=" + fk_product + ", qunatity_sale=" + qunatity_sale + ", total_on_sale=" + total_on_sale + ", product_total_on_sale=" + product_total_on_sale + ", timestamp=" + timestamp + ", is_live=" + is_live + '}';
+    }
+
 }

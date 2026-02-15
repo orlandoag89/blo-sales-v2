@@ -117,7 +117,7 @@ public class CashboxOpen extends javax.swing.JPanel {
         if (openCashbox == null) {
             return;
         }
-        final var resp = GUICommons.showConfirmDialog("¿Importar desde notas rápidas?");
+        final var resp = CommonAlerts.showConfirmDialog("¿Importar desde notas rápidas?");
         WrapperPojoNotes pasives = null;
         WrapperPojoNotes actives = null;
         if (resp) {

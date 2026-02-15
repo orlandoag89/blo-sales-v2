@@ -17,6 +17,8 @@ public class PojoIntSaleProduct {
     private BigDecimal productTotalOnSale;
     
     private String timestap;
+    
+    private boolean isLive;
 
     public long getIdSaleProduct() {
         return idSaleProduct;
@@ -73,10 +75,18 @@ public class PojoIntSaleProduct {
     public void setProductTotalOnSale(BigDecimal productTotalOnSale) {
         this.productTotalOnSale = productTotalOnSale;
     }
+    
+    public void setIsLive(boolean isLive) {
+        this.isLive = isLive;
+    }
+    
+    public boolean isLive() {
+        return isLive;
+    }
 
     @Override
     public String toString() {
-        return "PojoIntSaleProduct{" + "idSaleProduct=" + idSaleProduct + ", fkSale=" + fkSale + ", fkProduct=" + fkProduct + ", quantityOnSale=" + quantityOnSale + ", totalOnSale=" + totalOnSale + ", productoTotalOnSale=" + productTotalOnSale + ", timestap=" + timestap + '}';
+        return "PojoIntSaleProduct{" + "idSaleProduct=" + idSaleProduct + ", fkSale=" + fkSale + ", fkProduct=" + fkProduct + ", quantityOnSale=" + quantityOnSale + ", totalOnSale=" + totalOnSale + ", productoTotalOnSale=" + productTotalOnSale + ", timestap=" + timestap + ", isLive=" + isLive + '}';
     }
     
 }
