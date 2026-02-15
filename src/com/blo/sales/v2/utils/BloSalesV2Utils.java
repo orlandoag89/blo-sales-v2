@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public final class BloSalesV2Utils {
     
-    public static final String VERSION = "v2.5.7-SNAPSHOT";
+    public static final String VERSION = "v2.5.7-RELEASE";
     
     /** cadena vacia */
     public static final String EMPTY_STRING = "";
@@ -178,6 +178,7 @@ public final class BloSalesV2Utils {
     }
     
 }
+
 
 
 
