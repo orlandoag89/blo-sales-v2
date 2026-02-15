@@ -96,13 +96,15 @@ public final class GUICommons {
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                final var fila = table.getSelectedRow();
-                if (fila != -1) {
-                    // ¡Importante! Convertir el índice por si la tabla está filtrada
-                    final var filaModelo = table.convertRowIndexToModel(fila);
-                    // Recuperar el ID (suponiendo que está en la columna 0)
-                    T id = (T) table.getModel().getValueAt(filaModelo, 0);
-                    action.accept(id);
+                if (evt.getClickCount() == 2) {
+                    final var fila = table.getSelectedRow();
+                    if (fila != -1) {
+                        // ¡Importante! Convertir el índice por si la tabla está filtrada
+                        final var filaModelo = table.convertRowIndexToModel(fila);
+                        // Recuperar el ID (suponiendo que está en la columna 0)
+                        T id = (T) table.getModel().getValueAt(filaModelo, 0);
+                        action.accept(id);
+                    }
                 }
             }
         });
@@ -294,6 +296,12 @@ public final class GUICommons {
     public static boolean showConfirmDialog(String msg) {
         final var rsp = JOptionPane.showConfirmDialog(null, msg);
         return rsp == JOptionPane.YES_OPTION;
+    }
+    
+    public static String showMessageDialog(String msg) throws BloSalesV2Exception {
+        final var mess = JOptionPane.showInputDialog(null, msg);
+        BloSalesV2Utils.validateRule(mess.trim().isBlank(), BloSalesV2Utils.COMMON_RULE_CODE, BloSalesV2Utils.INVALID_TEXT);
+        return mess.trim();
     }
     
     /**

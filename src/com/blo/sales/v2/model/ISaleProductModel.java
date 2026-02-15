@@ -6,4 +6,8 @@ import com.blo.sales.v2.utils.BloSalesV2Exception;
 public interface ISaleProductModel {
     
     PojoIntSaleProduct addSaleProduct(PojoIntSaleProduct sale) throws BloSalesV2Exception;
+    
+    PojoIntSaleProduct getRelationship(long fkSale, long fkProduct) throws BloSalesV2Exception;
+    
+    PojoIntSaleProduct updateRelationship(PojoIntSaleProduct data) throws BloSalesV2Exception;
 }

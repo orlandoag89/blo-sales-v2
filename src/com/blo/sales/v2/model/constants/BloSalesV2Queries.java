@@ -42,11 +42,16 @@ public final class BloSalesV2Queries {
     public static final String SET_ON_CASHBOX = "UPDATE sales SET sale_status = 'ON_CASHBOX' WHERE id_sale = ?";
     
     /** ventas product */
-    public static final String INSERT_SALE_PRODUCT = "INSERT INTO sale_product(fk_sale, fk_product, quantity_sale, total_on_sale, product_total_on_sale, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
+    public static final String INSERT_SALE_PRODUCT = "INSERT INTO sale_product(fk_sale, fk_product, quantity_sale, total_on_sale, product_total_on_sale, timestamp, is_live) VALUES (?, ?, ?, ?, ?, ?, true)";
     
     public static final String SELECT_SALES_DETAIL = "SELECT s.id_sale, st.id_product, st.product, ps.quantity_sale, st.price, st.cost_of_sale, ps.total_on_sale, ps.timestamp, st.is_kg, ps.product_total_on_sale FROM sales s INNER JOIN sale_product ps ON s.id_sale = ps.fk_sale INNER JOIN stock st ON ps.fk_product = st.id_product";
     
-    public static final String SELECT_SALE_CLOSED = "SELECT s.id_sale, st.id_product, st.product, ps.quantity_sale, st.price, st.cost_of_sale, ps.total_on_sale, ps.timestamp, ps.product_total_on_sale FROM sales s INNER JOIN sale_product ps ON s.id_sale = ps.fk_sale INNER JOIN stock st ON ps.fk_product = st.id_product WHERE s.sale_status = ?";
+    public static final String SELECT_SALE_CLOSED = "SELECT s.id_sale, st.id_product, st.product, ps.quantity_sale, st.price, st.cost_of_sale, ps.total_on_sale, ps.timestamp, ps.product_total_on_sale FROM sales s INNER JOIN sale_product ps ON s.id_sale = ps.fk_sale INNER JOIN stock st ON ps.fk_product = st.id_product WHERE s.sale_status = ? AND ps.is_live = true";
+    
+    public static final String SELECT_SALES_PRODUCT = "SELECT sp.id_sale_product, sp.fk_sale, sp.fk_product, sp.quantity_sale, sp.total_on_sale, sp.product_total_on_sale, sp.timestamp, sp.is_live FROM sale_product sp WHERE sp.fk_sale = ? AND sp.fk_product = ?";
+    
+    public static final String UPDATE_SALE_PRODUCT_RELATIONSHIP = "UPDATE sale_product SET quantity_sale = ?, total_on_sale = ?, product_total_on_sale = ?, timestamp = ?, is_live = ? WHERE id_sale_product = ?";
+    
     /** cajas de dinero */
     public static final String INSERT_CASHBOX = "INSERT INTO cashboxes(fk_user, timestamp, status, amount) VALUES (?, ?, ?, ?)";
     
@@ -97,4 +102,6 @@ public final class BloSalesV2Queries {
     public static final String INSERT_PRICE_HISTORY_RELATIONSHIP = "INSERT INTO stock_prices_history(fk_product, fk_price_history, timestamp) VALUES(?, ?, ?)";
     
     public static final String RETRIEVE_STOCK_PRICE_HISTORY = "SELECT sph.id_stock_price_history, sph.timestamp, s.product, ph.price, ph.cost_of_sale FROM stock_prices_history sph INNER JOIN stock s ON sph.fk_product = s.id_product INNER JOIN prices_history ph ON ph.id_price_history = sph.fk_price_history WHERE s.id_product = ?";
+    
+    public static final String INSERT_SALE_DELETED_DETAIL = "INSERT INTO sale_deleted_detail(fk_sale_product, fk_user, reason, timestamp) VALUES (?, ?, ?, ?)";
 }

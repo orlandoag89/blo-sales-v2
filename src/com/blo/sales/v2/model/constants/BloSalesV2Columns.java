@@ -92,4 +92,8 @@ public final class BloSalesV2Columns {
     
     public static final String ID_STOCK_PRICE_HISTORY = "id_stock_price_history";
     
+    public static final String ID_SALE_PRODUCT = "id_sale_product";
+    
+    public static final String FK_PRODUCT = "fk_product";
+    
 }

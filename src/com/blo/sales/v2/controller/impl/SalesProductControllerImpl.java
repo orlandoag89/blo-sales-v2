@@ -30,5 +30,16 @@ public class SalesProductControllerImpl implements ISalesProductController {
         return model.addSaleProduct(salesProduct);
     }
 
+    @Override
+    public PojoIntSaleProduct getRelationship(long idSale, long idProduct) throws BloSalesV2Exception {
+        logger.log("recuperando relacion");
+        return model.getRelationship(idSale, idProduct);
+    }
+
+    @Override
+    public PojoIntSaleProduct updateRelationship(PojoIntSaleProduct data) throws BloSalesV2Exception {
+        logger.log("Actualizando relacion");
+        return model.updateRelationship(data);
+    }
     
 }

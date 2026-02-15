@@ -8,9 +8,12 @@ import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.WrapperPojoSalesAndStockMapper;
+import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.PojoSaleAndProduct;
 import com.blo.sales.v2.view.pojos.WrapperPojoSalesAndStock;
 import java.math.BigDecimal;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
 
@@ -24,9 +27,26 @@ public class SalesToday extends javax.swing.JPanel {
 
     private static final String[] titles = {"ID de venta", "ID producto", "Producto", "Precio o comprado", "Cantidad en venta", "Total de venta", "Timestamp"};
     
-    public SalesToday() {
+    public SalesToday(PojoLoggedInUser userData) {
         initComponents();
         loadData();
+        GUICommons.addDoubleClickOnTable(tblSummary, id -> {
+            final var deletedAccept = GUICommons.showConfirmDialog("Está por cancelar esta venta. \n ¿Continuar?");
+            if (deletedAccept) {
+                final var rowSelected = tblSummary.getSelectedRow();
+                if (rowSelected != -1) {
+                    try {
+                        final var model = tblSummary.getModel();
+                        final var idSale = Long.parseLong(model.getValueAt(rowSelected, 0).toString());
+                        final var idProduct = Long.parseLong(model.getValueAt(rowSelected, 1).toString());
+                        final var message = GUICommons.showMessageDialog("Por favor escribe el motivo de la baja");
+                        salesController.deleteSaleProduct(userData.getIdUser(), idSale, idProduct, message);
+                    } catch (BloSalesV2Exception ex) {
+                        Logger.getLogger(SalesToday.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
     }
     
     private void loadData() {
