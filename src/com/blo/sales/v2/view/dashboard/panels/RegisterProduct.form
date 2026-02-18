@@ -100,6 +100,9 @@
   </Layout>
   <SubComponents>
     <Component class="javax.swing.JTextField" name="txtBarCode">
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtBarCodeKeyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblBarCode">
       <Properties>
@@ -112,6 +115,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtProductName">
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtProductNameKeyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblQuantity">
       <Properties>
@@ -119,6 +125,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="nmbQuantity">
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="nmbQuantityKeyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblPrice">
       <Properties>
@@ -126,6 +135,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="nmbPrice">
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="nmbPriceKeyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblSaleCost">
       <Properties>
@@ -133,6 +145,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="nmbSaleCost">
+      <Events>
+        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="nmbSaleCostKeyReleased"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JCheckBox" name="chkbxItsKg">
       <Properties>

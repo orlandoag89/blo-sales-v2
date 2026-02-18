@@ -22,6 +22,8 @@ import com.blo.sales.v2.view.mappers.WrapperPojoProductsMapper;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.PojoProduct;
 import com.blo.sales.v2.view.pojos.PojoSaleProductData;
+import com.blo.sales.v2.view.utils.GUIStore;
+import com.blo.sales.v2.view.utils.handler.ManagementProductInfoStoreHandler;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -47,6 +49,8 @@ public class Sales extends javax.swing.JPanel {
     private static final WrapperDebtorsMapper wrapperDebtorsMapper = WrapperDebtorsMapper.getInstance();
     
     private static final DebtorMapper debtorMapper = DebtorMapper.getInstance();
+    
+    private static final GUIStore store = GUIStore.getInstance();
     
     private List<PojoProduct> products;
 
