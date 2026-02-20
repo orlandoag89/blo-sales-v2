@@ -270,13 +270,13 @@ public class AllProducts extends javax.swing.JPanel {
             newData.setIdProduct(Long.parseLong(GUICommons.getTextFromField(lblIdProduct, true)));
             newData.setProduct(GUICommons.getTextFromField(txtName, true));
             newData.setBarCode(GUICommons.getTextFromField(txtBarCode, true));
-            newData.setCostOfSale(GUICommons.getNumberFromJText(nmbCostOfSale, 2));
-            newData.setPrice(GUICommons.getNumberFromJText(nmbPrice, 2));
+            newData.setCostOfSale(GUICommons.getNumberFromJText(nmbCostOfSale, GUICommons.DIGITS_OF_CURRENCY));
+            newData.setPrice(GUICommons.getNumberFromJText(nmbPrice, GUICommons.DIGITS_OF_CURRENCY));
             var reasonEnum = ReasonsEnum.PRODUCT_NOT_MODIFIED;
             var type = TypesEnum.UPDATE_PRODUCT;
             if (lstReason.isVisible()) {
                 type = TypesEnum.ADJUST;
-                newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity, 3));
+                newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity, GUICommons.DIGITS_OF_QUANTITY));
                 final var reason = GUICommons.getValueFromComboBox(lstReason);
                 switch (reason) {
                     case "Vendido":
@@ -290,7 +290,7 @@ public class AllProducts extends javax.swing.JPanel {
                         break;
                 }
             }
-            newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity, 3));
+            newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity, GUICommons.DIGITS_OF_QUANTITY));
             productsController.updateProductInfo(
                 productMapper.toInner(newData),
                 ReasonsIntEnum.valueOf(reasonEnum.name()),

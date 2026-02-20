@@ -29,6 +29,10 @@ import javax.swing.table.TableRowSorter;
 
 public final class GUICommons {
     
+    public static final int DIGITS_OF_CURRENCY = 2;
+    
+    public static final int DIGITS_OF_QUANTITY = 3;
+    
     /** tecla eliminar */
     public static final int REMVOE_KEY_CODE = 8;
     

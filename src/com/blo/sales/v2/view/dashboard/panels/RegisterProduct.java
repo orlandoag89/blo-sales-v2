@@ -180,9 +180,9 @@ public class RegisterProduct extends javax.swing.JPanel {
         try {
             final var productName = GUICommons.getTextFromField(txtProductName, true);
             final var barCode = GUICommons.getTextFromField(txtBarCode, true);
-            final var quantity = GUICommons.getNumberFromJText(nmbQuantity, 3);
-            final var price = GUICommons.getNumberFromJText(nmbPrice, 2);
-            final var costOfSale = GUICommons.getNumberFromJText(nmbSaleCost, 2);
+            final var quantity = GUICommons.getNumberFromJText(nmbQuantity, GUICommons.DIGITS_OF_QUANTITY);
+            final var price = GUICommons.getNumberFromJText(nmbPrice, GUICommons.DIGITS_OF_CURRENCY);
+            final var costOfSale = GUICommons.getNumberFromJText(nmbSaleCost, GUICommons.DIGITS_OF_CURRENCY);
             final var data = new PojoProduct();
             data.setBarCode(barCode);
             data.setCostOfSale(costOfSale);
