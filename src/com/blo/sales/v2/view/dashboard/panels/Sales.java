@@ -22,13 +22,13 @@ import com.blo.sales.v2.view.mappers.WrapperPojoProductsMapper;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
 import com.blo.sales.v2.view.pojos.PojoProduct;
 import com.blo.sales.v2.view.pojos.PojoSaleProductData;
-import com.blo.sales.v2.view.utils.GUIStore;
-import com.blo.sales.v2.view.utils.handler.ManagementProductInfoStoreHandler;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
 
@@ -49,8 +49,6 @@ public class Sales extends javax.swing.JPanel {
     private static final WrapperDebtorsMapper wrapperDebtorsMapper = WrapperDebtorsMapper.getInstance();
     
     private static final DebtorMapper debtorMapper = DebtorMapper.getInstance();
-    
-    private static final GUIStore store = GUIStore.getInstance();
     
     private List<PojoProduct> products;
 
@@ -427,11 +425,16 @@ public class Sales extends javax.swing.JPanel {
     }
     
     private void resetFields() {
-        GUICommons.setTextToField(nmbQuantity, "1");
-        final var model = (DefaultTableModel) tblProductsSales.getModel();
-        model.setRowCount(0);
-        tblProductsSales.repaint();
-        GUICommons.setTextToField(lblTotal, "0");
+        try {
+            GUICommons.setTextToField(nmbQuantity, "1");
+            final var model = (DefaultTableModel) tblProductsSales.getModel();
+            model.setRowCount(0);
+            tblProductsSales.repaint();
+            GUICommons.setTextToField(lblTotal, "0");
+            retrieveProducts();
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private void disableButtons() {

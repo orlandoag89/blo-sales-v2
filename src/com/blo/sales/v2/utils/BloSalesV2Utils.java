@@ -23,7 +23,7 @@ public final class BloSalesV2Utils {
     /** expresion regular para solo numeros */
     public static final String ONLY_NUMBERS = "[0-9]+";
     
-    public static final String CURRENCY_REGEX = "^\\d+(\\.\\d{1,2})?$";
+    public static final String CURRENCY_REGEX = "^\\d*(\\.\\d{1,2})?$";
     
     public static final String SEPARATOR_PAYMENTS = ",";
     
@@ -76,6 +76,10 @@ public final class BloSalesV2Utils {
     
     public static final String ERROR_SALES_STOCK_EMPTY = "No hay relaci\u00f3n entre venta y producto";
     
+    public static final String ERROR_PATTERN = "¡Ups! El valor ingresado no es v\u00e1lido.";
+    
+    public static final String ERROR_IN_DIGITS = "No se pueden emplear m\u00e1s de 3 digitos en decimales";
+    
     public static final long DEBTORS_PAYMENTS = 1;
     
     /** codigos de error */
@@ -116,6 +120,8 @@ public final class BloSalesV2Utils {
     public static final String CODE_CASHBOX_NOT_DEVOLUTION = "017";
     
     public static final String CODE_SALES_STOCK_EMPTY = "016";
+    
+    public static final String CODE_PATTERN_ERROR = "017";
     
     public static final String FORMAT_DATE = "yyyy-MM-dd";
     

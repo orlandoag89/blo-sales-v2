@@ -27,5 +27,4 @@ public enum ManagementProductStoreHandler {
     public void apply(PojoProduct product, Object value) {
         setter.accept(product, value);
     }
-    
 }

@@ -14,16 +14,12 @@ import com.blo.sales.v2.view.mappers.WrapperPojoCategoriesMapper;
 import com.blo.sales.v2.view.pojos.PojoProduct;
 import com.blo.sales.v2.view.utils.GUIStore;
 import com.blo.sales.v2.view.utils.handler.ManagementProductStoreHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTextField;
 
 public class RegisterProduct extends javax.swing.JPanel {
     
     private static final GUILogger logger = GUILogger.getLogger(RegisterProduct.class.getName());
-    
-    private static final GUIStore store = GUIStore.getInstance();
     
     private static final ICategoriesController categories = CategoriesControllerImpl.getInstance();
     
@@ -184,9 +180,9 @@ public class RegisterProduct extends javax.swing.JPanel {
         try {
             final var productName = GUICommons.getTextFromField(txtProductName, true);
             final var barCode = GUICommons.getTextFromField(txtBarCode, true);
-            final var quantity = GUICommons.getNumberFromJText(nmbQuantity);
-            final var price = GUICommons.getNumberFromJText(nmbPrice);
-            final var costOfSale = GUICommons.getNumberFromJText(nmbSaleCost);
+            final var quantity = GUICommons.getNumberFromJText(nmbQuantity, 3);
+            final var price = GUICommons.getNumberFromJText(nmbPrice, 2);
+            final var costOfSale = GUICommons.getNumberFromJText(nmbSaleCost, 2);
             final var data = new PojoProduct();
             data.setBarCode(barCode);
             data.setCostOfSale(costOfSale);
@@ -210,7 +206,7 @@ public class RegisterProduct extends javax.swing.JPanel {
             GUICommons.setTextToField(nmbQuantity, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToField(nmbPrice, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToField(nmbSaleCost, BloSalesV2Utils.EMPTY_STRING);
-        } catch (BloSalesV2Exception ex) {
+        } catch (BloSalesV2Exception | NumberFormatException ex) {
             logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
@@ -262,10 +258,11 @@ public class RegisterProduct extends javax.swing.JPanel {
     
     private void addPojoData(JTextField field, ManagementProductStoreHandler prop) {
         try {
-            final var txt = GUICommons.getTextFromField(field, false);
-            store.addPropOnPojoProduct(prop, txt);
+            final var value = GUICommons.getTextFromField(field, false);
+            GUIStore.addPropOnPojoProduct(prop, value);
         } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(RegisterProduct.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getMessage());
+            CommonAlerts.openError(ex.getMessage());
         }
     }
 
