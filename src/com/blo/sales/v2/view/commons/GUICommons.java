@@ -29,6 +29,10 @@ import javax.swing.table.TableRowSorter;
 
 public final class GUICommons {
     
+    public static final int DIGITS_OF_CURRENCY = 2;
+    
+    public static final int DIGITS_OF_QUANTITY = 3;
+    
     /** tecla eliminar */
     public static final int REMVOE_KEY_CODE = 8;
     
@@ -146,12 +150,26 @@ public final class GUICommons {
     /**
      * Recupera el numero de un textfield
      * @param field
+     * @param decimals
      * @return
      * @throws BloSalesV2Exception 
      */
-    public static BigDecimal getNumberFromJText(JTextField field) throws BloSalesV2Exception {
+    public static BigDecimal getNumberFromJText(JTextField field, int decimals) throws BloSalesV2Exception {
         final var txt = field.getText().trim();
         validateRule(txt.isBlank(), BloSalesV2Utils.COMMON_RULE_CODE, BloSalesV2Utils.INVALID_TEXT);
+        validateRule(decimals > 3, BloSalesV2Utils.COMMON_RULE_CODE, BloSalesV2Utils.ERROR_IN_DIGITS);
+        
+        var regex = BloSalesV2Utils.CURRENCY_REGEX;
+        
+        if (decimals == 3) {
+            regex = regex.replace("2", "3");
+        }
+
+        validateRule(
+                !BloSalesV2Utils.validateTextWithPattern(regex, txt),
+                BloSalesV2Utils.COMMON_RULE_CODE,
+                BloSalesV2Utils.ERROR_PATTERN);
+        
         return new BigDecimal(txt);
     }
     

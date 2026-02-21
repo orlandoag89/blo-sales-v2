@@ -111,5 +111,4 @@ public class ProductsControllerImpl implements IProductsController {
     public PojoIntProduct getProductById(long idProduct) throws BloSalesV2Exception {
         return model.getProductById(idProduct);
     }
-
 }

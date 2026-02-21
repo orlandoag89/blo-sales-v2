@@ -27,6 +27,8 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.table.DefaultTableModel;
 
@@ -423,11 +425,16 @@ public class Sales extends javax.swing.JPanel {
     }
     
     private void resetFields() {
-        GUICommons.setTextToField(nmbQuantity, "1");
-        final var model = (DefaultTableModel) tblProductsSales.getModel();
-        model.setRowCount(0);
-        tblProductsSales.repaint();
-        GUICommons.setTextToField(lblTotal, "0");
+        try {
+            GUICommons.setTextToField(nmbQuantity, "1");
+            final var model = (DefaultTableModel) tblProductsSales.getModel();
+            model.setRowCount(0);
+            tblProductsSales.repaint();
+            GUICommons.setTextToField(lblTotal, "0");
+            retrieveProducts();
+        } catch (BloSalesV2Exception ex) {
+            Logger.getLogger(Sales.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private void disableButtons() {

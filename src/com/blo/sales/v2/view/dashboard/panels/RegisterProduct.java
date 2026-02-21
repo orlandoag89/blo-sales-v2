@@ -12,7 +12,10 @@ import com.blo.sales.v2.view.commons.GUILogger;
 import com.blo.sales.v2.view.mappers.ProductMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoCategoriesMapper;
 import com.blo.sales.v2.view.pojos.PojoProduct;
+import com.blo.sales.v2.view.utils.GUIStore;
+import com.blo.sales.v2.view.utils.handler.ManagementProductStoreHandler;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
 
 public class RegisterProduct extends javax.swing.JPanel {
     
@@ -28,7 +31,7 @@ public class RegisterProduct extends javax.swing.JPanel {
 
     public RegisterProduct() {
         initComponents();
-        
+        loadDataForm();
         try {
             loadCategories();
         } catch (BloSalesV2Exception ex) {
@@ -55,15 +58,45 @@ public class RegisterProduct extends javax.swing.JPanel {
         btnSave = new javax.swing.JButton();
         lstMarks = new javax.swing.JComboBox<>();
 
+        txtBarCode.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBarCodeKeyReleased(evt);
+            }
+        });
+
         lblBarCode.setText("Código de barras");
 
         lblProductName.setText("Nombre");
 
+        txtProductName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtProductNameKeyReleased(evt);
+            }
+        });
+
         lblQuantity.setText("Cantidad en existencia");
+
+        nmbQuantity.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nmbQuantityKeyReleased(evt);
+            }
+        });
 
         lblPrice.setText("Precio");
 
+        nmbPrice.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nmbPriceKeyReleased(evt);
+            }
+        });
+
         lblSaleCost.setText("Costo de venta");
+
+        nmbSaleCost.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nmbSaleCostKeyReleased(evt);
+            }
+        });
 
         chkbxItsKg.setText("¿Por kg?");
 
@@ -147,9 +180,9 @@ public class RegisterProduct extends javax.swing.JPanel {
         try {
             final var productName = GUICommons.getTextFromField(txtProductName, true);
             final var barCode = GUICommons.getTextFromField(txtBarCode, true);
-            final var quantity = GUICommons.getNumberFromJText(nmbQuantity);
-            final var price = GUICommons.getNumberFromJText(nmbPrice);
-            final var costOfSale = GUICommons.getNumberFromJText(nmbSaleCost);
+            final var quantity = GUICommons.getNumberFromJText(nmbQuantity, GUICommons.DIGITS_OF_QUANTITY);
+            final var price = GUICommons.getNumberFromJText(nmbPrice, GUICommons.DIGITS_OF_CURRENCY);
+            final var costOfSale = GUICommons.getNumberFromJText(nmbSaleCost, GUICommons.DIGITS_OF_CURRENCY);
             final var data = new PojoProduct();
             data.setBarCode(barCode);
             data.setCostOfSale(costOfSale);
@@ -166,17 +199,38 @@ public class RegisterProduct extends javax.swing.JPanel {
             final var idMark = itemSelected[0].trim();
             data.setFkCategory(Long.parseLong(idMark));
             data.setKg(GUICommons.isCheckedCkeckBox(chkbxItsKg));
+            GUIStore.resetProductData();
             productsController.registerProduct(productMapper.toInner(data));
             GUICommons.setTextToField(txtProductName, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToField(txtBarCode, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToField(nmbQuantity, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToField(nmbPrice, BloSalesV2Utils.EMPTY_STRING);
             GUICommons.setTextToField(nmbSaleCost, BloSalesV2Utils.EMPTY_STRING);
-        } catch (BloSalesV2Exception ex) {
+        } catch (BloSalesV2Exception | NumberFormatException ex) {
             logger.error(ex.getMessage());
             CommonAlerts.openError(ex.getMessage());
         }
     }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void txtBarCodeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBarCodeKeyReleased
+        addPojoData(txtBarCode, ManagementProductStoreHandler.BAR_CODE);
+    }//GEN-LAST:event_txtBarCodeKeyReleased
+
+    private void txtProductNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProductNameKeyReleased
+        addPojoData(txtProductName, ManagementProductStoreHandler.PRODUCT);
+    }//GEN-LAST:event_txtProductNameKeyReleased
+
+    private void nmbQuantityKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nmbQuantityKeyReleased
+        addPojoData(nmbQuantity, ManagementProductStoreHandler.QUANTITY);
+    }//GEN-LAST:event_nmbQuantityKeyReleased
+
+    private void nmbPriceKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nmbPriceKeyReleased
+        addPojoData(nmbPrice, ManagementProductStoreHandler.PRICE);
+    }//GEN-LAST:event_nmbPriceKeyReleased
+
+    private void nmbSaleCostKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nmbSaleCostKeyReleased
+        addPojoData(nmbSaleCost, ManagementProductStoreHandler.COST_OF_SALE);
+    }//GEN-LAST:event_nmbSaleCostKeyReleased
 
     private void loadCategories() throws BloSalesV2Exception {
         final var categoryModel = new DefaultComboBoxModel<String>();
@@ -185,6 +239,31 @@ public class RegisterProduct extends javax.swing.JPanel {
                 .getCategories().forEach(c -> categoryModel.addElement(c.toString()));
         
         lstMarks.setModel(categoryModel);
+    }
+    
+    private void loadDataForm() {
+        final var productStore = GUIStore.getProductData();
+        setIfNotNull(productStore.getBarCode(), txtBarCode);
+        setIfNotNull(productStore.getProduct(), txtProductName);
+        setIfNotNull(productStore.getQuantity(), nmbQuantity);
+        setIfNotNull(productStore.getPrice(), nmbPrice);
+        setIfNotNull(productStore.getCostOfSale(), nmbSaleCost);
+    }
+    
+    private void setIfNotNull(Object value, JTextField component) {
+        if (value != null) {
+            GUICommons.setTextToField(component, value.toString());
+        }
+    }
+    
+    private void addPojoData(JTextField field, ManagementProductStoreHandler prop) {
+        try {
+            final var value = GUICommons.getTextFromField(field, false);
+            GUIStore.addPropOnPojoProduct(prop, value);
+        } catch (BloSalesV2Exception ex) {
+            logger.error(ex.getMessage());
+            CommonAlerts.openError(ex.getMessage());
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
