@@ -119,7 +119,7 @@ public class SalesControllerImpl implements ISalesController {
             // actualizar cantidad en el stock
             final var newQuantity = productFound.getQuantity().subtract(p.getQuantityOnSale());
             productFound.setQuantity(newQuantity);
-            productsController.updateProductInfo(productFound, ReasonsIntEnum.SALE, idUser, TypesIntEnum.OUTPUT);
+            productsController.updateProductInfo(productFound, ReasonsIntEnum.SALE, idUser, TypesIntEnum.ADJUST);
         }
         /** se agrega el dinero a la caja */
         // recupera caja abierta
