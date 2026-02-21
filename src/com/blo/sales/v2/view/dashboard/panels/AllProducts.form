@@ -101,7 +101,11 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="lblBarCode" min="-2" max="-2" attributes="0"/>
-                              <Component id="btnCancel" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" alignment="1" attributes="0">
+                                  <Component id="btnMovements" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
+                                  <Component id="btnCancel" min="-2" max="-2" attributes="0"/>
+                              </Group>
                               <Group type="102" alignment="1" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Group type="102" alignment="1" attributes="0">
@@ -167,6 +171,7 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="btnSave" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnGetEvolution" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnMovements" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="btnCancel" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -252,6 +257,14 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGetEvolutionActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btnMovements">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Movimientos"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMovementsActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

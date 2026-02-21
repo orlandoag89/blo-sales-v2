@@ -261,7 +261,7 @@ public class CashboxDialog<T> extends javax.swing.JDialog {
     private void btnContinueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinueActionPerformed
         try {
             final var concept = GUICommons.getTextFromField(txtCategoryName, true);
-            final var amount = GUICommons.getNumberFromJText(nmbAmount);
+            final var amount = GUICommons.getNumberFromJText(nmbAmount, GUICommons.DIGITS_OF_CURRENCY);
             final var type = GUICommons.getValueFromComboBox(cmbxType);
             // se agrega concepto a lista de activos pasivos
             var typeConcept = ActivesCostsEnum.ACTIVO;

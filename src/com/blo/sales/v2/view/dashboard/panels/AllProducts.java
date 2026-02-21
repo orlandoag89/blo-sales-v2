@@ -1,9 +1,11 @@
 package com.blo.sales.v2.view.dashboard.panels;
 
 import com.blo.sales.v2.controller.ICategoriesController;
+import com.blo.sales.v2.controller.IHistoryController;
 import com.blo.sales.v2.controller.IProductsController;
 import com.blo.sales.v2.controller.IStockPricesHistoryController;
 import com.blo.sales.v2.controller.impl.CategoriesControllerImpl;
+import com.blo.sales.v2.controller.impl.HistoryControllerImpl;
 import com.blo.sales.v2.controller.impl.ProductsControllerImpl;
 import com.blo.sales.v2.controller.impl.StockPricesHistoryControllerImpl;
 import com.blo.sales.v2.controller.pojos.enums.ReasonsIntEnum;
@@ -13,10 +15,12 @@ import com.blo.sales.v2.utils.BloSalesV2Utils;
 import com.blo.sales.v2.view.commons.CommonAlerts;
 import com.blo.sales.v2.view.commons.GUICommons;
 import com.blo.sales.v2.view.commons.GUILogger;
+import com.blo.sales.v2.view.dialogs.HistoryDialog;
 import com.blo.sales.v2.view.dialogs.PricesEvolutionDialog;
 import com.blo.sales.v2.view.mappers.PojoPriceHistoryMapper;
 import com.blo.sales.v2.view.mappers.ProductMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoCategoriesMapper;
+import com.blo.sales.v2.view.mappers.WrapperPojoMovementsDetailMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoProductsMapper;
 import com.blo.sales.v2.view.mappers.WrapperPojoStockPriceHistoryMapper;
 import com.blo.sales.v2.view.pojos.PojoLoggedInUser;
@@ -36,9 +40,11 @@ public class AllProducts extends javax.swing.JPanel {
 
     private static final IProductsController productsController = ProductsControllerImpl.getInstance();
     
-    private static IStockPricesHistoryController stockPricesHistoryController = StockPricesHistoryControllerImpl.getInstance();
+    private static final IStockPricesHistoryController stockPricesHistoryController = StockPricesHistoryControllerImpl.getInstance();
     
-    private static final ICategoriesController categories = CategoriesControllerImpl.getInstance();
+    private static final ICategoriesController categoriesController = CategoriesControllerImpl.getInstance();
+    
+    private static final IHistoryController historyController = HistoryControllerImpl.getInstance();
     
     private static final WrapperPojoProductsMapper productsMapper = WrapperPojoProductsMapper.getInstance();
     
@@ -49,6 +55,8 @@ public class AllProducts extends javax.swing.JPanel {
     private static final PojoPriceHistoryMapper priceHistoryMapper = PojoPriceHistoryMapper.getInstance();
     
     private static final WrapperPojoStockPriceHistoryMapper pricesEvolutionPriceMapper = WrapperPojoStockPriceHistoryMapper.getInstance();
+    
+    private static final WrapperPojoMovementsDetailMapper movementsMapper = WrapperPojoMovementsDetailMapper.getInstance();
     
     private BigDecimal currentQuantity;
     
@@ -86,6 +94,7 @@ public class AllProducts extends javax.swing.JPanel {
         lblBarCode = new javax.swing.JLabel();
         lblPrice = new javax.swing.JLabel();
         btnGetEvolution = new javax.swing.JButton();
+        btnMovements = new javax.swing.JButton();
 
         tblProducts.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -145,6 +154,13 @@ public class AllProducts extends javax.swing.JPanel {
             }
         });
 
+        btnMovements.setText("Movimientos");
+        btnMovements.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMovementsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnlManageProductLayout = new javax.swing.GroupLayout(pnlManageProduct);
         pnlManageProduct.setLayout(pnlManageProductLayout);
         pnlManageProductLayout.setHorizontalGroup(
@@ -170,7 +186,10 @@ public class AllProducts extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblBarCode)
-                            .addComponent(btnCancel, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlManageProductLayout.createSequentialGroup()
+                                .addComponent(btnMovements)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnCancel))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlManageProductLayout.createSequentialGroup()
                                 .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlManageProductLayout.createSequentialGroup()
@@ -217,7 +236,8 @@ public class AllProducts extends javax.swing.JPanel {
                 .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlManageProductLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnSave)
-                        .addComponent(btnGetEvolution))
+                        .addComponent(btnGetEvolution)
+                        .addComponent(btnMovements))
                     .addComponent(btnCancel))
                 .addGap(32, 32, 32))
         );
@@ -270,13 +290,13 @@ public class AllProducts extends javax.swing.JPanel {
             newData.setIdProduct(Long.parseLong(GUICommons.getTextFromField(lblIdProduct, true)));
             newData.setProduct(GUICommons.getTextFromField(txtName, true));
             newData.setBarCode(GUICommons.getTextFromField(txtBarCode, true));
-            newData.setCostOfSale(GUICommons.getNumberFromJText(nmbCostOfSale));
-            newData.setPrice(GUICommons.getNumberFromJText(nmbPrice));
+            newData.setCostOfSale(GUICommons.getNumberFromJText(nmbCostOfSale, GUICommons.DIGITS_OF_CURRENCY));
+            newData.setPrice(GUICommons.getNumberFromJText(nmbPrice, GUICommons.DIGITS_OF_CURRENCY));
             var reasonEnum = ReasonsEnum.PRODUCT_NOT_MODIFIED;
             var type = TypesEnum.UPDATE_PRODUCT;
             if (lstReason.isVisible()) {
                 type = TypesEnum.ADJUST;
-                newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity));
+                newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity, GUICommons.DIGITS_OF_QUANTITY));
                 final var reason = GUICommons.getValueFromComboBox(lstReason);
                 switch (reason) {
                     case "Vendido":
@@ -290,7 +310,7 @@ public class AllProducts extends javax.swing.JPanel {
                         break;
                 }
             }
-            newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity));
+            newData.setQuantity(GUICommons.getNumberFromJText(nmbQuantity, GUICommons.DIGITS_OF_QUANTITY));
             productsController.updateProductInfo(
                 productMapper.toInner(newData),
                 ReasonsIntEnum.valueOf(reasonEnum.name()),
@@ -341,16 +361,33 @@ public class AllProducts extends javax.swing.JPanel {
             } else {
                 CommonAlerts.openError(BloSalesV2Utils.NOT_PRICES_HISTORY);
             }
-        } catch (BloSalesV2Exception ex) {
-            Logger.getLogger(AllProducts.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BloSalesV2Exception e) {
+            logger.error(e.getMessage());
+            CommonAlerts.openError(e.getMessage());
         }
     }//GEN-LAST:event_btnGetEvolutionActionPerformed
+
+    private void btnMovementsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMovementsActionPerformed
+        try {
+            final var idProduct = Long.parseLong(GUICommons.getTextFromField(lblIdProduct, true));
+            final var history = historyController.getHistoryFromProduct(idProduct);
+            if (history != null && history.getHistory() != null && !history.getHistory().isEmpty()) {
+                final var historyDialog = new HistoryDialog(this, String.format("Historial de movimientos %s", idProduct), movementsMapper.toOuter(history));
+                historyDialog.setVisible(true);
+                return;
+            }
+            CommonAlerts.openError(String.format("No hay movimientos %s", idProduct));
+        } catch (BloSalesV2Exception e) {
+            logger.error(e.getMessage());
+            CommonAlerts.openError(e.getMessage());
+        }
+    }//GEN-LAST:event_btnMovementsActionPerformed
 
     /** ajustar filtro de categorias */
     private void loadTitlesAndData() {
         try {
-            final var productsData = productsMapper.toOuter(this.productsController.getAllProducts());
-            final var categories = categoriesMapper.toOuter(this.categories.getAllCategories());
+            final var productsData = productsMapper.toOuter(productsController.getAllProducts());
+            final var categories = categoriesMapper.toOuter(categoriesController.getAllCategories());
             if (userData.getRole().equals(RolesEnum.ROOT)) {
                 final String[] titles = {"ID", "Codigo de barras", "Producto", "Cantidad en existencia", "Precio", "Costo de venta", "¿Por kg?", "Categoria"};
                 GUICommons.loadTitleOnTable(tblProducts, titles, false);
@@ -412,6 +449,7 @@ public class AllProducts extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnGetEvolution;
+    private javax.swing.JButton btnMovements;
     private javax.swing.JButton btnSave;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblBarCode;

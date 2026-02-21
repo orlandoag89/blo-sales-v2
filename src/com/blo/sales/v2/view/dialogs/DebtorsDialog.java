@@ -223,7 +223,7 @@ public class DebtorsDialog<T> extends javax.swing.JDialog {
 
     private void btnSaveRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveRegisterActionPerformed
         try {
-            final var partialPayment = GUICommons.getNumberFromJText(txtPartialPay);
+            final var partialPayment = GUICommons.getNumberFromJText(txtPartialPay, GUICommons.DIGITS_OF_CURRENCY);
             final var newPay = BloSalesV2Utils.getPartialPayment(partialPayment);
             // deudor existente
             if (debtor.getIdDebtor() != 0) {

@@ -89,8 +89,8 @@ public class StockPricesHistoryModelImpl implements IStockPricesHistoryModel {
                 item.setProduct(rs.getString(BloSalesV2Columns.PRODUCT));
                 item.setTimestamp(rs.getString(BloSalesV2Columns.TIMESTAMP));
                 historyStockPrice.add(item);
-                logger.log("item info " + item.toString());
             }
+            logger.log(String.format("hitorial %s", historyStockPrice.size()));
             wrapperHistory.setHistory(historyStockPrice);
             return wrapperMapper.toOuter(wrapperHistory);
         } catch (SQLException ex) {

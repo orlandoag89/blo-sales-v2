@@ -98,4 +98,8 @@ public final class BloSalesV2Columns {
     
     public static final String IS_LIVE = "is_live";
     
+    public static final String ID_MOVEMENT = "id_movement";
+    
+    public static final String REASON = "reason";
+    
 }

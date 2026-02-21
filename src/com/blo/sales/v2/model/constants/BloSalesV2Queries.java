@@ -34,6 +34,8 @@ public final class BloSalesV2Queries {
     /** historial */
     public static final String INSERT_MOVEMENT = "INSERT INTO history(fk_product, fk_user, type, quantity, reason, timestamp) VALUES (?, ?, ?, ?, ?, ?)";
     
+    public static final String SELECT_MOVEMENTS_DETAIL = "SELECT h.id_movement, h.type, h.reason, st.id_product, st.product, h.timestamp, u.username, h.quantity FROM history h INNER JOIN stock st ON h.fk_product = st.id_product INNER JOIN users u ON h.fk_user = u.id_user WHERE st.id_product = ?";
+    
     /** ventas */
     public static final String INSERT_SALE = "INSERT INTO sales(total, sale_status, timestamp) VALUES (?, ?, ?)";
     

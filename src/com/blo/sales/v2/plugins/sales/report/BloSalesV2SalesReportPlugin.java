@@ -1,11 +1,10 @@
 package com.blo.sales.v2.plugins.sales.report;
 
+import com.blo.sales.v2.plugins.writter.BloSalesV2WritterFile;
+import com.blo.sales.v2.plugins.writter.enums.ExtensionEnum;
 import com.blo.sales.v2.utils.BloSalesV2Exception;
 import com.blo.sales.v2.view.pojos.PojoSaleAndProduct;
 import com.blo.sales.v2.view.pojos.WrapperPojoSalesAndStock;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -16,8 +15,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 
 public final class BloSalesV2SalesReportPlugin {
     
@@ -90,7 +87,7 @@ public final class BloSalesV2SalesReportPlugin {
         }
         
         try {
-            saveFile(createStringFromArray(rowsData));
+            BloSalesV2WritterFile.saveFile(createStringFromArray(rowsData), ExtensionEnum.TXT);
         } catch (IOException ex) {
             Logger.getLogger(BloSalesV2SalesReportPlugin.class.getName()).log(Level.SEVERE, null, ex);
             throw new BloSalesV2Exception(REPORT_EXCEPTION_CODE, ex.getMessage());
@@ -123,23 +120,4 @@ public final class BloSalesV2SalesReportPlugin {
         return str.toString();
     }
     
-    private static void saveFile(String str) throws IOException {
-        final var fileChooser = new JFileChooser();
-        int seleccion = fileChooser.showSaveDialog(null);
-
-        if (seleccion == JFileChooser.APPROVE_OPTION) {
-            var archivo = fileChooser.getSelectedFile();
-            // Asegurar la extensión .txt
-            final var ruta = archivo.getAbsolutePath();
-            if (!ruta.endsWith(".txt")) {
-                archivo = new File(ruta + ".txt");
-            }
-
-            final var bw = new BufferedWriter(new FileWriter(archivo));
-            bw.write(str);
-            bw.flush();
-            JOptionPane.showMessageDialog(null, "Archivo guardado exitosamente.");
-        }
-    }
-
 }
